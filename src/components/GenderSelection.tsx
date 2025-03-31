@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { cn } from '@/lib/utils';
-import { Male, Female } from 'lucide-react';
+import { Mars, Venus } from 'lucide-react';
 
 interface GenderSelectionProps {
   onSelectGender: (gender: 'male' | 'female') => void;
@@ -28,7 +28,7 @@ const GenderSelection: React.FC<GenderSelectionProps> = ({
           )}
           onClick={() => onSelectGender('male')}
         >
-          <Male 
+          <Mars 
             size={48} 
             className={cn(
               "mb-2",
@@ -49,7 +49,7 @@ const GenderSelection: React.FC<GenderSelectionProps> = ({
           )}
           onClick={() => onSelectGender('female')}
         >
-          <Female 
+          <Venus
             size={48} 
             className={cn(
               "mb-2",
