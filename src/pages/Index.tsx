@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import GenderSelection from '@/components/GenderSelection';
 import MoodSelection, { MoodType } from '@/components/MoodSelection';
 import UserProfileSetup from '@/components/UserProfileSetup';
 import ContentRecommendations from '@/components/ContentRecommendations';
@@ -15,23 +14,11 @@ const Index = () => {
   const [username, setUsername] = useState<string>('');
   const { toast } = useToast();
 
-  // Set the background color based on the selected gender
-  useEffect(() => {
-    if (gender === 'male') {
-      document.body.className = 'bg-mood-male-dark text-white';
-    } else if (gender === 'female') {
-      document.body.className = 'bg-black text-white'; // Dark theme
-    } else {
-      document.body.className = 'bg-black text-white'; // Default to dark theme
-    }
-  }, [gender]);
-
   // Set the title based on active step
   useEffect(() => {
     const titles = [
       'How are you feeling today?',
       'Create Your Profile',
-      'Select Your Theme',
       'Your Recommendations'
     ];
     document.title = `Moodster Mix - ${titles[activeStep - 1] || 'Welcome'}`;
@@ -48,12 +35,11 @@ const Index = () => {
     }, 500);
   };
 
-  const handleProfileComplete = (themeChoice: 'male' | 'female') => {
-    // Get theme choice from user profile
+  const handleProfileComplete = (username: string, themeChoice: 'male' | 'female') => {
     setGender(themeChoice);
-    setUsername('User');
+    setUsername(username);
     setTimeout(() => {
-      setActiveStep(4);
+      setActiveStep(3);
       toast({
         title: "Profile Created",
         description: "Your profile has been created successfully.",
@@ -62,13 +48,10 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20 bg-black">
+    <div className="min-h-screen pb-20">
       <Header gender={gender} activeStep={activeStep} username={username} />
       
-      <main className={cn(
-        "container mx-auto pt-24 px-4",
-        gender === 'male' ? "text-white" : "text-white"
-      )}>
+      <main className="container mx-auto pt-24 px-4 text-white">
         {activeStep === 1 && (
           <MoodSelection
             onSelectMood={handleMoodSelect}
@@ -85,16 +68,13 @@ const Index = () => {
           />
         )}
         
-        {activeStep === 4 && gender && mood && (
+        {activeStep === 3 && gender && mood && (
           <ContentRecommendations
             mood={mood}
             gender={gender}
           />
         )}
       </main>
-      
-      {/* Dark theme background elements */}
-      <div className="fixed bottom-0 left-0 w-full h-48 bg-gradient-to-t from-black to-transparent z-[-1]"></div>
     </div>
   );
 };
