@@ -4,55 +4,59 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from '@/lib/utils';
-import { User, Phone, AtSign, Music } from 'lucide-react';
+import { User, Phone, AtSign, Music, Moon, Sun } from 'lucide-react';
+import { MoodType } from './MoodSelection';
 
 interface UserProfileSetupProps {
-  gender: 'male' | 'female';
-  onComplete: () => void;
+  gender: 'male' | 'female' | null;
+  mood: MoodType;
+  onComplete: (themeChoice: 'male' | 'female') => void;
 }
 
-const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, onComplete }) => {
+const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, mood, onComplete }) => {
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
   const [phone, setPhone] = useState('');
   const [spotifyLink, setSpotifyLink] = useState('');
+  const [themeChoice, setThemeChoice] = useState<'male' | 'female'>(gender || 'female');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, we would save this data to a database
-    // For now, we just move forward
-    onComplete();
+    // Pass the theme choice to the parent component
+    onComplete(themeChoice);
   };
 
+  const darkMode = themeChoice === 'female';
+
   const inputClasses = cn(
-    "transition-all duration-300",
-    gender === 'male' 
-      ? "focus:border-mood-male-primary focus:ring-mood-male-primary/10" 
-      : "focus:border-mood-female-primary focus:ring-mood-female-primary/10"
+    "transition-all duration-300 bg-gray-900 border-gray-700 text-white",
+    darkMode 
+      ? "focus:border-mood-female-primary focus:ring-mood-female-primary/10" 
+      : "focus:border-mood-male-primary focus:ring-mood-male-primary/10"
   );
 
   const buttonClasses = cn(
     "w-full mt-6 transition-all duration-300",
-    gender === 'male' 
-      ? "bg-mood-male-primary hover:bg-mood-male-secondary" 
-      : "bg-mood-female-primary hover:bg-mood-female-secondary text-white"
+    darkMode 
+      ? "bg-mood-female-primary hover:bg-mood-female-secondary text-white" 
+      : "bg-mood-male-primary hover:bg-mood-male-secondary"
   );
 
   return (
     <div className={cn(
       "w-full max-w-md mx-auto p-6 rounded-lg shadow-md animate-fade-in",
-      gender === 'male' ? "bg-mood-male-darkgray/10" : "bg-mood-female-secondary/10"
+      darkMode ? "bg-gray-900/80" : "bg-gray-900/80"
     )}>
       <h2 className={cn(
         "text-2xl font-bold text-center mb-8",
-        gender === 'male' ? "text-mood-male-primary" : "text-mood-female-primary"
+        darkMode ? "text-mood-female-primary" : "text-mood-male-primary"
       )}>
         Create Your Profile
       </h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="username" className="flex items-center gap-2">
+          <Label htmlFor="username" className="flex items-center gap-2 text-white">
             <User size={16} /> Username
           </Label>
           <Input
@@ -67,7 +71,7 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, onComplete 
         </div>
         
         <div>
-          <Label htmlFor="userId" className="flex items-center gap-2">
+          <Label htmlFor="userId" className="flex items-center gap-2 text-white">
             <AtSign size={16} /> User ID
           </Label>
           <Input
@@ -82,7 +86,7 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, onComplete 
         </div>
         
         <div>
-          <Label htmlFor="phone" className="flex items-center gap-2">
+          <Label htmlFor="phone" className="flex items-center gap-2 text-white">
             <Phone size={16} /> Phone Number
           </Label>
           <Input
@@ -97,7 +101,7 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, onComplete 
         </div>
         
         <div>
-          <Label htmlFor="spotify" className="flex items-center gap-2">
+          <Label htmlFor="spotify" className="flex items-center gap-2 text-white">
             <Music size={16} /> Spotify Link
           </Label>
           <Input
@@ -108,6 +112,39 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, onComplete 
             onChange={(e) => setSpotifyLink(e.target.value)}
             className={inputClasses}
           />
+        </div>
+        
+        <div className="mt-6">
+          <Label className="flex items-center gap-2 text-white mb-3">
+            Select Your Theme
+          </Label>
+          <div className="flex gap-4 justify-center">
+            <Button
+              type="button"
+              variant="outline"
+              className={cn(
+                "flex flex-col items-center justify-center h-24 w-full transition-all duration-300 bg-gray-800",
+                themeChoice === 'male' ? "border-mood-male-primary border-2" : ""
+              )}
+              onClick={() => setThemeChoice('male')}
+            >
+              <Sun size={24} className="mb-1 text-mood-male-primary" />
+              <span className="text-white">Light Mode</span>
+            </Button>
+            
+            <Button
+              type="button"
+              variant="outline"
+              className={cn(
+                "flex flex-col items-center justify-center h-24 w-full transition-all duration-300 bg-gray-800",
+                themeChoice === 'female' ? "border-mood-female-primary border-2" : ""
+              )}
+              onClick={() => setThemeChoice('female')}
+            >
+              <Moon size={24} className="mb-1 text-mood-female-primary" />
+              <span className="text-white">Dark Mode</span>
+            </Button>
+          </div>
         </div>
         
         <Button type="submit" className={buttonClasses}>

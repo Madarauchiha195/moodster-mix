@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { cn } from '@/lib/utils';
-import { User, UserRound } from 'lucide-react';  // Using available icons from lucide-react
+import { Moon, Sun } from 'lucide-react';  // Using theme-related icons
 
 interface GenderSelectionProps {
   onSelectGender: (gender: 'male' | 'female') => void;
@@ -15,7 +15,7 @@ const GenderSelection: React.FC<GenderSelectionProps> = ({
 }) => {
   return (
     <div className="w-full max-w-md mx-auto p-6 animate-fade-in">
-      <h2 className="text-2xl font-bold text-center mb-8">Choose Your Theme</h2>
+      <h2 className="text-2xl font-bold text-center mb-8">Select Your Theme</h2>
       <div className="flex gap-4 justify-center">
         <Button
           variant="outline"
@@ -28,14 +28,14 @@ const GenderSelection: React.FC<GenderSelectionProps> = ({
           )}
           onClick={() => onSelectGender('male')}
         >
-          <User 
+          <Sun 
             size={48} 
             className={cn(
               "mb-2",
               selectedGender === 'male' ? "text-mood-male-primary" : ""
             )} 
           />
-          <span>Male</span>
+          <span>Light</span>
         </Button>
         
         <Button
@@ -49,14 +49,14 @@ const GenderSelection: React.FC<GenderSelectionProps> = ({
           )}
           onClick={() => onSelectGender('female')}
         >
-          <UserRound
+          <Moon
             size={48} 
             className={cn(
               "mb-2",
               selectedGender === 'female' ? "text-mood-female-primary" : ""
             )} 
           />
-          <span>Female</span>
+          <span>Dark</span>
         </Button>
       </div>
     </div>

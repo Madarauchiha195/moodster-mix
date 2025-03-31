@@ -24,21 +24,22 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
   const movies = recommendedContent.filter(item => item.type === 'movie');
   const music = recommendedContent.filter(item => item.type === 'song');
 
+  const isDarkMode = gender === 'female';
+
   return (
     <div className="w-full">
       <div className="flex justify-center mb-6">
         <div className={cn(
           "flex rounded-full p-1",
-          gender === 'male' ? "bg-mood-male-dark" : "bg-mood-female-secondary"
+          isDarkMode ? "bg-gray-800" : "bg-mood-male-dark"
         )}>
           <button
             onClick={() => setActiveTab('movies')}
             className={cn(
               "px-6 py-2 text-sm font-medium rounded-full transition-all",
-              activeTab === 'movies' && gender === 'male' ? "bg-mood-male-primary text-white" : "",
-              activeTab === 'movies' && gender === 'female' ? "bg-mood-female-primary text-white" : "",
-              activeTab !== 'movies' && gender === 'male' ? "text-gray-300 hover:text-white" : "",
-              activeTab !== 'movies' && gender === 'female' ? "text-gray-600 hover:text-gray-800" : ""
+              activeTab === 'movies' && !isDarkMode ? "bg-mood-male-primary text-white" : "",
+              activeTab === 'movies' && isDarkMode ? "bg-mood-female-primary text-white" : "",
+              activeTab !== 'movies' ? "text-gray-300 hover:text-white" : ""
             )}
           >
             Movies & Shows
@@ -47,10 +48,9 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
             onClick={() => setActiveTab('music')}
             className={cn(
               "px-6 py-2 text-sm font-medium rounded-full transition-all",
-              activeTab === 'music' && gender === 'male' ? "bg-mood-male-primary text-white" : "",
-              activeTab === 'music' && gender === 'female' ? "bg-mood-female-primary text-white" : "",
-              activeTab !== 'music' && gender === 'male' ? "text-gray-300 hover:text-white" : "",
-              activeTab !== 'music' && gender === 'female' ? "text-gray-600 hover:text-gray-800" : ""
+              activeTab === 'music' && !isDarkMode ? "bg-mood-male-primary text-white" : "",
+              activeTab === 'music' && isDarkMode ? "bg-mood-female-primary text-white" : "",
+              activeTab !== 'music' ? "text-gray-300 hover:text-white" : ""
             )}
           >
             Music
@@ -61,7 +61,7 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
       <div className="relative overflow-hidden">
         <h2 className={cn(
           "text-2xl font-bold mb-6 pl-4",
-          gender === 'male' ? "text-mood-male-primary" : "text-mood-female-primary"
+          isDarkMode ? "text-mood-female-primary" : "text-mood-male-primary"
         )}>
           {activeTab === 'movies' ? 'Recommended Movies & Shows' : 'Recommended Music'}
           {mood && 
@@ -71,14 +71,14 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
           }
         </h2>
         
-        <div className="skewed-grid relative overflow-hidden">
-          <div className="bento-grid unskewed-content">
+        <div className="relative overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
             {activeTab === 'movies' && movies.map((item, index) => (
               <div 
                 key={item.id} 
                 className={cn(
-                  "bento-cell", 
-                  index < 2 ? "bento-cell-large" : ""
+                  "rounded-lg overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg",
+                  index < 2 ? "md:col-span-2 md:row-span-2" : ""
                 )}
               >
                 <ContentCard item={item} gender={gender} />
@@ -89,8 +89,8 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
               <div 
                 key={item.id} 
                 className={cn(
-                  "bento-cell", 
-                  index < 2 ? "bento-cell-large" : ""
+                  "rounded-lg overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg", 
+                  index < 2 ? "md:col-span-2 md:row-span-2" : ""
                 )}
               >
                 <ContentCard item={item} gender={gender} />

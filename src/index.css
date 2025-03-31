@@ -104,11 +104,11 @@
 
 @layer components {
   .bento-grid {
-    @apply grid grid-cols-1 md:grid-cols-3 gap-4 p-4;
+    @apply grid grid-cols-1 md:grid-cols-3 gap-6 p-4;
   }
   
   .bento-cell {
-    @apply rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:shadow-lg;
+    @apply rounded-lg overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg;
   }
   
   .bento-cell-large {
@@ -120,7 +120,7 @@
   }
   
   .card-female {
-    @apply bg-gradient-to-br from-mood-female-secondary to-mood-female-light text-mood-male-dark border border-mood-female-primary/20;
+    @apply bg-gradient-to-br from-gray-900 to-black text-white border border-mood-female-primary/20;
   }
   
   .mood-card {
@@ -128,30 +128,73 @@
   }
   
   .mood-card-happy {
-    @apply bg-gradient-to-br from-mood-happy to-green-200 hover:shadow-md hover:shadow-green-200/40;
+    @apply bg-gradient-to-br from-green-900 to-green-700 hover:shadow-md hover:shadow-green-600/40;
   }
   
   .mood-card-sad {
-    @apply bg-gradient-to-br from-mood-sad to-blue-200 hover:shadow-md hover:shadow-blue-200/40;
+    @apply bg-gradient-to-br from-blue-900 to-blue-700 hover:shadow-md hover:shadow-blue-600/40;
   }
   
   .mood-card-neutral {
-    @apply bg-gradient-to-br from-mood-neutral to-purple-100 hover:shadow-md hover:shadow-purple-200/40;
+    @apply bg-gradient-to-br from-purple-900 to-purple-700 hover:shadow-md hover:shadow-purple-600/40;
   }
   
   .mood-card-confused {
-    @apply bg-gradient-to-br from-mood-confused to-yellow-200 hover:shadow-md hover:shadow-yellow-200/40;
+    @apply bg-gradient-to-br from-yellow-800 to-amber-700 hover:shadow-md hover:shadow-amber-500/40;
   }
   
   .content-card {
     @apply overflow-hidden rounded-lg transition-all duration-300 hover:scale-[1.02];
   }
 
-  .skewed-grid {
-    transform: skewX(-5deg);
+  /* Removed skewed grid styles */
+  
+  /* Modern UI elements */
+  .glass-card {
+    @apply backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)];
   }
   
-  .unskewed-content {
-    transform: skewX(5deg);
+  .neo-blur {
+    @apply backdrop-blur-2xl bg-black/40 border border-white/10;
   }
+  
+  .text-gradient {
+    @apply bg-gradient-to-br from-white via-white/90 to-white/70 bg-clip-text text-transparent;
+  }
+  
+  .pulse-glow {
+    @apply animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
+  }
+  
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+}
+
+/* Modern animation keyframes */
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
 }

@@ -20,38 +20,27 @@ const Index = () => {
     if (gender === 'male') {
       document.body.className = 'bg-mood-male-dark text-white';
     } else if (gender === 'female') {
-      document.body.className = 'bg-gradient-to-br from-mood-female-secondary to-mood-female-light text-mood-male-dark';
+      document.body.className = 'bg-black text-white'; // Dark theme
     } else {
-      document.body.className = '';
+      document.body.className = 'bg-black text-white'; // Default to dark theme
     }
   }, [gender]);
 
   // Set the title based on active step
   useEffect(() => {
     const titles = [
-      'Choose Your Theme',
       'How are you feeling today?',
       'Create Your Profile',
+      'Select Your Theme',
       'Your Recommendations'
     ];
     document.title = `Moodster Mix - ${titles[activeStep - 1] || 'Welcome'}`;
   }, [activeStep]);
 
-  const handleGenderSelect = (selectedGender: 'male' | 'female') => {
-    setGender(selectedGender);
-    setTimeout(() => {
-      setActiveStep(2);
-      toast({
-        title: "Theme Selected",
-        description: `${selectedGender === 'male' ? 'Male' : 'Female'} theme has been applied.`,
-      });
-    }, 500);
-  };
-
   const handleMoodSelect = (selectedMood: MoodType) => {
     setMood(selectedMood);
     setTimeout(() => {
-      setActiveStep(3);
+      setActiveStep(2);
       toast({
         title: "Mood Selected",
         description: `Your ${selectedMood} mood has been recorded.`,
@@ -59,8 +48,9 @@ const Index = () => {
     }, 500);
   };
 
-  const handleProfileComplete = () => {
-    // In a real app, we would save this data to a database
+  const handleProfileComplete = (themeChoice: 'male' | 'female') => {
+    // Get theme choice from user profile
+    setGender(themeChoice);
     setUsername('User');
     setTimeout(() => {
       setActiveStep(4);
@@ -72,32 +62,25 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-20 bg-black">
       <Header gender={gender} activeStep={activeStep} username={username} />
       
       <main className={cn(
         "container mx-auto pt-24 px-4",
-        gender === 'male' ? "text-white" : "",
-        gender === 'female' ? "text-mood-male-dark" : ""
+        gender === 'male' ? "text-white" : "text-white"
       )}>
         {activeStep === 1 && (
-          <GenderSelection
-            onSelectGender={handleGenderSelect}
-            selectedGender={gender}
-          />
-        )}
-        
-        {activeStep === 2 && gender && (
           <MoodSelection
             onSelectMood={handleMoodSelect}
             selectedMood={mood}
-            gender={gender}
+            gender={gender || 'female'} // Use dark theme by default
           />
         )}
         
-        {activeStep === 3 && gender && (
+        {activeStep === 2 && (
           <UserProfileSetup
             gender={gender}
+            mood={mood}
             onComplete={handleProfileComplete}
           />
         )}
@@ -110,14 +93,8 @@ const Index = () => {
         )}
       </main>
       
-      {/* Dynamic background elements */}
-      {gender === 'male' && (
-        <div className="fixed bottom-0 left-0 w-full h-48 bg-gradient-to-t from-black to-transparent z-[-1]"></div>
-      )}
-      
-      {gender === 'female' && (
-        <div className="fixed bottom-0 left-0 w-full h-48 bg-gradient-to-t from-mood-female-light/50 to-transparent z-[-1]"></div>
-      )}
+      {/* Dark theme background elements */}
+      <div className="fixed bottom-0 left-0 w-full h-48 bg-gradient-to-t from-black to-transparent z-[-1]"></div>
     </div>
   );
 };
