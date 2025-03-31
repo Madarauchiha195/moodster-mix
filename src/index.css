@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -97,5 +98,60 @@
 
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .bento-grid {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-4 p-4;
+  }
+  
+  .bento-cell {
+    @apply rounded-lg overflow-hidden transition-all duration-300 ease-in-out hover:shadow-lg;
+  }
+  
+  .bento-cell-large {
+    @apply md:col-span-2 md:row-span-2;
+  }
+  
+  .card-male {
+    @apply bg-gradient-to-br from-mood-male-darkgray to-mood-male-dark text-white border border-mood-male-primary/20;
+  }
+  
+  .card-female {
+    @apply bg-gradient-to-br from-mood-female-secondary to-mood-female-light text-mood-male-dark border border-mood-female-primary/20;
+  }
+  
+  .mood-card {
+    @apply relative overflow-hidden rounded-xl p-6 transition-all duration-300 cursor-pointer;
+  }
+  
+  .mood-card-happy {
+    @apply bg-gradient-to-br from-mood-happy to-green-200 hover:shadow-md hover:shadow-green-200/40;
+  }
+  
+  .mood-card-sad {
+    @apply bg-gradient-to-br from-mood-sad to-blue-200 hover:shadow-md hover:shadow-blue-200/40;
+  }
+  
+  .mood-card-neutral {
+    @apply bg-gradient-to-br from-mood-neutral to-purple-100 hover:shadow-md hover:shadow-purple-200/40;
+  }
+  
+  .mood-card-confused {
+    @apply bg-gradient-to-br from-mood-confused to-yellow-200 hover:shadow-md hover:shadow-yellow-200/40;
+  }
+  
+  .content-card {
+    @apply overflow-hidden rounded-lg transition-all duration-300 hover:scale-[1.02];
+  }
+
+  .skewed-grid {
+    transform: skewX(-5deg);
+  }
+  
+  .unskewed-content {
+    transform: skewX(5deg);
   }
 }
