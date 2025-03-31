@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { cn } from '@/lib/utils';
-import { Mars, Venus } from 'lucide-react';  // This is the correct import
+import { Male, Female } from 'lucide-react';  // Using Male and Female icons instead
 
 interface GenderSelectionProps {
   onSelectGender: (gender: 'male' | 'female') => void;
@@ -27,7 +28,7 @@ const GenderSelection: React.FC<GenderSelectionProps> = ({
           )}
           onClick={() => onSelectGender('male')}
         >
-          <Mars 
+          <Male 
             size={48} 
             className={cn(
               "mb-2",
@@ -48,7 +49,7 @@ const GenderSelection: React.FC<GenderSelectionProps> = ({
           )}
           onClick={() => onSelectGender('female')}
         >
-          <Venus
+          <Female
             size={48} 
             className={cn(
               "mb-2",
