@@ -6,6 +6,7 @@ import UserProfileSetup from '@/components/UserProfileSetup';
 import ContentRecommendations from '@/components/ContentRecommendations';
 import Header from '@/components/Header';
 import { useToast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
 
 const Index = () => {
   const [gender, setGender] = useState<'male' | 'female' | null>(null);
@@ -28,9 +29,8 @@ const Index = () => {
     setMood(selectedMood);
     setTimeout(() => {
       setActiveStep(2);
-      toast({
-        title: "Mood Selected",
-        description: `Your ${selectedMood} mood has been recorded.`,
+      sonnerToast.success(`${selectedMood?.charAt(0).toUpperCase()}${selectedMood?.slice(1)} mood selected`, {
+        description: `We'll customize your experience based on your ${selectedMood} mood.`,
       });
     }, 500);
   };
@@ -40,9 +40,8 @@ const Index = () => {
     setUsername(username);
     setTimeout(() => {
       setActiveStep(3);
-      toast({
-        title: "Profile Created",
-        description: "Your profile has been created successfully.",
+      sonnerToast.success("Profile Created", {
+        description: `Welcome ${username}! Your profile has been created successfully.`,
       });
     }, 500);
   };

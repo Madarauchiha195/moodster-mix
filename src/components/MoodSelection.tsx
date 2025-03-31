@@ -2,6 +2,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { SmilePlus, Frown, Smile, HelpCircle } from 'lucide-react';
+import { PixelCard } from '@/components/ui/pixel-card';
 
 export type MoodType = 'happy' | 'sad' | 'neutral' | 'confused' | null;
 
@@ -21,74 +22,71 @@ const MoodSelection: React.FC<MoodSelectionProps> = ({
   const moods = [
     { 
       type: 'happy' as MoodType, 
-      icon: <SmilePlus size={38} />, 
+      icon: <SmilePlus size={48} />, 
       label: 'Happy', 
       description: 'Energetic & uplifting content',
-      className: 'mood-card-happy'
+      color: 'from-green-900/80 to-green-700/80',
+      accent: 'green-500'
     },
     { 
       type: 'sad' as MoodType, 
-      icon: <Frown size={38} />, 
+      icon: <Frown size={48} />, 
       label: 'Sad', 
       description: 'Relaxing & heartwarming content',
-      className: 'mood-card-sad'
+      color: 'from-blue-900/80 to-blue-700/80',
+      accent: 'blue-500'
     },
     { 
       type: 'neutral' as MoodType, 
-      icon: <Smile size={38} />, 
+      icon: <Smile size={48} />, 
       label: 'Neutral', 
       description: 'Balanced & moderate content',
-      className: 'mood-card-neutral'
+      color: 'from-purple-900/80 to-purple-700/80',
+      accent: 'purple-500'
     },
     { 
       type: 'confused' as MoodType, 
-      icon: <HelpCircle size={38} />, 
+      icon: <HelpCircle size={48} />, 
       label: 'Confused', 
       description: 'Random mix of content',
-      className: 'mood-card-confused'
+      color: 'from-amber-800/80 to-amber-700/80',
+      accent: 'amber-500'
     },
   ];
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 animate-fade-in">
       <h2 className={cn(
-        "text-2xl font-bold text-center mb-8",
+        "text-4xl font-bold text-center mb-12 text-gradient",
         gender === 'male' ? "text-mood-male-primary" : "text-mood-female-primary"
       )}>
         How are you feeling today?
       </h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {moods.map((mood) => (
-          <div
+          <PixelCard
             key={mood.type}
-            className={cn(
-              "mood-card",
-              mood.className,
-              selectedMood === mood.type && "ring-2",
-              selectedMood === mood.type && gender === 'male' ? "ring-mood-male-primary" : "",
-              selectedMood === mood.type && gender === 'female' ? "ring-mood-female-primary" : "",
-            )}
             onClick={() => onSelectMood(mood.type)}
+            isSelected={selectedMood === mood.type}
+            activeColor={gender === 'male' ? 'rgba(30,174,219,0.7)' : 'rgba(217,70,239,0.7)'}
+            className={cn(
+              "transition-all duration-300 h-full",
+              `bg-gradient-to-br ${mood.color}`,
+            )}
           >
-            <div className="text-center">
+            <div className="flex flex-col items-center justify-center h-full py-6">
               <div className={cn(
-                "flex justify-center mb-2",
-                gender === 'male' ? "text-mood-male-primary" : "text-mood-female-primary"
+                "text-center mb-4 transition-all duration-300",
+                gender === 'male' ? "text-mood-male-primary" : "text-mood-female-primary",
+                selectedMood === mood.type ? "scale-110" : ""
               )}>
                 {mood.icon}
               </div>
-              <h3 className="text-lg font-medium mb-1">{mood.label}</h3>
-              <p className="text-sm text-gray-600">{mood.description}</p>
-              
-              {selectedMood === mood.type && (
-                <div className={cn(
-                  "absolute top-2 right-2 h-3 w-3 rounded-full",
-                  gender === 'male' ? "bg-mood-male-primary" : "bg-mood-female-primary"
-                )} />
-              )}
+              <h3 className="text-2xl font-bold mb-2 text-white">{mood.label}</h3>
+              <p className="text-sm text-gray-300 text-center">{mood.description}</p>
             </div>
-          </div>
+          </PixelCard>
         ))}
       </div>
     </div>

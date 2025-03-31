@@ -13,18 +13,18 @@ const Header: React.FC<HeaderProps> = ({ gender, activeStep, username }) => {
   return (
     <header className={cn(
       "fixed top-0 left-0 right-0 z-10 px-4 py-3 transition-all duration-300",
-      gender === 'male' ? "bg-mood-male-dark/95 text-white" : 
-      gender === 'female' ? "bg-gradient-to-r from-mood-female-secondary to-mood-female-light text-mood-male-dark" :
-      "bg-background"
+      gender === 'male' 
+        ? "bg-black/40 backdrop-blur-md border-b border-mood-male-primary/20" 
+        : "bg-black/40 backdrop-blur-md border-b border-mood-female-primary/20"
     )}>
       <div className="container flex justify-between items-center">
         <div className="flex items-center space-x-2">
           <HeartPulse className={cn(
             "h-6 w-6",
             gender === 'male' ? "text-mood-male-primary" : 
-            gender === 'female' ? "text-mood-female-primary" : ""
+            gender === 'female' ? "text-mood-female-primary" : "text-white"
           )} />
-          <span className="font-bold text-xl tracking-tight">Moodster Mix</span>
+          <span className="font-bold text-xl tracking-tight text-white">Moodster Mix</span>
         </div>
         
         <div className="flex items-center space-x-4">
@@ -43,11 +43,16 @@ const Header: React.FC<HeaderProps> = ({ gender, activeStep, username }) => {
           
           {username && (
             <div className={cn(
-              "flex items-center space-x-2 px-3 py-1 rounded-full",
-              gender === 'male' ? "bg-mood-male-primary/20" : "bg-mood-female-primary/20"
+              "flex items-center space-x-2 px-3 py-1.5 rounded-full",
+              gender === 'male' 
+                ? "bg-mood-male-primary/20 border border-mood-male-primary/30" 
+                : "bg-mood-female-primary/20 border border-mood-female-primary/30"
             )}>
-              <User className="h-4 w-4" />
-              <span className="text-sm font-medium">{username}</span>
+              <User className={cn(
+                "h-4 w-4",
+                gender === 'male' ? "text-mood-male-primary" : "text-mood-female-primary"
+              )} />
+              <span className="text-sm font-medium text-white">{username}</span>
             </div>
           )}
         </div>
