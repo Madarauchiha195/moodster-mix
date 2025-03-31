@@ -10,7 +10,7 @@ import { MoodType } from './MoodSelection';
 interface UserProfileSetupProps {
   gender: 'male' | 'female' | null;
   mood: MoodType;
-  onComplete: (themeChoice: 'male' | 'female') => void;
+  onComplete: (username: string, themeChoice: 'male' | 'female') => void;
 }
 
 const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, mood, onComplete }) => {
@@ -22,8 +22,8 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, mood, onCom
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Pass the theme choice to the parent component
-    onComplete(themeChoice);
+    // Pass both the username and theme choice to the parent component
+    onComplete(username, themeChoice);
   };
 
   const darkMode = themeChoice === 'female';
