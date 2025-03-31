@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { cn } from '@/lib/utils';
-import { Male, Female } from 'lucide-react';  // Using Male and Female icons instead
+import { User, UserRound } from 'lucide-react';  // Using available icons from lucide-react
 
 interface GenderSelectionProps {
   onSelectGender: (gender: 'male' | 'female') => void;
@@ -28,7 +28,7 @@ const GenderSelection: React.FC<GenderSelectionProps> = ({
           )}
           onClick={() => onSelectGender('male')}
         >
-          <Male 
+          <User 
             size={48} 
             className={cn(
               "mb-2",
@@ -49,7 +49,7 @@ const GenderSelection: React.FC<GenderSelectionProps> = ({
           )}
           onClick={() => onSelectGender('female')}
         >
-          <Female
+          <UserRound
             size={48} 
             className={cn(
               "mb-2",
