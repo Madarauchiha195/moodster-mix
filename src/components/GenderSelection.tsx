@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { cn } from '@/lib/utils';
-import { Mars, Venus } from 'lucide-react';
+import { Mars, Venus } from 'lucide-react';  // This is the correct import
 
 interface GenderSelectionProps {
   onSelectGender: (gender: 'male' | 'female') => void;
