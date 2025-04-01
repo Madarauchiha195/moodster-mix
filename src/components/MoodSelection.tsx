@@ -19,61 +19,60 @@ const MoodSelection: React.FC<MoodSelectionProps> = ({
   const moods = [
     { 
       type: 'happy' as MoodType, 
-      icon: <SmilePlus size={48} className="text-blue-400" />, 
+      icon: <SmilePlus size={42} className="text-white" />, 
       label: 'Happy', 
       description: 'Energetic & uplifting content',
-      color: '#1E293B',
+      color: 'rgba(30, 41, 59, 0.4)',
     },
     { 
       type: 'sad' as MoodType, 
-      icon: <Frown size={48} className="text-blue-400" />, 
+      icon: <Frown size={42} className="text-white" />, 
       label: 'Sad', 
       description: 'Relaxing & heartwarming content',
-      color: '#1E293B',
+      color: 'rgba(30, 41, 59, 0.4)',
     },
     { 
       type: 'neutral' as MoodType, 
-      icon: <Smile size={48} className="text-blue-400" />, 
+      icon: <Smile size={42} className="text-white" />, 
       label: 'Neutral', 
       description: 'Balanced & moderate content',
-      color: '#1E293B',
+      color: 'rgba(30, 41, 59, 0.4)',
     },
     { 
       type: 'confused' as MoodType, 
-      icon: <HelpCircle size={48} className="text-blue-400" />, 
+      icon: <HelpCircle size={42} className="text-white" />, 
       label: 'Confused', 
       description: 'Random mix of content',
-      color: '#1E293B',
+      color: 'rgba(30, 41, 59, 0.4)',
     },
   ];
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 animate-fade-in">
-      <h2 className="text-4xl font-bold text-center mb-12 text-gradient">
+    <div className="w-full max-w-4xl mx-auto p-2 sm:p-4 animate-fade-in">
+      <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-10 text-gradient">
         How are you feeling today?
       </h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
         {moods.map((mood) => (
           <CardSpotlight
             key={mood.type}
             onClick={() => onSelectMood(mood.type)}
             className={cn(
-              "transition-all duration-300 h-full cursor-pointer",
+              "transition-all duration-300 h-full cursor-pointer backdrop-blur-sm bg-opacity-40 bg-black/20",
               selectedMood === mood.type ? "border-blue-500 border-2" : ""
             )}
             color={mood.color}
           >
-            <div className="flex flex-col items-center justify-center h-full py-6 relative z-10">
+            <div className="flex flex-col items-center justify-center h-full py-4 relative z-10">
               <div className={cn(
-                "text-center mb-4 transition-all duration-300",
-                "text-blue-400",
+                "text-center mb-3 transition-all duration-300",
                 selectedMood === mood.type ? "scale-110" : ""
               )}>
                 {mood.icon}
               </div>
-              <h3 className="text-2xl font-bold mb-2 text-white">{mood.label}</h3>
-              <p className="text-sm text-gray-300 text-center">{mood.description}</p>
+              <h3 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2 text-white">{mood.label}</h3>
+              <p className="text-xs sm:text-sm text-gray-300 text-center">{mood.description}</p>
             </div>
           </CardSpotlight>
         ))}

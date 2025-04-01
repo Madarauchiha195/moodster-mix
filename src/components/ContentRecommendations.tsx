@@ -28,7 +28,7 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
 
   return (
     <div className="w-full">
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-4 sm:mb-6">
         <div className={cn(
           "flex rounded-full p-1",
           isDarkMode ? "bg-gray-800" : "bg-mood-male-dark"
@@ -36,7 +36,7 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
           <button
             onClick={() => setActiveTab('movies')}
             className={cn(
-              "px-6 py-2 text-sm font-medium rounded-full transition-all",
+              "px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full transition-all",
               activeTab === 'movies' && !isDarkMode ? "bg-mood-male-primary text-white" : "",
               activeTab === 'movies' && isDarkMode ? "bg-mood-female-primary text-white" : "",
               activeTab !== 'movies' ? "text-gray-300 hover:text-white" : ""
@@ -47,7 +47,7 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
           <button
             onClick={() => setActiveTab('music')}
             className={cn(
-              "px-6 py-2 text-sm font-medium rounded-full transition-all",
+              "px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full transition-all",
               activeTab === 'music' && !isDarkMode ? "bg-mood-male-primary text-white" : "",
               activeTab === 'music' && isDarkMode ? "bg-mood-female-primary text-white" : "",
               activeTab !== 'music' ? "text-gray-300 hover:text-white" : ""
@@ -60,19 +60,19 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
       
       <div className="relative overflow-hidden">
         <h2 className={cn(
-          "text-2xl font-bold mb-6 pl-4",
+          "text-xl sm:text-2xl font-bold mb-4 sm:mb-6 pl-2 sm:pl-4",
           isDarkMode ? "text-mood-female-primary" : "text-mood-male-primary"
         )}>
           {activeTab === 'movies' ? 'Recommended Movies & Shows' : 'Recommended Music'}
           {mood && 
-            <span className="ml-2 text-lg opacity-70">
+            <span className="ml-2 text-sm sm:text-lg opacity-70">
               for your {mood} mood
             </span>
           }
         </h2>
         
         <div className="relative overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 p-2 sm:p-4">
             {activeTab === 'movies' && movies.map((item, index) => (
               <div 
                 key={item.id} 
