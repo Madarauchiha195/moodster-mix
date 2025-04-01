@@ -38,17 +38,11 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
   };
 
   return (
-    <div className={cn(
-      "content-card h-full",
-      gender === 'male' ? 'card-male' : 'card-female'
-    )}>
+    <div className="content-card h-full bg-black/60 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden">
       <div className="relative">
         <AspectRatio ratio={16 / 9}>
           {loading && (
-            <div className={cn(
-              "absolute inset-0 flex items-center justify-center",
-              gender === 'male' ? 'bg-mood-male-darkgray' : 'bg-mood-female-secondary/30'
-            )}>
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
               <div className="animate-pulse flex flex-col items-center justify-center w-full h-full">
                 {item.type === 'movie' ? (
                   <>
@@ -71,7 +65,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
           <img
             src={item.imageUrl || '/placeholder.svg'}
             alt={item.title}
-            className="object-cover w-full h-full rounded-t-lg"
+            className="object-cover w-full h-full"
             onLoad={handleImageLoad}
             onError={() => setLoading(false)}
           />
@@ -87,14 +81,13 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
       
       <div className="p-4">
         <div className="flex justify-between items-start">
-          <h3 className="text-lg font-semibold line-clamp-1">{item.title}</h3>
+          <h3 className="text-lg font-semibold line-clamp-1 text-white">{item.title}</h3>
           <Button
             variant="ghost"
             size="icon"
             className={cn(
               "h-8 w-8 rounded-full",
-              isFavorite && gender === 'male' ? "text-mood-male-primary" : "",
-              isFavorite && gender === 'female' ? "text-mood-female-primary" : ""
+              isFavorite ? "text-pink-500" : "text-gray-400"
             )}
             onClick={toggleFavorite}
           >
@@ -102,19 +95,19 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
           </Button>
         </div>
         
-        <p className="text-sm line-clamp-2 mt-1 opacity-80">{item.description}</p>
+        <p className="text-xs sm:text-sm line-clamp-2 mt-1 text-gray-300">{item.description}</p>
         
         <div className="mt-3 space-y-2">
           {item.type === 'movie' ? (
             <>
               <div className="flex items-center text-xs">
-                <span className="opacity-70 mr-2">Genre:</span>
-                <span className="font-medium">{item.genre}</span>
+                <span className="text-gray-400 mr-2">Genre:</span>
+                <span className="font-medium text-gray-200">{item.genre}</span>
               </div>
               
               <div className="flex items-center text-xs">
-                <span className="opacity-70 mr-2">Year:</span>
-                <span className="font-medium">{item.year}</span>
+                <span className="text-gray-400 mr-2">Year:</span>
+                <span className="font-medium text-gray-200">{item.year}</span>
               </div>
               
               {item.platform && item.platform.length > 0 && (
@@ -122,10 +115,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
                   {item.platform.map((p, index) => (
                     <span 
                       key={index} 
-                      className={cn(
-                        "text-xs px-2 py-1 rounded-full",
-                        gender === 'male' ? "bg-mood-male-primary/20" : "bg-mood-female-primary/20"
-                      )}
+                      className="text-xs px-2 py-1 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20"
                     >
                       {p}
                     </span>
@@ -136,18 +126,18 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
           ) : (
             <>
               <div className="flex items-center text-xs">
-                <span className="opacity-70 mr-2">Artist:</span>
-                <span className="font-medium">{item.artist}</span>
+                <span className="text-gray-400 mr-2">Artist:</span>
+                <span className="font-medium text-gray-200">{item.artist}</span>
               </div>
               
               <div className="flex items-center text-xs">
-                <span className="opacity-70 mr-2">Album:</span>
-                <span className="font-medium">{item.album}</span>
+                <span className="text-gray-400 mr-2">Album:</span>
+                <span className="font-medium text-gray-200">{item.album}</span>
               </div>
               
               <div className="flex items-center text-xs">
-                <span className="opacity-70 mr-2">Genre:</span>
-                <span className="font-medium">{item.genre}</span>
+                <span className="text-gray-400 mr-2">Genre:</span>
+                <span className="font-medium text-gray-200">{item.genre}</span>
               </div>
             </>
           )}
@@ -160,10 +150,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={cn(
-                    "h-8 rounded-full",
-                    gender === 'male' ? "hover:bg-mood-male-primary/20" : "hover:bg-mood-female-primary/20"
-                  )}
+                  className="h-8 rounded-full hover:bg-white/10 text-gray-300"
                 >
                   <Info className="h-4 w-4 mr-1" />
                   Details
@@ -178,11 +165,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
           <Button
             variant="outline"
             size="sm"
-            className={cn(
-              "h-8 rounded-full",
-              gender === 'male' ? "border-mood-male-primary text-mood-male-primary hover:bg-mood-male-primary/10" : 
-                                "border-mood-female-primary text-mood-female-primary hover:bg-mood-female-primary/10"
-            )}
+            className="h-8 rounded-full bg-gradient-to-r from-purple-600/10 to-pink-600/10 border-purple-500/30 text-white hover:bg-white/10"
           >
             <ExternalLink className="h-4 w-4 mr-1" />
             {item.type === 'movie' ? 'Watch' : 'Listen'}

@@ -22,34 +22,34 @@ const MoodSelection: React.FC<MoodSelectionProps> = ({
       icon: <SmilePlus size={42} className="text-white" />, 
       label: 'Happy', 
       description: 'Energetic & uplifting content',
-      color: 'rgba(30, 41, 59, 0.4)',
+      color: 'rgba(30, 41, 59, 0.6)',
     },
     { 
       type: 'sad' as MoodType, 
       icon: <Frown size={42} className="text-white" />, 
       label: 'Sad', 
       description: 'Relaxing & heartwarming content',
-      color: 'rgba(30, 41, 59, 0.4)',
+      color: 'rgba(30, 41, 59, 0.6)',
     },
     { 
       type: 'neutral' as MoodType, 
       icon: <Smile size={42} className="text-white" />, 
       label: 'Neutral', 
       description: 'Balanced & moderate content',
-      color: 'rgba(30, 41, 59, 0.4)',
+      color: 'rgba(30, 41, 59, 0.6)',
     },
     { 
       type: 'confused' as MoodType, 
       icon: <HelpCircle size={42} className="text-white" />, 
       label: 'Confused', 
       description: 'Random mix of content',
-      color: 'rgba(30, 41, 59, 0.4)',
+      color: 'rgba(30, 41, 59, 0.6)',
     },
   ];
 
   return (
     <div className="w-full max-w-4xl mx-auto p-2 sm:p-4 animate-fade-in">
-      <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-10 text-gradient">
+      <h2 className="text-3xl sm:text-4xl font-bold text-center mb-6 sm:mb-10 bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent">
         How are you feeling today?
       </h2>
       
@@ -59,8 +59,8 @@ const MoodSelection: React.FC<MoodSelectionProps> = ({
             key={mood.type}
             onClick={() => onSelectMood(mood.type)}
             className={cn(
-              "transition-all duration-300 h-full cursor-pointer backdrop-blur-sm bg-opacity-40 bg-black/20",
-              selectedMood === mood.type ? "border-blue-500 border-2" : ""
+              "transition-all duration-300 h-full cursor-pointer backdrop-blur-md bg-black/60",
+              selectedMood === mood.type ? "border-purple-500 border-2" : ""
             )}
             color={mood.color}
           >

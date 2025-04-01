@@ -27,17 +27,12 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ mood, onComplete })
   };
 
   const inputClasses = cn(
-    "transition-all duration-300 bg-gray-900 border-gray-700 text-white mt-2",
-    "focus:border-blue-500 focus:ring-blue-500/10"
-  );
-
-  const buttonClasses = cn(
-    "w-full mt-6 transition-all duration-300",
-    "bg-blue-600 hover:bg-blue-700 text-white"
+    "transition-all duration-300 bg-gray-900/80 border-gray-700 text-white mt-2",
+    "focus:border-purple-500 focus:ring-purple-500/10"
   );
 
   return (
-    <CardSpotlight className="w-full max-w-md mx-auto p-6 rounded-lg shadow-md animate-fade-in">
+    <CardSpotlight className="w-full max-w-md mx-auto p-6 rounded-lg shadow-md animate-fade-in backdrop-blur-md bg-black/60">
       <h2 className="text-2xl font-bold text-center mb-8 text-white relative z-10">
         Create Your Profile
       </h2>
@@ -102,9 +97,14 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ mood, onComplete })
           />
         </div>
         
-        <Button type="submit" className={buttonClasses}>
+        <button
+          type="submit"
+          className="group/btn relative block h-10 w-full mt-6 rounded-md bg-gradient-to-br from-purple-600 to-pink-500 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]"
+        >
           Complete Profile
-        </Button>
+          <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />
+          <span className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100" />
+        </button>
       </form>
     </CardSpotlight>
   );
