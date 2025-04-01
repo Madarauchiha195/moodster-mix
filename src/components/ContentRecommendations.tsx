@@ -3,6 +3,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import ContentCard, { ContentItemProps } from './ContentCard';
 import { MoodType } from './MoodSelection';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
 // Sample data for recommendations
 import { getRecommendedContent } from '@/data/recommendations';
@@ -55,38 +56,88 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
         <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 pl-2 sm:pl-4 bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent">
           {activeTab === 'movies' ? 'Recommended Movies & Shows' : 'Recommended Music'}
           {mood && 
-            <span className="ml-2 text-sm sm:text-lg opacity-70 text-white">
+            <span className="text-xl sm:text-2xl ml-2 opacity-70 text-white">
               for your {mood} mood
             </span>
           }
         </h2>
         
-        <div className="relative">
-          <div className="overflow-x-auto pb-6 scrollbar-hide">
-            <div className={cn(
-              "grid grid-flow-col auto-cols-max gap-3 sm:gap-4 p-2 sm:p-4",
-              activeTab === 'movies' ? "md:auto-cols-[280px]" : "md:auto-cols-[260px]"
-            )}>
-              {activeTab === 'movies' && movies.map((item) => (
-                <div 
-                  key={item.id} 
-                  className="rounded-lg overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
-                >
+        <div className="mb-8">
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent>
+              {activeTab === 'movies' && movies.slice(0, 5).map((item) => (
+                <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
                   <ContentCard item={item} gender={gender} />
-                </div>
+                </CarouselItem>
               ))}
               
-              {activeTab === 'music' && music.map((item) => (
-                <div 
-                  key={item.id} 
-                  className="rounded-lg overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
-                >
+              {activeTab === 'music' && music.slice(0, 5).map((item) => (
+                <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
                   <ContentCard item={item} gender={gender} />
-                </div>
+                </CarouselItem>
               ))}
-            </div>
-          </div>
+            </CarouselContent>
+            <CarouselPrevious className="left-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
+            <CarouselNext className="right-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
+          </Carousel>
         </div>
+
+        {/* Second row of content */}
+        {activeTab === 'movies' && movies.length > 5 && (
+          <div className="mb-4">
+            <h3 className="text-lg font-bold mb-3 pl-2 bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent">
+              More Movies For You
+            </h3>
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {movies.slice(5).map((item) => (
+                  <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
+                    <ContentCard item={item} gender={gender} />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
+              <CarouselNext className="right-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
+            </Carousel>
+          </div>
+        )}
+
+        {activeTab === 'music' && music.length > 5 && (
+          <div>
+            <h3 className="text-lg font-bold mb-3 pl-2 bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent">
+              More Songs For You
+            </h3>
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {music.slice(5).map((item) => (
+                  <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
+                    <ContentCard item={item} gender={gender} />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
+              <CarouselNext className="right-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
+            </Carousel>
+          </div>
+        )}
       </div>
     </div>
   );

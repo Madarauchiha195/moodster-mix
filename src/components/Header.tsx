@@ -14,12 +14,14 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ activeStep, username, showFullHeader = true }) => {
   const isMobile = useIsMobile();
   
-  if (!showFullHeader && activeStep <= 2) {
+  // For mood selection and profile setup pages, show minimal header
+  if (activeStep <= 2) {
     return (
       <header className="fixed top-0 left-0 right-0 z-10 px-2 sm:px-4 py-2 sm:py-3 transition-all duration-300 bg-transparent">
         <div className="container flex justify-between items-center">
           <div className="flex items-center">
-            <span className="font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent">
+            <span className="font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent" 
+               style={{textShadow: '0 0 10px rgba(255,255,255,0.3)'}}>
               Moodster Mix
             </span>
           </div>
@@ -28,11 +30,13 @@ const Header: React.FC<HeaderProps> = ({ activeStep, username, showFullHeader = 
     );
   }
   
+  // For content recommendation page, show full header
   return (
     <header className="fixed top-0 left-0 right-0 z-10 px-2 sm:px-4 py-2 sm:py-3 transition-all duration-300 bg-black/40 backdrop-blur-md border-b border-purple-500/20">
       <div className="container flex justify-between items-center">
         <div className="flex items-center">
-          <span className="font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent">
+          <span className="font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent"
+                style={{textShadow: '0 0 10px rgba(255,255,255,0.3)'}}>
             Moodster Mix
           </span>
         </div>

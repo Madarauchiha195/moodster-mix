@@ -5,6 +5,7 @@ import { Heart, ExternalLink, Star, Info } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 
 export interface ContentItemProps {
   id: number;
@@ -38,7 +39,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
   };
 
   return (
-    <div className="content-card h-full bg-black/60 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden">
+    <div className="content-card h-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50">
       <div className="relative">
         <AspectRatio ratio={16 / 9}>
           {loading && (
@@ -65,7 +66,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
           <img
             src={item.imageUrl || '/placeholder.svg'}
             alt={item.title}
-            className="object-cover w-full h-full"
+            className="object-cover w-full h-full transition-transform duration-500 hover:scale-110"
             onLoad={handleImageLoad}
             onError={() => setLoading(false)}
           />
@@ -86,8 +87,8 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
             variant="ghost"
             size="icon"
             className={cn(
-              "h-8 w-8 rounded-full",
-              isFavorite ? "text-pink-500" : "text-gray-400"
+              "h-8 w-8 rounded-full transition-transform hover:scale-110",
+              isFavorite ? "text-pink-500" : "text-gray-400 hover:text-pink-300"
             )}
             onClick={toggleFavorite}
           >
@@ -144,28 +145,42 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
         </div>
         
         <div className="mt-4 flex justify-between">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 rounded-full hover:bg-white/10 text-gray-300"
-                >
-                  <Info className="h-4 w-4 mr-1" />
-                  Details
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>View full details</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors duration-300"
+              >
+                <Info className="h-4 w-4 mr-1" />
+                Details
+              </Button>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-80 bg-black/90 backdrop-blur-lg border border-purple-500/30 text-white">
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold">{item.title}</h4>
+                <p className="text-xs text-gray-300">{item.description}</p>
+                {item.type === 'movie' ? (
+                  <div className="text-xs space-y-1">
+                    <p><span className="text-gray-400">Year:</span> {item.year}</p>
+                    <p><span className="text-gray-400">Genre:</span> {item.genre}</p>
+                    <p><span className="text-gray-400">Rating:</span> {item.rating}/10</p>
+                  </div>
+                ) : (
+                  <div className="text-xs space-y-1">
+                    <p><span className="text-gray-400">Artist:</span> {item.artist}</p>
+                    <p><span className="text-gray-400">Album:</span> {item.album}</p>
+                    <p><span className="text-gray-400">Genre:</span> {item.genre}</p>
+                  </div>
+                )}
+              </div>
+            </HoverCardContent>
+          </HoverCard>
           
           <Button
             variant="outline"
             size="sm"
-            className="h-8 rounded-full bg-gradient-to-r from-purple-600/10 to-pink-600/10 border-purple-500/30 text-white hover:bg-white/10"
+            className="h-8 rounded-full bg-gradient-to-r from-purple-600/10 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/40 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(219,39,119,0.3)]"
           >
             <ExternalLink className="h-4 w-4 mr-1" />
             {item.type === 'movie' ? 'Watch' : 'Listen'}
