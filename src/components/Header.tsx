@@ -8,10 +8,24 @@ interface HeaderProps {
   gender: 'male' | 'female' | null;
   activeStep: number;
   username?: string;
+  showFullHeader?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ activeStep, username }) => {
+const Header: React.FC<HeaderProps> = ({ activeStep, username, showFullHeader = true }) => {
   const isMobile = useIsMobile();
+  
+  if (!showFullHeader && activeStep <= 2) {
+    return (
+      <header className="fixed top-0 left-0 right-0 z-10 px-2 sm:px-4 py-2 sm:py-3 transition-all duration-300 bg-transparent">
+        <div className="container flex justify-between items-center">
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            <HeartPulse className="h-5 w-5 sm:h-6 sm:w-6 text-blue-500" />
+            <span className="font-bold text-lg sm:text-xl tracking-tight text-white">Moodster Mix</span>
+          </div>
+        </div>
+      </header>
+    );
+  }
   
   return (
     <header className="fixed top-0 left-0 right-0 z-10 px-2 sm:px-4 py-2 sm:py-3 transition-all duration-300 bg-black/40 backdrop-blur-md border-b border-blue-500/20">

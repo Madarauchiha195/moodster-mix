@@ -45,7 +45,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen pb-20">
-      <Header gender={gender} activeStep={activeStep} username={username} />
+      <Header 
+        gender={gender} 
+        activeStep={activeStep} 
+        username={username} 
+        showFullHeader={activeStep === 3}
+      />
       
       <main className="container mx-auto pt-24 px-4 text-white">
         {activeStep === 1 && (

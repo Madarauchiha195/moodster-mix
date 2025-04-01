@@ -27,7 +27,7 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ mood, onComplete })
   };
 
   const inputClasses = cn(
-    "transition-all duration-300 bg-gray-900 border-gray-700 text-white",
+    "transition-all duration-300 bg-gray-900 border-gray-700 text-white mt-2",
     "focus:border-blue-500 focus:ring-blue-500/10"
   );
 
@@ -42,7 +42,7 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ mood, onComplete })
         Create Your Profile
       </h2>
       
-      <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
+      <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
         <div>
           <Label htmlFor="username" className="flex items-center gap-2 text-white">
             <User size={16} /> Username
