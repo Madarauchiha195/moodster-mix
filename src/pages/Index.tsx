@@ -5,15 +5,13 @@ import MoodSelection, { MoodType } from '@/components/MoodSelection';
 import UserProfileSetup from '@/components/UserProfileSetup';
 import ContentRecommendations from '@/components/ContentRecommendations';
 import Header from '@/components/Header';
-import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 
 const Index = () => {
-  const [gender, setGender] = useState<'male' | 'female' | null>(null);
   const [mood, setMood] = useState<MoodType>(null);
   const [activeStep, setActiveStep] = useState(1);
   const [username, setUsername] = useState<string>('');
-  const { toast } = useToast();
+  const gender = 'male';
 
   // Set the title based on active step
   useEffect(() => {
@@ -35,8 +33,7 @@ const Index = () => {
     }, 500);
   };
 
-  const handleProfileComplete = (username: string, themeChoice: 'male' | 'female') => {
-    setGender(themeChoice);
+  const handleProfileComplete = (username: string) => {
     setUsername(username);
     setTimeout(() => {
       setActiveStep(3);
@@ -55,7 +52,7 @@ const Index = () => {
           <MoodSelection
             onSelectMood={handleMoodSelect}
             selectedMood={mood}
-            gender={gender || 'female'} // Use dark theme by default
+            gender={'male'} 
           />
         )}
         
@@ -67,7 +64,7 @@ const Index = () => {
           />
         )}
         
-        {activeStep === 3 && gender && mood && (
+        {activeStep === 3 && mood && (
           <ContentRecommendations
             mood={mood}
             gender={gender}

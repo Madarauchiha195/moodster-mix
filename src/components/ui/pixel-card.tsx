@@ -16,7 +16,7 @@ export const PixelCard = ({
   children,
   onClick,
   isSelected,
-  activeColor = "rgba(255,255,255,0.2)",
+  activeColor = "rgba(59, 130, 246, 0.5)",
   variant = "default",
 }: PixelCardProps) => {
   return (
@@ -25,7 +25,7 @@ export const PixelCard = ({
       className={cn(
         "group relative cursor-pointer overflow-hidden rounded-xl bg-black p-0.5 transition-all duration-300",
         isSelected && "ring-2 ring-offset-2",
-        isSelected && activeColor && `ring-[${activeColor}]`,
+        isSelected && `ring-blue-500`,
         variant === "shadow" && "shadow-xl",
         variant === "bordered" && "border border-white/10",
         className

@@ -4,57 +4,45 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from '@/lib/utils';
-import { User, Phone, AtSign, Music, Moon, Sun } from 'lucide-react';
+import { User, Phone, AtSign, Music } from 'lucide-react';
 import { MoodType } from './MoodSelection';
+import { CardSpotlight } from '@/components/ui/card-spotlight';
 
 interface UserProfileSetupProps {
   gender: 'male' | 'female' | null;
   mood: MoodType;
-  onComplete: (username: string, themeChoice: 'male' | 'female') => void;
+  onComplete: (username: string) => void;
 }
 
-const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, mood, onComplete }) => {
+const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ mood, onComplete }) => {
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
   const [phone, setPhone] = useState('');
   const [spotifyLink, setSpotifyLink] = useState('');
-  const [themeChoice, setThemeChoice] = useState<'male' | 'female'>(gender || 'female');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Pass both the username and theme choice to the parent component
-    onComplete(username, themeChoice);
+    // Pass the username to the parent component
+    onComplete(username);
   };
-
-  const darkMode = themeChoice === 'female';
 
   const inputClasses = cn(
     "transition-all duration-300 bg-gray-900 border-gray-700 text-white",
-    darkMode 
-      ? "focus:border-mood-female-primary focus:ring-mood-female-primary/10" 
-      : "focus:border-mood-male-primary focus:ring-mood-male-primary/10"
+    "focus:border-blue-500 focus:ring-blue-500/10"
   );
 
   const buttonClasses = cn(
     "w-full mt-6 transition-all duration-300",
-    darkMode 
-      ? "bg-mood-female-primary hover:bg-mood-female-secondary text-white" 
-      : "bg-mood-male-primary hover:bg-mood-male-secondary"
+    "bg-blue-600 hover:bg-blue-700 text-white"
   );
 
   return (
-    <div className={cn(
-      "w-full max-w-md mx-auto p-6 rounded-lg shadow-md animate-fade-in",
-      darkMode ? "bg-gray-900/80" : "bg-gray-900/80"
-    )}>
-      <h2 className={cn(
-        "text-2xl font-bold text-center mb-8",
-        darkMode ? "text-mood-female-primary" : "text-mood-male-primary"
-      )}>
+    <CardSpotlight className="w-full max-w-md mx-auto p-6 rounded-lg shadow-md animate-fade-in">
+      <h2 className="text-2xl font-bold text-center mb-8 text-white relative z-10">
         Create Your Profile
       </h2>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
         <div>
           <Label htmlFor="username" className="flex items-center gap-2 text-white">
             <User size={16} /> Username
@@ -114,44 +102,11 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, mood, onCom
           />
         </div>
         
-        <div className="mt-6">
-          <Label className="flex items-center gap-2 text-white mb-3">
-            Select Your Theme
-          </Label>
-          <div className="flex gap-4 justify-center">
-            <Button
-              type="button"
-              variant="outline"
-              className={cn(
-                "flex flex-col items-center justify-center h-24 w-full transition-all duration-300 bg-gray-800",
-                themeChoice === 'male' ? "border-mood-male-primary border-2" : ""
-              )}
-              onClick={() => setThemeChoice('male')}
-            >
-              <Sun size={24} className="mb-1 text-mood-male-primary" />
-              <span className="text-white">Light Mode</span>
-            </Button>
-            
-            <Button
-              type="button"
-              variant="outline"
-              className={cn(
-                "flex flex-col items-center justify-center h-24 w-full transition-all duration-300 bg-gray-800",
-                themeChoice === 'female' ? "border-mood-female-primary border-2" : ""
-              )}
-              onClick={() => setThemeChoice('female')}
-            >
-              <Moon size={24} className="mb-1 text-mood-female-primary" />
-              <span className="text-white">Dark Mode</span>
-            </Button>
-          </div>
-        </div>
-        
         <Button type="submit" className={buttonClasses}>
           Complete Profile
         </Button>
       </form>
-    </div>
+    </CardSpotlight>
   );
 };
 
