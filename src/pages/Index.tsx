@@ -8,57 +8,7 @@ import Header from '@/components/Header';
 import UserProfile from '@/components/UserProfile';
 import { ContentItemProps } from '@/components/ContentCard';
 import { toast as sonnerToast } from "sonner";
-
-// Sample data for user's saved content
-const sampleWatchlist: ContentItemProps[] = [
-  {
-    id: 101,
-    title: "Inception",
-    description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
-    type: "movie",
-    rating: 8.8,
-    genre: "Sci-Fi",
-    year: 2010,
-    platform: ["Netflix", "HBO Max"],
-    imageUrl: "https://source.unsplash.com/random/300x200/?inception"
-  },
-  {
-    id: 102,
-    title: "The Shawshank Redemption",
-    description: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
-    type: "movie",
-    rating: 9.3,
-    genre: "Drama",
-    year: 1994,
-    platform: ["Netflix"],
-    imageUrl: "https://source.unsplash.com/random/300x200/?prison"
-  }
-];
-
-const samplePlaylist: ContentItemProps[] = [
-  {
-    id: 201,
-    title: "Blinding Lights",
-    description: "A synth-pop, electropop song with new wave elements.",
-    type: "song",
-    artist: "The Weeknd",
-    album: "After Hours",
-    genre: "Synth-pop",
-    year: 2020,
-    imageUrl: "https://source.unsplash.com/random/300x200/?lights"
-  },
-  {
-    id: 202,
-    title: "Bad Guy",
-    description: "A dance-pop and electropop song with minimalist production and heavy bass.",
-    type: "song",
-    artist: "Billie Eilish",
-    album: "When We All Fall Asleep, Where Do We Go?",
-    genre: "Electropop",
-    year: 2019,
-    imageUrl: "https://source.unsplash.com/random/300x200/?music"
-  }
-];
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const Index = () => {
   const [mood, setMood] = useState<MoodType>(null);
@@ -68,6 +18,57 @@ const Index = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [activeTabView, setActiveTabView] = useState<'movies' | 'music' | null>(null);
   const [likedContent, setLikedContent] = useState<ContentItemProps[]>([]);
+
+  // Sample data for user's saved content
+  const [watchlist, setWatchlist] = useState<ContentItemProps[]>([
+    {
+      id: 101,
+      title: "Inception",
+      description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+      type: "movie",
+      rating: 8.8,
+      genre: "Sci-Fi",
+      year: 2010,
+      platform: ["Netflix", "HBO Max"],
+      imageUrl: "https://source.unsplash.com/random/300x200/?inception"
+    },
+    {
+      id: 102,
+      title: "The Shawshank Redemption",
+      description: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+      type: "movie",
+      rating: 9.3,
+      genre: "Drama",
+      year: 1994,
+      platform: ["Netflix"],
+      imageUrl: "https://source.unsplash.com/random/300x200/?prison"
+    }
+  ]);
+
+  const [playlist, setPlaylist] = useState<ContentItemProps[]>([
+    {
+      id: 201,
+      title: "Blinding Lights",
+      description: "A synth-pop, electropop song with new wave elements.",
+      type: "song",
+      artist: "The Weeknd",
+      album: "After Hours",
+      genre: "Synth-pop",
+      year: 2020,
+      imageUrl: "https://source.unsplash.com/random/300x200/?lights"
+    },
+    {
+      id: 202,
+      title: "Bad Guy",
+      description: "A dance-pop and electropop song with minimalist production and heavy bass.",
+      type: "song",
+      artist: "Billie Eilish",
+      album: "When We All Fall Asleep, Where Do We Go?",
+      genre: "Electropop",
+      year: 2019,
+      imageUrl: "https://source.unsplash.com/random/300x200/?music"
+    }
+  ]);
 
   // Set the title based on active step
   useEffect(() => {
@@ -110,26 +111,36 @@ const Index = () => {
   };
 
   const handleOpenMovies = () => {
-    setActiveTabView('movies');
-    setIsProfileOpen(false);
+    setIsProfileOpen(true);
     sonnerToast.info("Movies Library", {
-      description: "Your saved movies and shows would appear here.",
+      description: "Your saved and liked movies are shown here.",
     });
   };
 
   const handleOpenMusic = () => {
-    setActiveTabView('music');
-    setIsProfileOpen(false);
+    setIsProfileOpen(true);
     sonnerToast.info("Music Library", {
-      description: "Your saved music and playlists would appear here.",
+      description: "Your saved and liked music is shown here.",
     });
   };
   
-  const handleGenderChange = (newGender: 'male' | 'female') => {
-    setGender(newGender);
-    sonnerToast.success("Profile Updated", {
-      description: `Your theme preference has been updated to ${newGender === 'male' ? 'Blue' : 'Purple'}.`,
-    });
+  const handleLikeContent = (item: ContentItemProps) => {
+    // Check if the item is already liked
+    const isAlreadyLiked = likedContent.some(content => content.id === item.id);
+    
+    if (isAlreadyLiked) {
+      // If already liked, remove it from the liked content
+      setLikedContent(prev => prev.filter(content => content.id !== item.id));
+      sonnerToast.info("Removed from likes", {
+        description: `${item.title} has been removed from your liked content.`,
+      });
+    } else {
+      // If not liked, add it to the liked content
+      setLikedContent(prev => [...prev, item]);
+      sonnerToast.success("Added to likes", {
+        description: `${item.title} has been added to your liked content.`,
+      });
+    }
   };
 
   return (
@@ -165,6 +176,7 @@ const Index = () => {
           <ContentRecommendations
             mood={mood}
             gender={gender}
+            onLikeContent={handleLikeContent}
           />
         )}
       </main>
@@ -175,9 +187,9 @@ const Index = () => {
         onClose={handleCloseProfile}
         username={username}
         gender={gender}
-        watchlist={sampleWatchlist}
-        playlist={samplePlaylist}
-        onGenderChange={handleGenderChange}
+        watchlist={watchlist}
+        playlist={playlist}
+        likedContent={likedContent}
       />
     </div>
   );

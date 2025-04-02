@@ -19,11 +19,12 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, mood, onCom
   const [userId, setUserId] = useState('');
   const [phone, setPhone] = useState('');
   const [spotifyLink, setSpotifyLink] = useState('');
-  const [selectedGender, setSelectedGender] = useState<'male' | 'female'>(gender as 'male' | 'female' || 'male');
+  // Set default gender
+  const selectedGender = gender || 'male';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Pass both username and gender to the parent component
+    // Pass username and default gender to the parent component
     onComplete(username, selectedGender);
   };
 
@@ -96,45 +97,6 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ gender, mood, onCom
             onChange={(e) => setSpotifyLink(e.target.value)}
             className={inputClasses}
           />
-        </div>
-        
-        <div className="mb-1">
-          <Label className="flex items-center gap-2 text-white mb-3">
-            Theme Preference
-          </Label>
-          <div className="flex gap-4 justify-center">
-            <button
-              type="button"
-              onClick={() => setSelectedGender('male')}
-              className={cn(
-                "flex flex-col items-center justify-center p-3 rounded-lg transition-all duration-300",
-                "bg-black/50 border text-white",
-                selectedGender === 'male' ? 
-                  "border-indigo-500 border-2" : 
-                  "border-gray-700 hover:border-indigo-500"
-              )}
-            >
-              <span className={selectedGender === 'male' ? "text-indigo-400" : "text-gray-300"}>
-                Blue Theme
-              </span>
-            </button>
-            
-            <button
-              type="button"
-              onClick={() => setSelectedGender('female')}
-              className={cn(
-                "flex flex-col items-center justify-center p-3 rounded-lg transition-all duration-300",
-                "bg-black/50 border text-white",
-                selectedGender === 'female' ? 
-                  "border-purple-500 border-2" : 
-                  "border-gray-700 hover:border-purple-500"
-              )}
-            >
-              <span className={selectedGender === 'female' ? "text-purple-400" : "text-gray-300"}>
-                Purple Theme
-              </span>
-            </button>
-          </div>
         </div>
         
         <button
