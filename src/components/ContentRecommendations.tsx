@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import ContentCard, { ContentItemProps } from './ContentCard';
 import { MoodType } from './MoodSelection';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { ExpandableCard } from './ui/expandable-card';
 
 // Sample data for recommendations
 import { getRecommendedContent } from '@/data/recommendations';
@@ -18,12 +19,21 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
   gender
 }) => {
   const [activeTab, setActiveTab] = React.useState<'movies' | 'music'>('movies');
+  const [activeItem, setActiveItem] = useState<ContentItemProps | null>(null);
   
   // Get content recommendations based on mood
   const recommendedContent = getRecommendedContent(mood);
   
   const movies = recommendedContent.filter(item => item.type === 'movie');
   const music = recommendedContent.filter(item => item.type === 'song');
+
+  const handleOpenDetails = (item: ContentItemProps) => {
+    setActiveItem(item);
+  };
+
+  const handleCloseDetails = () => {
+    setActiveItem(null);
+  };
 
   return (
     <div className="w-full">
@@ -62,35 +72,35 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
           }
         </h2>
         
-        <div className="mb-8">
+        <div className="mb-8 px-10">
           <Carousel
             opts={{
               align: "start",
               loop: true,
             }}
-            className="w-full"
+            className="w-full relative"
           >
-            <CarouselContent>
+            <CarouselContent className="gap-4">
               {activeTab === 'movies' && movies.slice(0, 5).map((item) => (
-                <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
-                  <ContentCard item={item} gender={gender} />
+                <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                  <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
                 </CarouselItem>
               ))}
               
               {activeTab === 'music' && music.slice(0, 5).map((item) => (
-                <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
-                  <ContentCard item={item} gender={gender} />
+                <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                  <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
-            <CarouselNext className="right-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
+            <CarouselPrevious className="left-2 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
+            <CarouselNext className="right-2 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
           </Carousel>
         </div>
 
         {/* Second row of content */}
         {activeTab === 'movies' && movies.length > 5 && (
-          <div className="mb-4">
+          <div className="mb-8 px-10">
             <h3 className="text-lg font-bold mb-3 pl-2 bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent">
               More Movies For You
             </h3>
@@ -99,23 +109,23 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                 align: "start",
                 loop: true,
               }}
-              className="w-full"
+              className="w-full relative"
             >
-              <CarouselContent>
+              <CarouselContent className="gap-4">
                 {movies.slice(5).map((item) => (
-                  <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
-                    <ContentCard item={item} gender={gender} />
+                  <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                    <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="left-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
-              <CarouselNext className="right-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
+              <CarouselPrevious className="left-2 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
+              <CarouselNext className="right-2 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
             </Carousel>
           </div>
         )}
 
         {activeTab === 'music' && music.length > 5 && (
-          <div>
+          <div className="px-10">
             <h3 className="text-lg font-bold mb-3 pl-2 bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent">
               More Songs For You
             </h3>
@@ -124,21 +134,24 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                 align: "start",
                 loop: true,
               }}
-              className="w-full"
+              className="w-full relative"
             >
-              <CarouselContent>
+              <CarouselContent className="gap-4">
                 {music.slice(5).map((item) => (
-                  <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 p-1">
-                    <ContentCard item={item} gender={gender} />
+                  <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                    <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="left-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
-              <CarouselNext className="right-2 bg-black/40 hover:bg-black/60 border-purple-500/30" />
+              <CarouselPrevious className="left-2 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
+              <CarouselNext className="right-2 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
             </Carousel>
           </div>
         )}
       </div>
+      
+      {/* Expandable Card */}
+      <ExpandableCard activeItem={activeItem} onClose={handleCloseDetails} />
     </div>
   );
 };

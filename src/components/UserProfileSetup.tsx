@@ -27,18 +27,18 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ mood, onComplete })
   };
 
   const inputClasses = cn(
-    "transition-all duration-300 bg-gray-900/80 border-gray-700 text-white mt-2",
+    "transition-all duration-300 bg-gray-900/80 border-gray-700 text-white mt-3",
     "focus:border-purple-500 focus:ring-purple-500/10"
   );
 
   return (
-    <CardSpotlight className="w-full max-w-md mx-auto p-6 rounded-lg shadow-md animate-fade-in backdrop-blur-md bg-black/60">
+    <CardSpotlight className="w-full max-w-md mx-auto p-6 rounded-lg shadow-md animate-fade-in backdrop-blur-md bg-black/70">
       <h2 className="text-2xl font-bold text-center mb-8 text-white relative z-10">
         Create Your Profile
       </h2>
       
-      <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
-        <div>
+      <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+        <div className="mb-1">
           <Label htmlFor="username" className="flex items-center gap-2 text-white">
             <User size={16} /> Username
           </Label>
@@ -53,7 +53,7 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ mood, onComplete })
           />
         </div>
         
-        <div>
+        <div className="mb-1">
           <Label htmlFor="userId" className="flex items-center gap-2 text-white">
             <AtSign size={16} /> User ID
           </Label>
@@ -68,7 +68,7 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ mood, onComplete })
           />
         </div>
         
-        <div>
+        <div className="mb-1">
           <Label htmlFor="phone" className="flex items-center gap-2 text-white">
             <Phone size={16} /> Phone Number
           </Label>
@@ -83,7 +83,7 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ mood, onComplete })
           />
         </div>
         
-        <div>
+        <div className="mb-1">
           <Label htmlFor="spotify" className="flex items-center gap-2 text-white">
             <Music size={16} /> Spotify Link
           </Label>
@@ -99,7 +99,7 @@ const UserProfileSetup: React.FC<UserProfileSetupProps> = ({ mood, onComplete })
         
         <button
           type="submit"
-          className="group/btn relative block h-10 w-full mt-6 rounded-md bg-gradient-to-br from-purple-600 to-pink-500 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]"
+          className="group/btn relative block h-10 w-full mt-8 rounded-md bg-gradient-to-br from-purple-600 to-pink-500 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]"
         >
           Complete Profile
           <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />

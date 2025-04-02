@@ -4,8 +4,7 @@ import { cn } from '@/lib/utils';
 import { Heart, ExternalLink, Star, Info } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { motion } from 'framer-motion';
 
 export interface ContentItemProps {
   id: number;
@@ -24,9 +23,10 @@ export interface ContentItemProps {
 interface ContentCardProps {
   item: ContentItemProps;
   gender: 'male' | 'female';
+  onOpenDetails: (item: ContentItemProps) => void;
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
+const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails }) => {
   const [loading, setLoading] = React.useState(true);
   const [isFavorite, setIsFavorite] = React.useState(false);
 
@@ -34,55 +34,70 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
     setLoading(false);
   };
 
-  const toggleFavorite = () => {
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsFavorite(!isFavorite);
   };
 
   return (
-    <div className="content-card h-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50">
+    <motion.div 
+      layoutId={`card-${item.id}`}
+      className="content-card h-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer"
+      onClick={() => onOpenDetails(item)}
+    >
       <div className="relative">
-        <AspectRatio ratio={16 / 9}>
-          {loading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-              <div className="animate-pulse flex flex-col items-center justify-center w-full h-full">
-                {item.type === 'movie' ? (
-                  <>
-                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4v16M17 4v16M3 8h18M3 16h18"></path>
-                    </svg>
-                    <p className="mt-2 text-sm text-gray-400">Loading movie...</p>
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
-                    </svg>
-                    <p className="mt-2 text-sm text-gray-400">Loading song...</p>
-                  </>
-                )}
+        <motion.div layoutId={`image-${item.id}`}>
+          <AspectRatio ratio={16 / 9}>
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                <div className="animate-pulse flex flex-col items-center justify-center w-full h-full">
+                  {item.type === 'movie' ? (
+                    <>
+                      <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4v16M17 4v16M3 8h18M3 16h18"></path>
+                      </svg>
+                      <p className="mt-2 text-sm text-gray-400">Loading movie...</p>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                      </svg>
+                      <p className="mt-2 text-sm text-gray-400">Loading song...</p>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          )}
-          <img
-            src={item.imageUrl || '/placeholder.svg'}
-            alt={item.title}
-            className="object-cover w-full h-full transition-transform duration-500 hover:scale-110"
-            onLoad={handleImageLoad}
-            onError={() => setLoading(false)}
-          />
-        </AspectRatio>
+            )}
+            <img
+              src={item.imageUrl || '/placeholder.svg'}
+              alt={item.title}
+              className="object-cover w-full h-full transition-transform duration-500 hover:scale-110"
+              onLoad={handleImageLoad}
+              onError={() => setLoading(false)}
+            />
+          </AspectRatio>
+        </motion.div>
         
         {item.rating && (
-          <div className="absolute top-2 right-2 flex items-center bg-black/70 text-yellow-400 px-2 py-1 rounded-full text-xs">
+          <motion.div 
+            layoutId={`rating-${item.id}`}
+            className="absolute top-2 right-2 flex items-center bg-black/70 text-yellow-400 px-2 py-1 rounded-full text-xs"
+          >
             <Star className="w-3 h-3 mr-1" fill="currentColor" />
             {item.rating}
-          </div>
+          </motion.div>
         )}
       </div>
       
       <div className="p-4">
         <div className="flex justify-between items-start">
-          <h3 className="text-lg font-semibold line-clamp-1 text-white">{item.title}</h3>
+          <motion.h3 
+            layoutId={`title-${item.id}`}
+            className="text-lg font-semibold line-clamp-1 text-white"
+          >
+            {item.title}
+          </motion.h3>
           <Button
             variant="ghost"
             size="icon"
@@ -145,49 +160,31 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender }) => {
         </div>
         
         <div className="mt-4 flex justify-between">
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors duration-300"
-              >
-                <Info className="h-4 w-4 mr-1" />
-                Details
-              </Button>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80 bg-black/90 backdrop-blur-lg border border-purple-500/30 text-white">
-              <div className="space-y-2">
-                <h4 className="text-sm font-semibold">{item.title}</h4>
-                <p className="text-xs text-gray-300">{item.description}</p>
-                {item.type === 'movie' ? (
-                  <div className="text-xs space-y-1">
-                    <p><span className="text-gray-400">Year:</span> {item.year}</p>
-                    <p><span className="text-gray-400">Genre:</span> {item.genre}</p>
-                    <p><span className="text-gray-400">Rating:</span> {item.rating}/10</p>
-                  </div>
-                ) : (
-                  <div className="text-xs space-y-1">
-                    <p><span className="text-gray-400">Artist:</span> {item.artist}</p>
-                    <p><span className="text-gray-400">Album:</span> {item.album}</p>
-                    <p><span className="text-gray-400">Genre:</span> {item.genre}</p>
-                  </div>
-                )}
-              </div>
-            </HoverCardContent>
-          </HoverCard>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors duration-300"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenDetails(item);
+            }}
+          >
+            <Info className="h-4 w-4 mr-1" />
+            Details
+          </Button>
           
           <Button
             variant="outline"
             size="sm"
             className="h-8 rounded-full bg-gradient-to-r from-purple-600/10 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/40 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(219,39,119,0.3)]"
+            onClick={(e) => e.stopPropagation()}
           >
             <ExternalLink className="h-4 w-4 mr-1" />
             {item.type === 'movie' ? 'Watch' : 'Listen'}
           </Button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

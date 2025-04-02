@@ -16,29 +16,29 @@ const Index = () => {
   // Set the title based on active step
   useEffect(() => {
     const titles = [
-      'How are you feeling today?',
       'Create Your Profile',
+      'How are you feeling today?',
       'Your Recommendations'
     ];
     document.title = `Moodster Mix - ${titles[activeStep - 1] || 'Welcome'}`;
   }, [activeStep]);
 
-  const handleMoodSelect = (selectedMood: MoodType) => {
-    setMood(selectedMood);
+  const handleProfileComplete = (username: string) => {
+    setUsername(username);
     setTimeout(() => {
       setActiveStep(2);
-      sonnerToast.success(`${selectedMood?.charAt(0).toUpperCase()}${selectedMood?.slice(1)} mood selected`, {
-        description: `We'll customize your experience based on your ${selectedMood} mood.`,
+      sonnerToast.success("Profile Created", {
+        description: `Welcome ${username}! Your profile has been created successfully.`,
       });
     }, 500);
   };
 
-  const handleProfileComplete = (username: string) => {
-    setUsername(username);
+  const handleMoodSelect = (selectedMood: MoodType) => {
+    setMood(selectedMood);
     setTimeout(() => {
       setActiveStep(3);
-      sonnerToast.success("Profile Created", {
-        description: `Welcome ${username}! Your profile has been created successfully.`,
+      sonnerToast.success(`${selectedMood?.charAt(0).toUpperCase()}${selectedMood?.slice(1)} mood selected`, {
+        description: `We'll customize your experience based on your ${selectedMood} mood.`,
       });
     }, 500);
   };
@@ -54,18 +54,18 @@ const Index = () => {
       
       <main className="container mx-auto pt-24 px-4 text-white">
         {activeStep === 1 && (
-          <MoodSelection
-            onSelectMood={handleMoodSelect}
-            selectedMood={mood}
-            gender={'male'} 
-          />
-        )}
-        
-        {activeStep === 2 && (
           <UserProfileSetup
             gender={gender}
             mood={mood}
             onComplete={handleProfileComplete}
+          />
+        )}
+        
+        {activeStep === 2 && (
+          <MoodSelection
+            onSelectMood={handleMoodSelect}
+            selectedMood={mood}
+            gender={'male'} 
           />
         )}
         
