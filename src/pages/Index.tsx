@@ -9,7 +9,7 @@ import { toast as sonnerToast } from "sonner";
 
 const Index = () => {
   const [mood, setMood] = useState<MoodType>(null);
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(1); // Start with profile setup
   const [username, setUsername] = useState<string>('');
   const gender = 'male';
 

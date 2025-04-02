@@ -103,7 +103,6 @@ export function ExpandableCard({ activeItem, onClose }: ExpandableCardProps) {
                       {activeItem.title}
                     </motion.h3>
                     <motion.p
-                      layoutId={`genre-${activeItem.id}`}
                       className="text-sm text-gray-300"
                     >
                       {activeItem.genre} • {activeItem.type === 'movie' ? activeItem.year : activeItem.album}
@@ -113,7 +112,7 @@ export function ExpandableCard({ activeItem, onClose }: ExpandableCardProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="rounded-full bg-gradient-to-r from-purple-600/10 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/40 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(219,39,119,0.3)]"
+                    className="rounded-full bg-gradient-to-r from-purple-900/80 to-pink-900/80 hover:from-purple-800 hover:to-pink-800 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(219,39,119,0.3)]"
                   >
                     <ExternalLink className="h-4 w-4 mr-1" />
                     {activeItem.type === 'movie' ? 'Watch' : 'Listen'}

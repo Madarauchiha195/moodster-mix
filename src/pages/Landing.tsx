@@ -11,13 +11,22 @@ const Landing = () => {
     navigate('/app');
   };
 
+  const metalicTextStyle = {
+    textShadow: '0 0 10px rgba(255,255,255,0.3)',
+    background: 'linear-gradient(to bottom, #fff, #999)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: 'bold',
+    letterSpacing: '0.5px'
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 text-white">
       <div className="text-center max-w-3xl mx-auto z-10 animate-fade-in">
         <h1 className={cn(
-          "font-bold tracking-tight text-gradient",
+          "font-bold tracking-tight",
           "text-3xl md:text-5xl lg:text-7xl mb-4 md:mb-6"
-        )}>
+        )} style={metalicTextStyle}>
           Moodster Mix
         </h1>
         
@@ -36,7 +45,7 @@ const Landing = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button 
             onClick={handleGetStarted}
-            className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 px-6 sm:px-8 py-2 sm:py-6 text-base sm:text-lg hover-scale"
+            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 px-6 sm:px-8 py-2 sm:py-6 text-base sm:text-lg hover:scale-105 transition-all duration-300"
           >
             Get Started
           </Button>
