@@ -1,12 +1,14 @@
 
 "use client";
-import React, { useEffect, useId, useRef } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { ContentItemProps } from "@/components/ContentCard";
 import { X, Star, ExternalLink, Heart, Clock, Calendar, Tag, Music, Film, Award } from "lucide-react";
 import { Button } from "./button";
 import { AspectRatio } from "./aspect-ratio";
+import { ScrollArea } from "./scroll-area";
+import { toast } from "sonner";
 
 interface ExpandableCardProps {
   activeItem: ContentItemProps | null;
@@ -16,7 +18,7 @@ interface ExpandableCardProps {
 export function ExpandableCard({ activeItem, onClose }: ExpandableCardProps) {
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
-  const [isFavorite, setIsFavorite] = React.useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -83,6 +85,11 @@ export function ExpandableCard({ activeItem, onClose }: ExpandableCardProps) {
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
+    if (!isFavorite) {
+      toast.success(`Added ${activeItem?.title} to favorites`);
+    } else {
+      toast.info(`Removed ${activeItem?.title} from favorites`);
+    }
   };
 
   if (!activeItem) return null;
@@ -118,18 +125,18 @@ export function ExpandableCard({ activeItem, onClose }: ExpandableCardProps) {
             <motion.div
               layoutId={`card-${activeItem.id}`}
               ref={ref}
-              className="w-full max-w-4xl h-full md:h-fit md:max-h-[90vh] flex flex-col bg-black/90 border border-purple-500/30 backdrop-blur-md rounded-xl overflow-hidden shadow-[0_0_25px_rgba(168,85,247,0.4)]"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 1 }}
+              className="w-full max-w-4xl h-auto max-h-[90vh] flex flex-col bg-black/90 border border-purple-500/30 backdrop-blur-md rounded-xl overflow-hidden shadow-[0_0_25px_rgba(168,85,247,0.4)]"
             >
-              <div className="relative">
-                <motion.div layoutId={`image-${activeItem.id}`}>
-                  <AspectRatio ratio={21/9}>
-                    <img
-                      src={activeItem.imageUrl || '/placeholder.svg'}
-                      alt={activeItem.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                  </AspectRatio>
+              <div className="relative h-60">
+                <motion.div layoutId={`image-${activeItem.id}`} className="h-full">
+                  <img
+                    src={activeItem.imageUrl || '/placeholder.svg'}
+                    alt={activeItem.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                 </motion.div>
                 
                 <div className="absolute bottom-4 left-6 right-6 flex justify-between items-center">
@@ -160,7 +167,7 @@ export function ExpandableCard({ activeItem, onClose }: ExpandableCardProps) {
                 </div>
               </div>
 
-              <div className="p-6 overflow-y-auto max-h-[50vh]">
+              <div className="p-6 overflow-y-auto">
                 <div className="flex justify-between items-start mb-6">
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
@@ -288,7 +295,7 @@ export function ExpandableCard({ activeItem, onClose }: ExpandableCardProps) {
               <div className="p-6 border-t border-white/10 flex justify-center sm:justify-end">
                 <Button
                   variant="outline"
-                  className="rounded-full bg-gradient-to-r from-purple-900 to-indigo-900 hover:from-purple-800 hover:to-indigo-800 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(79,70,229,0.4)] w-full sm:w-auto"
+                  className="rounded-full bg-gradient-to-r from-indigo-900 to-purple-900 hover:from-indigo-800 hover:to-purple-800 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(79,70,229,0.4)] w-full sm:w-auto"
                   onClick={handleExternalLink}
                 >
                   <ExternalLink className="h-4 w-4 mr-2" />

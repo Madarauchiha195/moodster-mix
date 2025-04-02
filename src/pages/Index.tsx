@@ -67,6 +67,7 @@ const Index = () => {
   const [gender, setGender] = useState<'male' | 'female'>('male');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [activeTabView, setActiveTabView] = useState<'movies' | 'music' | null>(null);
+  const [likedContent, setLikedContent] = useState<ContentItemProps[]>([]);
 
   // Set the title based on active step
   useEffect(() => {
@@ -101,6 +102,7 @@ const Index = () => {
 
   const handleOpenProfile = () => {
     setIsProfileOpen(true);
+    setActiveTabView(null);
   };
 
   const handleCloseProfile = () => {
@@ -109,6 +111,7 @@ const Index = () => {
 
   const handleOpenMovies = () => {
     setActiveTabView('movies');
+    setIsProfileOpen(false);
     sonnerToast.info("Movies Library", {
       description: "Your saved movies and shows would appear here.",
     });
@@ -116,8 +119,16 @@ const Index = () => {
 
   const handleOpenMusic = () => {
     setActiveTabView('music');
+    setIsProfileOpen(false);
     sonnerToast.info("Music Library", {
       description: "Your saved music and playlists would appear here.",
+    });
+  };
+  
+  const handleGenderChange = (newGender: 'male' | 'female') => {
+    setGender(newGender);
+    sonnerToast.success("Profile Updated", {
+      description: `Your theme preference has been updated to ${newGender === 'male' ? 'Blue' : 'Purple'}.`,
     });
   };
 
@@ -166,6 +177,7 @@ const Index = () => {
         gender={gender}
         watchlist={sampleWatchlist}
         playlist={samplePlaylist}
+        onGenderChange={handleGenderChange}
       />
     </div>
   );

@@ -5,6 +5,7 @@ import { Heart, ExternalLink, Star, Info } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { motion } from 'framer-motion';
+import { toast } from "sonner";
 
 export interface ContentItemProps {
   id: number;
@@ -38,6 +39,12 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails }
   const toggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsFavorite(!isFavorite);
+    
+    if (!isFavorite) {
+      toast.success(`Added ${item.title} to favorites`);
+    } else {
+      toast.info(`Removed ${item.title} from favorites`);
+    }
   };
 
   const handleExternalLink = (e: React.MouseEvent) => {
@@ -86,7 +93,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails }
   return (
     <motion.div 
       layoutId={`card-${item.id}`}
-      className="content-card h-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer"
+      className="content-card h-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer"
       onClick={() => onOpenDetails(item)}
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -118,7 +125,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails }
             <img
               src={item.imageUrl || '/placeholder.svg'}
               alt={item.title}
-              className="object-cover w-full h-full transition-transform duration-500 hover:scale-110"
+              className="object-cover w-full h-full"
               onLoad={handleImageLoad}
               onError={() => setLoading(false)}
             />
@@ -205,7 +212,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails }
           )}
         </div>
         
-        <div className="mt-4 flex justify-between">
+        <div className="mt-4 flex justify-between items-center">
           <Button
             variant="ghost"
             size="sm"
@@ -222,7 +229,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails }
           <Button
             variant="outline"
             size="sm"
-            className="h-8 rounded-full bg-gradient-to-r from-purple-900/80 to-indigo-900/80 hover:from-purple-800 hover:to-indigo-800 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(79,70,229,0.4)]"
+            className="h-8 rounded-full bg-gradient-to-r from-indigo-900/80 to-purple-900/80 hover:from-indigo-800 hover:to-purple-800 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(79,70,229,0.4)]"
             onClick={handleExternalLink}
           >
             <ExternalLink className="h-4 w-4 mr-1" />

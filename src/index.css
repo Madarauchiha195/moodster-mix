@@ -88,6 +88,11 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+  
+  html, body {
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
 }
 
 @layer base {
@@ -223,6 +228,35 @@
   
   .scrollbar-hide::-webkit-scrollbar {
     display: none;  /* Chrome, Safari and Opera */
+  }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, rgba(139, 92, 246, 0.5), rgba(79, 70, 229, 0.5));
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, rgba(139, 92, 246, 0.8), rgba(79, 70, 229, 0.8));
+  }
+  
+  /* Smoother transitions for hover effects */
+  .content-card {
+    @apply overflow-hidden rounded-lg transition-all duration-300 hover:scale-[1.02];
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                box-shadow 0.3s ease, 
+                border-color 0.3s ease;
   }
 }
 

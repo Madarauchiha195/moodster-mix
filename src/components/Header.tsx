@@ -16,6 +16,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ 
+  gender, 
   activeStep, 
   username, 
   showFullHeader = true,
@@ -74,15 +75,17 @@ const Header: React.FC<HeaderProps> = ({
             <>
               <button 
                 onClick={onOpenMovies}
-                className="transition-all duration-300 hover:scale-110 hover:text-purple-400"
+                className="flex items-center justify-center h-9 w-9 rounded-full bg-gradient-to-r from-indigo-900/40 to-indigo-800/40 border border-indigo-500/30 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_10px_rgba(79,70,229,0.3)]"
+                title="My Movies & Shows"
               >
-                <Film className="h-5 w-5 text-purple-400" />
+                <Film className="h-4 w-4 text-indigo-300" />
               </button>
               <button 
                 onClick={onOpenMusic}
-                className="transition-all duration-300 hover:scale-110 hover:text-pink-400"
+                className="flex items-center justify-center h-9 w-9 rounded-full bg-gradient-to-r from-purple-900/40 to-purple-800/40 border border-purple-500/30 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_10px_rgba(168,85,247,0.3)]"
+                title="My Music"
               >
-                <Music className="h-5 w-5 text-pink-400" />
+                <Music className="h-4 w-4 text-purple-300" />
               </button>
             </>
           )}
@@ -90,7 +93,7 @@ const Header: React.FC<HeaderProps> = ({
           {username && (
             <button 
               onClick={onOpenProfile}
-              className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-500/20 to-indigo-500/20 border border-purple-500/30 hover:from-purple-500/30 hover:to-indigo-500/30 transition-all duration-300"
+              className="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-indigo-900/20 to-purple-900/20 border border-purple-500/30 hover:from-indigo-900/30 hover:to-purple-900/30 transition-all duration-300 hover:shadow-[0_0_10px_rgba(168,85,247,0.2)]"
             >
               <User className="h-4 w-4 text-indigo-400" />
               <span className="text-sm font-medium text-white">{username}</span>
