@@ -27,6 +27,22 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
   const movies = recommendedContent.filter(item => item.type === 'movie');
   const music = recommendedContent.filter(item => item.type === 'song');
 
+  // Organize movies by genres
+  const movieGenres = [...new Set(movies.map(movie => movie.genre))];
+  const moviesByGenre = movieGenres.reduce((acc, genre) => {
+    acc[genre] = movies.filter(movie => movie.genre === genre);
+    return acc;
+  }, {} as Record<string, ContentItemProps[]>);
+
+  // Organize songs by artists
+  const songArtists = [...new Set(music.map(song => song.artist).filter(Boolean))];
+  const songsByArtist = songArtists.reduce((acc, artist) => {
+    if (artist) {
+      acc[artist] = music.filter(song => song.artist === artist);
+    }
+    return acc;
+  }, {} as Record<string, ContentItemProps[]>);
+
   const handleOpenDetails = (item: ContentItemProps) => {
     setActiveItem(item);
   };
@@ -43,7 +59,7 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
             onClick={() => setActiveTab('movies')}
             className={cn(
               "px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full transition-all",
-              activeTab === 'movies' ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white" : "",
+              activeTab === 'movies' ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white" : "",
               activeTab !== 'movies' ? "text-gray-300 hover:text-white" : ""
             )}
           >
@@ -53,7 +69,7 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
             onClick={() => setActiveTab('music')}
             className={cn(
               "px-3 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-full transition-all",
-              activeTab === 'music' ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white" : "",
+              activeTab === 'music' ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white" : "",
               activeTab !== 'music' ? "text-gray-300 hover:text-white" : ""
             )}
           >
@@ -70,83 +86,134 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
           </span>
         </h2>
         
-        <div className="mb-8">
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-              dragFree: true,
-            }}
-            className="w-full relative"
-          >
-            <CarouselContent className="px-4 gap-4">
-              {activeTab === 'movies' && movies.slice(0, 5).map((item) => (
-                <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                  <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
-                </CarouselItem>
-              ))}
-              
-              {activeTab === 'music' && music.slice(0, 5).map((item) => (
-                <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                  <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-0 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
-            <CarouselNext className="right-0 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
-          </Carousel>
-        </div>
+        {activeTab === 'movies' ? (
+          <div className="space-y-12">
+            {/* Featured section */}
+            <div className="mb-8">
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                  dragFree: true,
+                }}
+                className="w-full mx-auto relative px-4 md:px-8"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4">
+                  {movies.slice(0, 5).map((item) => (
+                    <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                      <div className="px-1">
+                        <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="absolute inset-y-0 left-0 w-12 flex items-center justify-start z-10 pointer-events-none">
+                  <CarouselPrevious className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+                </div>
+                <div className="absolute inset-y-0 right-0 w-12 flex items-center justify-end z-10 pointer-events-none">
+                  <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+                </div>
+              </Carousel>
+            </div>
 
-        {/* Second row of content */}
-        {activeTab === 'movies' && movies.length > 5 && (
-          <div className="mb-8">
-            <h3 className="text-lg font-bold mb-3 pl-2 bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent">
-              More Movies For You
-            </h3>
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-                dragFree: true,
-              }}
-              className="w-full relative"
-            >
-              <CarouselContent className="px-4 gap-4">
-                {movies.slice(5).map((item) => (
-                  <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                    <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="left-0 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
-              <CarouselNext className="right-0 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
-            </Carousel>
+            {/* Genre-based sections */}
+            {movieGenres.map((genre) => (
+              <div key={genre} className="mb-10">
+                <h3 className="text-lg font-bold mb-3 pl-2 text-white tracking-wide">
+                  {genre} <span className="text-sm text-gray-300">Movies</span>
+                </h3>
+                <Carousel
+                  opts={{
+                    align: "start",
+                    loop: true,
+                    dragFree: true,
+                  }}
+                  className="w-full mx-auto relative px-4 md:px-8"
+                >
+                  <CarouselContent className="-ml-2 md:-ml-4">
+                    {moviesByGenre[genre].map((item) => (
+                      <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                        <div className="px-1">
+                          <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <div className="absolute inset-y-0 left-0 w-12 flex items-center justify-start z-10 pointer-events-none">
+                    <CarouselPrevious className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+                  </div>
+                  <div className="absolute inset-y-0 right-0 w-12 flex items-center justify-end z-10 pointer-events-none">
+                    <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+                  </div>
+                </Carousel>
+              </div>
+            ))}
           </div>
-        )}
+        ) : (
+          <div className="space-y-12">
+            {/* Featured music section */}
+            <div className="mb-8">
+              <h3 className="text-lg font-bold mb-3 pl-2 text-white tracking-wide">
+                Top Picks <span className="text-sm text-gray-300">for you</span>
+              </h3>
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                  dragFree: true,
+                }}
+                className="w-full mx-auto relative px-4 md:px-8"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4">
+                  {music.slice(0, 5).map((item) => (
+                    <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                      <div className="px-1">
+                        <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="absolute inset-y-0 left-0 w-12 flex items-center justify-start z-10 pointer-events-none">
+                  <CarouselPrevious className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+                </div>
+                <div className="absolute inset-y-0 right-0 w-12 flex items-center justify-end z-10 pointer-events-none">
+                  <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+                </div>
+              </Carousel>
+            </div>
 
-        {activeTab === 'music' && music.length > 5 && (
-          <div>
-            <h3 className="text-lg font-bold mb-3 pl-2 bg-gradient-to-br from-white via-gray-300 to-gray-100 bg-clip-text text-transparent">
-              More Songs For You
-            </h3>
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-                dragFree: true,
-              }}
-              className="w-full relative"
-            >
-              <CarouselContent className="px-4 gap-4">
-                {music.slice(5).map((item) => (
-                  <CarouselItem key={item.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
-                    <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="left-0 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
-              <CarouselNext className="right-0 absolute bg-black/40 hover:bg-black/60 border-purple-500/30 rounded-full" />
-            </Carousel>
+            {/* Artist-based sections */}
+            {songArtists.map((artist) => artist && (
+              <div key={artist} className="mb-10">
+                <h3 className="text-lg font-bold mb-3 pl-2 text-white tracking-wide">
+                  {artist}
+                </h3>
+                <Carousel
+                  opts={{
+                    align: "start",
+                    loop: true,
+                    dragFree: true,
+                  }}
+                  className="w-full mx-auto relative px-4 md:px-8"
+                >
+                  <CarouselContent className="-ml-2 md:-ml-4">
+                    {songsByArtist[artist]?.map((item) => (
+                      <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                        <div className="px-1">
+                          <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <div className="absolute inset-y-0 left-0 w-12 flex items-center justify-start z-10 pointer-events-none">
+                    <CarouselPrevious className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+                  </div>
+                  <div className="absolute inset-y-0 right-0 w-12 flex items-center justify-end z-10 pointer-events-none">
+                    <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+                  </div>
+                </Carousel>
+              </div>
+            ))}
           </div>
         )}
       </div>

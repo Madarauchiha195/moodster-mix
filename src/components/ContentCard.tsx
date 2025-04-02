@@ -18,6 +18,7 @@ export interface ContentItemProps {
   year?: number;
   artist?: string;
   album?: string;
+  url?: string; // External URL for watch/listen
 }
 
 interface ContentCardProps {
@@ -39,11 +40,56 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails }
     setIsFavorite(!isFavorite);
   };
 
+  const handleExternalLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (item.url) {
+      window.open(item.url, '_blank', 'noopener,noreferrer');
+    } else {
+      // Fallback URLs based on content type
+      if (item.type === 'movie') {
+        const platformUrl = item.platform && item.platform.length > 0 
+          ? getPlatformUrl(item.platform[0], item.title)
+          : `https://www.google.com/search?q=watch+${encodeURIComponent(item.title)}`;
+        window.open(platformUrl, '_blank', 'noopener,noreferrer');
+      } else {
+        const spotifyUrl = `https://open.spotify.com/search/${encodeURIComponent(item.title + ' ' + (item.artist || ''))}`;
+        window.open(spotifyUrl, '_blank', 'noopener,noreferrer');
+      }
+    }
+  };
+
+  const getPlatformUrl = (platform: string, title: string) => {
+    const query = encodeURIComponent(title);
+    switch (platform.toLowerCase()) {
+      case 'netflix':
+        return `https://www.netflix.com/search?q=${query}`;
+      case 'amazon':
+      case 'prime':
+      case 'amazon prime':
+        return `https://www.amazon.com/s?k=${query}&i=instant-video`;
+      case 'hulu':
+        return `https://www.hulu.com/search?q=${query}`;
+      case 'disney+':
+      case 'disney plus':
+        return `https://www.disneyplus.com/search?q=${query}`;
+      case 'hbo':
+      case 'hbo max':
+        return `https://www.max.com/search?q=${query}`;
+      case 'apple tv':
+      case 'apple tv+':
+        return `https://tv.apple.com/search?term=${query}`;
+      default:
+        return `https://www.google.com/search?q=watch+${query}+on+${platform}`;
+    }
+  };
+
   return (
     <motion.div 
       layoutId={`card-${item.id}`}
       className="content-card h-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer"
       onClick={() => onOpenDetails(item)}
+      whileHover={{ y: -5 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
       <div className="relative">
         <motion.div layoutId={`image-${item.id}`}>
@@ -163,7 +209,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails }
           <Button
             variant="ghost"
             size="sm"
-            className="h-8 rounded-full hover:bg-white/10 text-gray-300 hover:text-white transition-colors duration-300"
+            className="h-8 rounded-full hover:bg-purple-900/30 text-gray-300 hover:text-white transition-colors duration-300"
             onClick={(e) => {
               e.stopPropagation();
               onOpenDetails(item);
@@ -176,8 +222,8 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails }
           <Button
             variant="outline"
             size="sm"
-            className="h-8 rounded-full bg-gradient-to-r from-purple-900/80 to-pink-900/80 hover:from-purple-800 hover:to-pink-800 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(219,39,119,0.3)]"
-            onClick={(e) => e.stopPropagation()}
+            className="h-8 rounded-full bg-gradient-to-r from-purple-900/80 to-indigo-900/80 hover:from-purple-800 hover:to-indigo-800 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(79,70,229,0.4)]"
+            onClick={handleExternalLink}
           >
             <ExternalLink className="h-4 w-4 mr-1" />
             {item.type === 'movie' ? 'Watch' : 'Listen'}
