@@ -3,33 +3,30 @@ import mongoose from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 import { UserModel, SharedPlaylistModel, IUser, ISharedPlaylist } from './models';
 
-// MongoDB connection string - replace with your actual connection string
-// For development, you can use a local MongoDB instance or a free MongoDB Atlas cluster
+// MongoDB connection string
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/moodster-mix';
 
-let cached = global.mongoose;
+let cached = global.mongoose as { conn: typeof mongoose | null, promise: Promise<typeof mongoose> | null } | undefined;
 
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
 export async function connectToDatabase() {
-  if (cached.conn) {
+  if (cached?.conn) {
     return cached.conn;
   }
 
-  if (!cached.promise) {
+  if (!cached?.promise) {
     const opts = {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
+    cached!.promise = mongoose.connect(MONGODB_URI, opts);
   }
 
-  cached.conn = await cached.promise;
-  return cached.conn;
+  cached!.conn = await cached!.promise;
+  return cached!.conn;
 }
 
 // User-related functions
@@ -37,22 +34,26 @@ export async function createOrUpdateUser(username: string, gender: 'male' | 'fem
   try {
     await connectToDatabase();
     
-    // First find the user
-    const existingUser = await UserModel.findOne({ username }).lean();
+    // First check if user exists
+    const existingUser = await UserModel.findOne({ username }).exec();
     
     if (existingUser) {
       // Update existing user
-      const updatedUser = await UserModel.findOneAndUpdate(
-        { username },
-        { username, gender },
-        { new: true }
-      ).lean();
-      return updatedUser;
+      existingUser.gender = gender;
+      await existingUser.save();
+      return existingUser.toObject();
     } else {
       // Create new user
-      const newUser = new UserModel({ username, gender });
+      const newUser = new UserModel({ 
+        username, 
+        gender,
+        likedContent: [],
+        watchlist: [],
+        playlist: [],
+        sharedPlaylists: []
+      });
       await newUser.save();
-      return newUser;
+      return newUser.toObject();
     }
   } catch (error) {
     console.error('Failed to create/update user', error);
@@ -64,8 +65,8 @@ export async function updateLikedContent(username: string, content: ContentItemP
   try {
     await connectToDatabase();
     
-    // Get user document as a model instance, not a Promise
-    const user = await UserModel.findOne({ username });
+    // Get user document
+    const user = await UserModel.findOne({ username }).exec();
     if (!user) throw new Error('User not found');
     
     // Check if the content is already liked
@@ -94,7 +95,7 @@ export async function getUserContent(username: string) {
     await connectToDatabase();
     
     // Get user with populated shared playlists
-    const user = await UserModel.findOne({ username }).populate('sharedPlaylists');
+    const user = await UserModel.findOne({ username }).populate('sharedPlaylists').exec();
     if (!user) throw new Error('User not found');
     
     return {
@@ -122,7 +123,7 @@ export async function createSharedPlaylist(
     await connectToDatabase();
     
     // Find user
-    const user = await UserModel.findOne({ username });
+    const user = await UserModel.findOne({ username }).exec();
     if (!user) throw new Error('User not found');
     
     // Generate a unique share ID
@@ -140,13 +141,13 @@ export async function createSharedPlaylist(
     });
     
     // Save the playlist
-    const sharedPlaylist = await newPlaylist.save();
+    await newPlaylist.save();
     
     // Add reference to user's shared playlists
-    user.sharedPlaylists.push(sharedPlaylist._id);
+    user.sharedPlaylists.push(newPlaylist._id);
     await user.save();
     
-    return sharedPlaylist;
+    return newPlaylist.toObject();
   } catch (error) {
     console.error('Failed to create shared playlist', error);
     throw error;
@@ -160,11 +161,11 @@ export async function getSharedPlaylist(shareId: string) {
     const sharedPlaylist = await SharedPlaylistModel.findOne({ 
       shareId, 
       isPublic: true 
-    });
+    }).exec();
     
     if (!sharedPlaylist) throw new Error('Shared playlist not found or not public');
     
-    return sharedPlaylist;
+    return sharedPlaylist.toObject();
   } catch (error) {
     console.error('Failed to get shared playlist', error);
     throw error;
@@ -175,7 +176,7 @@ export async function getUserSharedPlaylists(username: string) {
   try {
     await connectToDatabase();
     
-    const user = await UserModel.findOne({ username }).populate('sharedPlaylists');
+    const user = await UserModel.findOne({ username }).populate('sharedPlaylists').exec();
     if (!user) throw new Error('User not found');
     
     return user.sharedPlaylists || [];

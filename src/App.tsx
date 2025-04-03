@@ -8,13 +8,28 @@ import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 import SharedPlaylist from "./pages/SharedPlaylist";
 import Background from "./components/Background";
-import React from "react";
+import React, { useEffect } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { connectToDatabase } from "./services/mongodb/db";
 
 // Create a client
 const queryClient = new QueryClient();
 
 const App = () => {
+  // Establish MongoDB connection when app starts
+  useEffect(() => {
+    const initDb = async () => {
+      try {
+        await connectToDatabase();
+        console.log('MongoDB connection established');
+      } catch (error) {
+        console.error('Failed to connect to MongoDB:', error);
+      }
+    };
+    
+    initDb();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>

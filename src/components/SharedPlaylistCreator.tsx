@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ContentItemProps } from './ContentCard';
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import {
 import { MoodType } from './MoodSelection';
 import { toast } from 'sonner';
 import { Loader2, Share2, ListMusic, PlusCircle } from 'lucide-react';
+import { createSharedPlaylist } from '@/services/mongodb/db';
 
 interface SharedPlaylistCreatorProps {
   username: string;
@@ -48,25 +48,17 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
     setIsLoading(true);
     
     try {
-      // Mock API call for now - would connect to MongoDB in production
-      // const response = await fetch('/api/playlists/create', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     username,
-      //     name,
-      //     description,
-      //     mood: currentMood,
-      //     content: contentItems,
-      //     isPublic
-      //   })
-      // });
-      // const data = await response.json();
+      // Create the shared playlist using the MongoDB service
+      const result = await createSharedPlaylist(
+        username,
+        name,
+        description,
+        currentMood || 'mixed',
+        contentItems,
+        isPublic
+      );
       
-      // For demo purposes, simulate API response
-      const mockShareId = generateMockShareId();
-      const playlistUrl = `${window.location.origin}/shared/${mockShareId}`;
-      
+      const playlistUrl = `${window.location.origin}/shared/${result.shareId}`;
       setShareUrl(playlistUrl);
       
       toast.success('Playlist created successfully!', {
@@ -74,7 +66,7 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
       });
       
       if (onPlaylistCreated) {
-        onPlaylistCreated(mockShareId);
+        onPlaylistCreated(result.shareId);
       }
     } catch (error) {
       console.error('Failed to create playlist:', error);
@@ -89,10 +81,6 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
     toast.success('Link copied to clipboard!');
-  };
-  
-  const generateMockShareId = () => {
-    return Math.random().toString(36).substring(2, 10);
   };
   
   return (
