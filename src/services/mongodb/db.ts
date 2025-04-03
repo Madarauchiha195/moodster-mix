@@ -1,4 +1,3 @@
-
 import mongoose, { Model, Types } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 import { initializeModels, IUser, ISharedPlaylist } from './models';
@@ -6,20 +5,26 @@ import { initializeModels, IUser, ISharedPlaylist } from './models';
 // MongoDB connection string - use a fallback for development
 const MONGODB_URI = import.meta.env.VITE_MONGODB_URI || 'mongodb://localhost:27017/moodster-mix';
 
-// Mongoose connection cache
-let cached = global.mongoose as { 
-  conn: typeof mongoose | null, 
-  promise: Promise<typeof mongoose> | null,
-  initialized: boolean
-} | undefined;
+// Mongoose connection cache - use globalThis instead of global for browser compatibility
+const globalWithMongoose = globalThis as unknown as {
+  mongoose?: {
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
+    initialized: boolean;
+  };
+};
 
-if (!cached) {
-  cached = global.mongoose = { 
-    conn: null, 
+// Initialize the cache if it doesn't exist
+if (!globalWithMongoose.mongoose) {
+  globalWithMongoose.mongoose = {
+    conn: null,
     promise: null,
     initialized: false
   };
 }
+
+// Get the cached connection
+const cached = globalWithMongoose.mongoose;
 
 // Models - we'll initialize these after connection
 let UserModel: Model<IUser>;
