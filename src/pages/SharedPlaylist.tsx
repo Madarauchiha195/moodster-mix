@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Eye, Heart, Share2, UserCircle, Music, Film } from 'lucide-react';
@@ -12,64 +11,7 @@ import Header from '@/components/Header';
 import { ContentItemProps } from '@/components/ContentCard';
 import ContentCard from '@/components/ContentCard';
 import Background from '@/components/Background';
-
-// Mock data for shared playlist
-const mockPlaylist = {
-  id: '123',
-  name: "Mood Lifters",
-  description: "A collection of upbeat and happy content to brighten your day",
-  mood: "happy",
-  owner: "JohnDoe",
-  isPublic: true,
-  createdAt: new Date().toISOString(),
-  views: 42,
-  content: [
-    {
-      id: 1,
-      title: "Guardians of the Galaxy",
-      description: "A group of intergalactic criminals must pull together to stop a fanatical warrior from taking control of the universe.",
-      type: "movie",
-      imageUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
-      rating: 8.0,
-      platform: ["Netflix", "Disney+"],
-      genre: "Action, Adventure, Comedy",
-      year: 2014
-    },
-    {
-      id: 101,
-      title: "Happy",
-      description: "A neo soul and funk song written for the film Despicable Me 2, it became a global hit for its positive message.",
-      type: "song",
-      imageUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
-      rating: 4.5,
-      genre: "Pop, Neo Soul",
-      artist: "Pharrell Williams",
-      album: "Girl"
-    },
-    {
-      id: 106,
-      title: "Good Vibrations",
-      description: "The Beach Boys' masterpiece, featuring innovative use of instruments and recording techniques. Known for its uplifting, positive message.",
-      type: "song",
-      imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
-      rating: 4.9,
-      genre: "Rock, Pop",
-      artist: "The Beach Boys",
-      album: "Smiley Smile"
-    },
-    {
-      id: 6,
-      title: "The Lego Movie",
-      description: "An ordinary LEGO construction worker is recruited to join a quest to stop an evil tyrant from gluing the LEGO universe into eternal stasis.",
-      type: "movie",
-      imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
-      rating: 7.7,
-      platform: ["HBO Max", "Prime Video"],
-      genre: "Animation, Action, Adventure",
-      year: 2014
-    },
-  ]
-};
+import { getSharedPlaylist } from '@/services/mongodb/db';
 
 const SharedPlaylist = () => {
   const { id } = useParams<{ id: string }>();
@@ -81,12 +23,13 @@ const SharedPlaylist = () => {
   useEffect(() => {
     const fetchPlaylist = async () => {
       try {
-        // In production, this would be a real API call to MongoDB
-        // const response = await fetch(`/api/playlists/${id}`);
-        // const data = await response.json();
-        
-        // For demo purposes, we'll use mock data
-        setPlaylist(mockPlaylist);
+        if (id) {
+          // Try to get the actual playlist from MongoDB
+          const data = await getSharedPlaylist(id);
+          setPlaylist(data);
+        } else {
+          throw new Error('Invalid playlist ID');
+        }
         setLoading(false);
       } catch (error) {
         console.error('Failed to fetch playlist:', error);
@@ -198,7 +141,7 @@ const SharedPlaylist = () => {
                   </div>
                   <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm inline-flex items-center">
                     <Eye className="h-3.5 w-3.5 mr-1.5" />
-                    {playlist.views} views
+                    {playlist.views || 0} views
                   </div>
                   <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm capitalize">
                     {playlist.mood} mood

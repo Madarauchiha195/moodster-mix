@@ -1,5 +1,5 @@
 
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, Model } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 
 // Define interfaces for MongoDB documents
@@ -9,7 +9,7 @@ export interface IUser extends Document {
   likedContent: ContentItemProps[];
   watchlist: ContentItemProps[];
   playlist: ContentItemProps[];
-  sharedPlaylists: mongoose.Types.ObjectId[] | ISharedPlaylist[];
+  sharedPlaylists: mongoose.Types.ObjectId[];
 }
 
 export interface ISharedPlaylist extends Document {
@@ -59,21 +59,25 @@ const UserSchema = new Schema({
   sharedPlaylists: [{ type: Schema.Types.ObjectId, ref: 'SharedPlaylist' }]
 });
 
-// Create and export models only when mongoose is ready
-// We'll use a function instead of direct assignment to ensure mongoose is initialized
-let UserModel: mongoose.Model<IUser>;
-let SharedPlaylistModel: mongoose.Model<ISharedPlaylist>;
+// Create model variables with proper typing
+let UserModel: Model<IUser> | null = null;
+let SharedPlaylistModel: Model<ISharedPlaylist> | null = null;
 
 // Function to initialize models - must be called after mongoose connects
 export function initializeModels() {
   // Check if models already exist to prevent "Cannot overwrite model" errors
-  UserModel = mongoose.models.User as mongoose.Model<IUser> || 
-    mongoose.model<IUser>('User', UserSchema);
-  
-  SharedPlaylistModel = mongoose.models.SharedPlaylist as mongoose.Model<ISharedPlaylist> || 
-    mongoose.model<ISharedPlaylist>('SharedPlaylist', SharedPlaylistSchema);
+  try {
+    UserModel = mongoose.models.User as Model<IUser> || 
+      mongoose.model<IUser>('User', UserSchema);
     
-  return { UserModel, SharedPlaylistModel };
+    SharedPlaylistModel = mongoose.models.SharedPlaylist as Model<ISharedPlaylist> || 
+      mongoose.model<ISharedPlaylist>('SharedPlaylist', SharedPlaylistSchema);
+      
+    return { UserModel, SharedPlaylistModel };
+  } catch (error) {
+    console.error("Error initializing models:", error);
+    throw error;
+  }
 }
 
 // Export the models
