@@ -37,11 +37,12 @@ export async function createOrUpdateUser(username: string, gender: 'male' | 'fem
   try {
     await connectToDatabase();
     
+    // Fix: Use a properly typed await to resolve the promise
     const user = await UserModel.findOneAndUpdate(
-      { username },
+      { username: username },
       { username, gender },
       { upsert: true, new: true }
-    );
+    ).exec();
     
     return user;
   } catch (error) {
@@ -54,7 +55,8 @@ export async function updateLikedContent(username: string, content: ContentItemP
   try {
     await connectToDatabase();
     
-    const user = await UserModel.findOne({ username });
+    // Fix: Add .exec() to properly resolve the promise
+    const user = await UserModel.findOne({ username }).exec();
     if (!user) throw new Error('User not found');
     
     // Check if the content is already liked
@@ -80,7 +82,8 @@ export async function getUserContent(username: string) {
   try {
     await connectToDatabase();
     
-    const user = await UserModel.findOne({ username }).populate('sharedPlaylists');
+    // Fix: Add .exec() to properly resolve the promise
+    const user = await UserModel.findOne({ username }).populate('sharedPlaylists').exec();
     if (!user) throw new Error('User not found');
     
     return {
@@ -107,12 +110,14 @@ export async function createSharedPlaylist(
   try {
     await connectToDatabase();
     
-    const user = await UserModel.findOne({ username });
+    // Fix: Add .exec() to properly resolve the promise
+    const user = await UserModel.findOne({ username }).exec();
     if (!user) throw new Error('User not found');
     
     // Generate a unique share ID
     const shareId = generateShareId();
     
+    // Fix: Use create and explicitly await it
     const sharedPlaylist = await SharedPlaylistModel.create({
       name,
       description,
@@ -138,7 +143,8 @@ export async function getSharedPlaylist(shareId: string) {
   try {
     await connectToDatabase();
     
-    const sharedPlaylist = await SharedPlaylistModel.findOne({ shareId, isPublic: true });
+    // Fix: Add .exec() to properly resolve the promise
+    const sharedPlaylist = await SharedPlaylistModel.findOne({ shareId, isPublic: true }).exec();
     if (!sharedPlaylist) throw new Error('Shared playlist not found or not public');
     
     return sharedPlaylist;
@@ -152,7 +158,8 @@ export async function getUserSharedPlaylists(username: string) {
   try {
     await connectToDatabase();
     
-    const user = await UserModel.findOne({ username }).populate('sharedPlaylists');
+    // Fix: Add .exec() to properly resolve the promise
+    const user = await UserModel.findOne({ username }).populate('sharedPlaylists').exec();
     if (!user) throw new Error('User not found');
     
     return user.sharedPlaylists;
