@@ -1,5 +1,5 @@
 
-import mongoose, { Model, Types } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 import { initializeModels, IUser, ISharedPlaylist, ObjectId } from './models';
 
@@ -226,9 +226,12 @@ export async function getUserSharedPlaylists(username: string) {
     const user = await UserModel.findOne({ username }).exec();
     if (!user) throw new Error('User not found');
     
+    // Ensure shared playlists is an array of ObjectIds
+    const playlistIds = user.sharedPlaylists.map(id => id);
+    
     // Then get their playlists using the ids stored in user.sharedPlaylists
     const playlists = await SharedPlaylistModel.find({
-      _id: { $in: user.sharedPlaylists }
+      _id: { $in: playlistIds }
     })
     .lean()
     .exec();
