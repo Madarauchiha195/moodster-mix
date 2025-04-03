@@ -226,8 +226,9 @@ export async function getUserSharedPlaylists(username: string) {
     const user = await UserModel.findOne({ username }).exec();
     if (!user) throw new Error('User not found');
     
-    // Ensure shared playlists is an array of ObjectIds
-    const playlistIds = user.sharedPlaylists.map(id => id);
+    // Convert the IDs to proper ObjectId instances
+    // Type assertion is needed because mongoose maintains its own types
+    const playlistIds = user.sharedPlaylists.map(id => mongoose.Types.ObjectId.createFromHexString(id.toString()));
     
     // Then get their playlists using the ids stored in user.sharedPlaylists
     const playlists = await SharedPlaylistModel.find({
