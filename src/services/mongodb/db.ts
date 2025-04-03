@@ -225,21 +225,29 @@ export async function getUserSharedPlaylists(username: string) {
     const user = await UserModel.findOne({ username }).exec();
     if (!user) throw new Error('User not found');
     
-    // Convert the IDs to proper ObjectId instances
-    // We need to explicitly convert each ID to a mongoose ObjectId
-    const playlistIds = user.sharedPlaylists.map(id => {
-      // Handle the case where id might be a string or already an ObjectId
-      if (typeof id === 'string') {
-        return new mongoose.Types.ObjectId(id);
-      } else if (id instanceof mongoose.Types.ObjectId) {
-        return id;
-      } else if (typeof id === 'object' && id !== null && 'toString' in id) {
-        // Handle the case where id is an object with toString method
-        return new mongoose.Types.ObjectId(id.toString());
+    // Fix: Type-safe conversion of shared playlist IDs to ObjectId type
+    const playlistIds = [];
+    
+    // Safely convert each ID to an ObjectId
+    if (user.sharedPlaylists && Array.isArray(user.sharedPlaylists)) {
+      for (const idItem of user.sharedPlaylists) {
+        try {
+          if (typeof idItem === 'string') {
+            playlistIds.push(new mongoose.Types.ObjectId(idItem));
+          } else if (idItem instanceof mongoose.Types.ObjectId) {
+            playlistIds.push(idItem);
+          } else if (idItem && typeof idItem === 'object' && idItem._id) {
+            // Handle document reference case
+            playlistIds.push(new mongoose.Types.ObjectId(idItem._id.toString()));
+          } else if (idItem && typeof idItem.toString === 'function') {
+            playlistIds.push(new mongoose.Types.ObjectId(idItem.toString()));
+          }
+        } catch (err) {
+          console.error('Error converting ID:', err);
+          // Skip invalid IDs
+        }
       }
-      // Fallback - create a new ObjectId
-      return new mongoose.Types.ObjectId();
-    });
+    }
     
     // Then get their playlists using the ids stored in user.sharedPlaylists
     const playlists = await SharedPlaylistModel.find({
@@ -250,7 +258,7 @@ export async function getUserSharedPlaylists(username: string) {
     
     return playlists || [];
   } catch (error) {
-    console.error('Failed to get user shared playlists', error);
+    console.error('Failed to get user shared playlists:', error);
     throw error;
   }
 }
