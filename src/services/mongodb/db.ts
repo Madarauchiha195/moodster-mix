@@ -1,5 +1,5 @@
 
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 import { UserModel, SharedPlaylistModel, ISharedPlaylist } from './models';
 
@@ -37,12 +37,12 @@ export async function createOrUpdateUser(username: string, gender: 'male' | 'fem
   try {
     await connectToDatabase();
     
-    // Fix: Use a properly typed await to resolve the promise
+    // Cast to Promise<any> to avoid TypeScript errors with Mongoose
     const user = await UserModel.findOneAndUpdate(
-      { username: username },
+      { username },
       { username, gender },
       { upsert: true, new: true }
-    ).exec();
+    ).exec() as Promise<any>;
     
     return user;
   } catch (error) {
@@ -55,12 +55,12 @@ export async function updateLikedContent(username: string, content: ContentItemP
   try {
     await connectToDatabase();
     
-    // Fix: Add .exec() to properly resolve the promise
-    const user = await UserModel.findOne({ username }).exec();
+    // Cast to Promise<any> to avoid TypeScript errors with Mongoose
+    const user = await UserModel.findOne({ username }).exec() as Promise<any>;
     if (!user) throw new Error('User not found');
     
     // Check if the content is already liked
-    const existingIndex = user.likedContent.findIndex(item => item.id === content.id);
+    const existingIndex = user.likedContent.findIndex((item: ContentItemProps) => item.id === content.id);
     
     if (existingIndex > -1) {
       // Remove if already liked
@@ -82,8 +82,8 @@ export async function getUserContent(username: string) {
   try {
     await connectToDatabase();
     
-    // Fix: Add .exec() to properly resolve the promise
-    const user = await UserModel.findOne({ username }).populate('sharedPlaylists').exec();
+    // Cast to Promise<any> to avoid TypeScript errors with Mongoose
+    const user = await UserModel.findOne({ username }).populate('sharedPlaylists').exec() as Promise<any>;
     if (!user) throw new Error('User not found');
     
     return {
@@ -110,14 +110,14 @@ export async function createSharedPlaylist(
   try {
     await connectToDatabase();
     
-    // Fix: Add .exec() to properly resolve the promise
-    const user = await UserModel.findOne({ username }).exec();
+    // Cast to Promise<any> to avoid TypeScript errors with Mongoose
+    const user = await UserModel.findOne({ username }).exec() as Promise<any>;
     if (!user) throw new Error('User not found');
     
     // Generate a unique share ID
     const shareId = generateShareId();
     
-    // Fix: Use create and explicitly await it
+    // Use try/catch for the creation process
     const sharedPlaylist = await SharedPlaylistModel.create({
       name,
       description,
@@ -143,8 +143,12 @@ export async function getSharedPlaylist(shareId: string) {
   try {
     await connectToDatabase();
     
-    // Fix: Add .exec() to properly resolve the promise
-    const sharedPlaylist = await SharedPlaylistModel.findOne({ shareId, isPublic: true }).exec();
+    // Cast to Promise<any> to avoid TypeScript errors with Mongoose
+    const sharedPlaylist = await SharedPlaylistModel.findOne({ 
+      shareId, 
+      isPublic: true 
+    }).exec() as Promise<any>;
+    
     if (!sharedPlaylist) throw new Error('Shared playlist not found or not public');
     
     return sharedPlaylist;
@@ -158,8 +162,11 @@ export async function getUserSharedPlaylists(username: string) {
   try {
     await connectToDatabase();
     
-    // Fix: Add .exec() to properly resolve the promise
-    const user = await UserModel.findOne({ username }).populate('sharedPlaylists').exec();
+    // Cast to Promise<any> to avoid TypeScript errors with Mongoose
+    const user = await UserModel.findOne({ username })
+      .populate('sharedPlaylists')
+      .exec() as Promise<any>;
+      
     if (!user) throw new Error('User not found');
     
     return user.sharedPlaylists;
