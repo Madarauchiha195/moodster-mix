@@ -26,9 +26,10 @@ interface ContentCardProps {
   item: ContentItemProps;
   gender: 'male' | 'female';
   onOpenDetails: (item: ContentItemProps) => void;
+  onLike?: (item: ContentItemProps) => void; // Added onLike prop
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails }) => {
+const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails, onLike }) => {
   const [loading, setLoading] = React.useState(true);
   const [isFavorite, setIsFavorite] = React.useState(false);
 
@@ -39,6 +40,10 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails }
   const toggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsFavorite(!isFavorite);
+    
+    if (onLike) {
+      onLike(item);
+    }
     
     if (!isFavorite) {
       toast.success(`Added ${item.title} to favorites`);
