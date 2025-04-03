@@ -1,3 +1,4 @@
+
 import mongoose, { Model } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 import { initializeModels, IUser, ISharedPlaylist, ObjectId } from './models';
@@ -226,7 +227,7 @@ export async function getUserSharedPlaylists(username: string) {
     if (!user) throw new Error('User not found');
     
     // Fix: Type-safe conversion of shared playlist IDs to ObjectId type
-    const playlistIds = [];
+    const playlistIds: mongoose.Types.ObjectId[] = [];
     
     // Safely convert each ID to an ObjectId
     if (user.sharedPlaylists && Array.isArray(user.sharedPlaylists)) {
@@ -236,11 +237,14 @@ export async function getUserSharedPlaylists(username: string) {
             playlistIds.push(new mongoose.Types.ObjectId(idItem));
           } else if (idItem instanceof mongoose.Types.ObjectId) {
             playlistIds.push(idItem);
-          } else if (idItem && typeof idItem === 'object' && idItem._id) {
-            // Handle document reference case
-            playlistIds.push(new mongoose.Types.ObjectId(idItem._id.toString()));
-          } else if (idItem && typeof idItem.toString === 'function') {
-            playlistIds.push(new mongoose.Types.ObjectId(idItem.toString()));
+          } else if (idItem && typeof idItem === 'object') {
+            // Check if it has _id property
+            const idObj = idItem as any; // Use type assertion here
+            if (idObj._id) {
+              playlistIds.push(new mongoose.Types.ObjectId(idObj._id.toString()));
+            } else if (typeof idObj.toString === 'function') {
+              playlistIds.push(new mongoose.Types.ObjectId(idObj.toString()));
+            }
           }
         } catch (err) {
           console.error('Error converting ID:', err);
