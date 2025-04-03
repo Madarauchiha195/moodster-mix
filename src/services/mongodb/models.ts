@@ -59,7 +59,22 @@ const UserSchema = new Schema({
   sharedPlaylists: [{ type: Schema.Types.ObjectId, ref: 'SharedPlaylist' }]
 });
 
-// Create models
-// Use a safer approach to check if models exist and create them
-export const UserModel = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
-export const SharedPlaylistModel = mongoose.models.SharedPlaylist || mongoose.model<ISharedPlaylist>('SharedPlaylist', SharedPlaylistSchema);
+// Create and export models only when mongoose is ready
+// We'll use a function instead of direct assignment to ensure mongoose is initialized
+let UserModel: mongoose.Model<IUser>;
+let SharedPlaylistModel: mongoose.Model<ISharedPlaylist>;
+
+// Function to initialize models - must be called after mongoose connects
+export function initializeModels() {
+  // Check if models already exist to prevent "Cannot overwrite model" errors
+  UserModel = mongoose.models.User as mongoose.Model<IUser> || 
+    mongoose.model<IUser>('User', UserSchema);
+  
+  SharedPlaylistModel = mongoose.models.SharedPlaylist as mongoose.Model<ISharedPlaylist> || 
+    mongoose.model<ISharedPlaylist>('SharedPlaylist', SharedPlaylistSchema);
+    
+  return { UserModel, SharedPlaylistModel };
+}
+
+// Export the models
+export { UserModel, SharedPlaylistModel };
