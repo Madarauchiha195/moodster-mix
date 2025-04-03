@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Index from "./pages/Index";
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
+import SharedPlaylist from "./pages/SharedPlaylist";
 import Background from "./components/Background";
 import React from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -24,6 +25,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/app" element={<Index />} />
+              <Route path="/shared/:id" element={<SharedPlaylist />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </TooltipProvider>

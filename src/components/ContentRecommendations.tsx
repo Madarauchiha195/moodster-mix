@@ -6,6 +6,7 @@ import { MoodType } from './MoodSelection';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { ExpandableCard } from './ui/expandable-card';
 import { ScrollArea } from './ui/scroll-area';
+import SharedPlaylistCreator from './SharedPlaylistCreator';
 
 // Sample data for recommendations
 import { getRecommendedContent } from '@/data/recommendations';
@@ -15,13 +16,15 @@ interface ContentRecommendationsProps {
   gender: 'male' | 'female';
   onLikeContent?: (item: ContentItemProps) => void;
   likedContent: ContentItemProps[];
+  username: string;
 }
 
 const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({ 
   mood,
   gender,
   onLikeContent,
-  likedContent = []
+  likedContent = [],
+  username
 }) => {
   const [activeTab, setActiveTab] = React.useState<'movies' | 'music'>('movies');
   const [activeItem, setActiveItem] = useState<ContentItemProps | null>(null);
@@ -33,10 +36,12 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
   const music = recommendedContent.filter(item => item.type === 'song');
 
   // Organize movies by genres
-  const movieGenres = [...new Set(movies.map(movie => movie.genre).filter(Boolean))];
+  const movieGenres = [...new Set(movies.map(movie => movie.genre).filter(Boolean)
+    .flatMap(genre => genre ? genre.split(', ') : []))];
+  
   const moviesByGenre = movieGenres.reduce((acc, genre) => {
     if (genre) {
-      acc[genre] = movies.filter(movie => movie.genre === genre);
+      acc[genre] = movies.filter(movie => movie.genre?.includes(genre));
     }
     return acc;
   }, {} as Record<string, ContentItemProps[]>);
@@ -68,11 +73,15 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
   const isItemLiked = (item: ContentItemProps) => {
     return likedContent.some(likedItem => likedItem.id === item.id);
   };
+  
+  const handlePlaylistCreated = (playlistId: string) => {
+    console.log('Playlist created with ID:', playlistId);
+  };
 
   return (
     <ScrollArea className="w-full h-[calc(100vh-120px)] overflow-y-auto">
       <div className="w-full px-2 pb-12">
-        <div className="flex justify-center mb-4 sm:mb-6">
+        <div className="flex justify-between mb-4 sm:mb-6">
           <div className="flex rounded-full p-1 bg-black/40 backdrop-blur-sm">
             <button
               onClick={() => setActiveTab('movies')}
@@ -95,6 +104,14 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
               Music
             </button>
           </div>
+          
+          {/* Add playlist creator */}
+          <SharedPlaylistCreator 
+            username={username}
+            currentMood={mood}
+            contentItems={recommendedContent}
+            onPlaylistCreated={handlePlaylistCreated}
+          />
         </div>
         
         <div className="relative">

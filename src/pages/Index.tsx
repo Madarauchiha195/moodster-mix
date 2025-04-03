@@ -143,6 +143,9 @@ const Index = () => {
         description: `${item.title} has been added to your liked content.`,
       });
     }
+    
+    // In a real app, we would also update this in MongoDB
+    // updateUserLikedContent(username, item);
   };
 
   return (
@@ -180,6 +183,7 @@ const Index = () => {
             gender={gender}
             onLikeContent={handleLikeContent}
             likedContent={likedContent}
+            username={username}
           />
         )}
       </main>

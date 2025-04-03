@@ -1,4 +1,3 @@
-
 import { ContentItemProps } from "@/components/ContentCard";
 import { MoodType } from "@/components/MoodSelection";
 
@@ -56,6 +55,38 @@ const happyMovies: ContentItemProps[] = [
     platform: ["Hulu", "Disney+"],
     genre: "Comedy, Drama, Romance",
     year: 2009
+  },
+  {
+    id: 6,
+    title: "The Lego Movie",
+    description: "An ordinary LEGO construction worker is recruited to join a quest to stop an evil tyrant from gluing the LEGO universe into eternal stasis.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
+    rating: 7.7,
+    platform: ["HBO Max", "Prime Video"],
+    genre: "Animation, Action, Adventure",
+    year: 2014
+  },
+  {
+    id: 7,
+    title: "School of Rock",
+    description: "After being kicked out of his rock band, Dewey Finn becomes a substitute teacher of an uptight elementary private school, only to try and turn his class into a rock band.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
+    rating: 7.1,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Comedy, Music",
+    year: 2003
+  },
+  {
+    id: 8,
+    title: "Dumb and Dumber",
+    description: "After a woman leaves a briefcase at the airport terminal, a dumb limo driver and his dumber friend set out on a hilarious cross-country road trip to Aspen to return it.",
+    type: "movie",
+    rating: 7.3,
+    platform: ["HBO Max"],
+    genre: "Comedy",
+    year: 1994
   }
 ];
 
@@ -111,6 +142,38 @@ const sadMovies: ContentItemProps[] = [
     platform: ["HBO Max", "Hulu"],
     genre: "Drama, Romance",
     year: 1997
+  },
+  {
+    id: 16,
+    title: "Eternal Sunshine of the Spotless Mind",
+    description: "When their relationship turns sour, a couple undergoes a medical procedure to have each other erased from their memories.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
+    rating: 8.3,
+    platform: ["Prime Video", "Hulu"],
+    genre: "Drama, Romance, Sci-Fi",
+    year: 2004
+  },
+  {
+    id: 17,
+    title: "Schindler's List",
+    description: "In German-occupied Poland during World War II, industrialist Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution by the Nazis.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
+    rating: 9.0,
+    platform: ["Netflix"],
+    genre: "Biography, Drama, History",
+    year: 1993
+  },
+  {
+    id: 18,
+    title: "Manchester by the Sea",
+    description: "A depressed uncle is asked to take care of his teenage nephew after the boy's father dies.",
+    type: "movie",
+    rating: 7.8,
+    platform: ["Prime Video"],
+    genre: "Drama",
+    year: 2016
   }
 ];
 
@@ -155,6 +218,38 @@ const neutralMovies: ContentItemProps[] = [
     platform: ["Prime Video", "Netflix"],
     genre: "Adventure, Drama, Sci-Fi",
     year: 2014
+  },
+  {
+    id: 25,
+    title: "The Prestige",
+    description: "After a tragic accident, two stage magicians engage in a battle to create the ultimate illusion while sacrificing everything they have to outwit each other.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+    rating: 8.5,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Drama, Mystery, Sci-Fi",
+    year: 2006
+  },
+  {
+    id: 26,
+    title: "The Social Network",
+    description: "As Harvard student Mark Zuckerberg creates the social networking site that would become known as Facebook, he is sued by the twins who claimed he stole their idea.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
+    rating: 7.8,
+    platform: ["Netflix"],
+    genre: "Biography, Drama",
+    year: 2010
+  },
+  {
+    id: 27,
+    title: "Arrival",
+    description: "A linguist works with the military to communicate with alien lifeforms after twelve mysterious spacecraft appear around the world.",
+    type: "movie",
+    rating: 7.9,
+    platform: ["Hulu", "Prime Video"],
+    genre: "Drama, Mystery, Sci-Fi",
+    year: 2016
   }
 ];
 
@@ -210,6 +305,38 @@ const confusedMovies: ContentItemProps[] = [
     platform: ["Prime Video", "Netflix"],
     genre: "Mystery, Thriller",
     year: 2000
+  },
+  {
+    id: 36,
+    title: "Primer",
+    description: "Four friends/fledgling entrepreneurs, knowing that there's something bigger and more innovative than the different error-checking devices they've built, wrestle over their new invention.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
+    rating: 6.9,
+    platform: ["Prime Video"],
+    genre: "Drama, Sci-Fi, Thriller",
+    year: 2004
+  },
+  {
+    id: 37,
+    title: "Mulholland Drive",
+    description: "After a car wreck on the winding Mulholland Drive renders a woman amnesiac, she and a perky Hollywood-hopeful search for clues and answers across Los Angeles in a twisting venture beyond dreams and reality.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
+    rating: 7.9,
+    platform: ["HBO Max"],
+    genre: "Drama, Mystery, Thriller",
+    year: 2001
+  },
+  {
+    id: 38,
+    title: "The Fountain",
+    description: "As a modern-day scientist, Tommy is struggling with mortality, desperately searching for the medical breakthrough that will save the life of his cancer-stricken wife, Izzi.",
+    type: "movie",
+    rating: 7.2,
+    platform: ["Hulu"],
+    genre: "Drama, Mystery, Romance",
+    year: 2006
   }
 ];
 
@@ -266,6 +393,38 @@ const happyMusic: ContentItemProps[] = [
     genre: "Pop, Disco",
     artist: "Justin Timberlake",
     album: "Trolls: Original Motion Picture Soundtrack"
+  },
+  {
+    id: 106,
+    title: "Good Vibrations",
+    description: "The Beach Boys' masterpiece, featuring innovative use of instruments and recording techniques. Known for its uplifting, positive message.",
+    type: "song",
+    imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
+    rating: 4.9,
+    genre: "Rock, Pop",
+    artist: "The Beach Boys",
+    album: "Smiley Smile"
+  },
+  {
+    id: 107,
+    title: "Blinding Lights",
+    description: "A synthwave and '80s-inspired track that combines retro sounds with modern production.",
+    type: "song",
+    imageUrl: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+    rating: 4.6,
+    genre: "Synth-pop, New Wave",
+    artist: "The Weeknd",
+    album: "After Hours"
+  },
+  {
+    id: 108,
+    title: "Levitating",
+    description: "A disco-pop song with a retro dance sound inspired by 1970s and 1980s club culture.",
+    type: "song",
+    rating: 4.4,
+    genre: "Pop, Disco",
+    artist: "Dua Lipa",
+    album: "Future Nostalgia"
   }
 ];
 
@@ -321,6 +480,38 @@ const sadMusic: ContentItemProps[] = [
     genre: "Alternative Rock",
     artist: "R.E.M.",
     album: "Automatic for the People"
+  },
+  {
+    id: 116,
+    title: "Nothing Compares 2 U",
+    description: "A powerful song about loss and longing, made famous by Sinéad O'Connor's emotional performance.",
+    type: "song",
+    imageUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
+    rating: 4.6,
+    genre: "Pop, Soul, Rock",
+    artist: "Sinéad O'Connor",
+    album: "I Do Not Want What I Haven't Got"
+  },
+  {
+    id: 117,
+    title: "Tears In Heaven",
+    description: "Written after the death of Clapton's four-year-old son, this emotional ballad explores grief and loss.",
+    type: "song",
+    imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
+    rating: 4.8,
+    genre: "Rock, Pop",
+    artist: "Eric Clapton",
+    album: "Unplugged"
+  },
+  {
+    id: 118,
+    title: "Hey Jude",
+    description: "Originally written by Paul McCartney to comfort John Lennon's son during his parents' divorce.",
+    type: "song",
+    rating: 4.9,
+    genre: "Rock, Pop",
+    artist: "The Beatles",
+    album: "The Beatles 1967-1970"
   }
 ];
 
@@ -365,6 +556,38 @@ const neutralMusic: ContentItemProps[] = [
     genre: "Progressive Rock, Hard Rock",
     artist: "Led Zeppelin",
     album: "Led Zeppelin IV"
+  },
+  {
+    id: 125,
+    title: "Smells Like Teen Spirit",
+    description: "A groundbreaking grunge anthem that became an unexpected mainstream hit, capturing youth angst and rebellion.",
+    type: "song",
+    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
+    rating: 4.8,
+    genre: "Grunge, Alternative Rock",
+    artist: "Nirvana",
+    album: "Nevermind"
+  },
+  {
+    id: 126,
+    title: "Smooth",
+    description: "A Latin rock hit that combines Carlos Santana's guitar work with Rob Thomas's vocals.",
+    type: "song",
+    imageUrl: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
+    rating: 4.3,
+    genre: "Latin Rock, Pop Rock",
+    artist: "Santana ft. Rob Thomas",
+    album: "Supernatural"
+  },
+  {
+    id: 127,
+    title: "Imagine",
+    description: "A piano ballad with lyrics encouraging listeners to imagine a world of peace.",
+    type: "song",
+    rating: 4.9,
+    genre: "Soft Rock, Pop",
+    artist: "John Lennon",
+    album: "Imagine"
   }
 ];
 
@@ -420,6 +643,38 @@ const confusedMusic: ContentItemProps[] = [
     genre: "Grunge, Alternative Rock",
     artist: "Soundgarden",
     album: "Superunknown"
+  },
+  {
+    id: 136,
+    title: "Revolution 9",
+    description: "An avant-garde sound collage created using tape loops, sound effects, and snippets of conversation.",
+    type: "song",
+    imageUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
+    rating: 3.2,
+    genre: "Experimental, Avant-garde",
+    artist: "The Beatles",
+    album: "The Beatles (White Album)"
+  },
+  {
+    id: 137,
+    title: "Echoes",
+    description: "A 23-minute progressive rock composition featuring ambient sections, sound effects, and philosophical lyrics.",
+    type: "song",
+    imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
+    rating: 4.9,
+    genre: "Progressive Rock, Psychedelic",
+    artist: "Pink Floyd",
+    album: "Meddle"
+  },
+  {
+    id: 138,
+    title: "Spem in Alium",
+    description: "A Renaissance motet written for 40 independent voices, creating complex harmonies and textures.",
+    type: "song",
+    rating: 4.8,
+    genre: "Classical, Renaissance",
+    artist: "Thomas Tallis",
+    album: "The Tallis Scholars Sing Thomas Tallis"
   }
 ];
 
