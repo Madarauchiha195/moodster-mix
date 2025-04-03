@@ -1,4 +1,3 @@
-
 import mongoose, { Model } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 import { initializeModels, IUser, ISharedPlaylist, ObjectId } from './models';
@@ -227,8 +226,20 @@ export async function getUserSharedPlaylists(username: string) {
     if (!user) throw new Error('User not found');
     
     // Convert the IDs to proper ObjectId instances
-    // Type assertion is needed because mongoose maintains its own types
-    const playlistIds = user.sharedPlaylists.map(id => mongoose.Types.ObjectId.createFromHexString(id.toString()));
+    // We need to explicitly convert each ID to a mongoose ObjectId
+    const playlistIds = user.sharedPlaylists.map(id => {
+      // Handle the case where id might be a string or already an ObjectId
+      if (typeof id === 'string') {
+        return new mongoose.Types.ObjectId(id);
+      } else if (id instanceof mongoose.Types.ObjectId) {
+        return id;
+      } else if (typeof id === 'object' && id !== null && 'toString' in id) {
+        // Handle the case where id is an object with toString method
+        return new mongoose.Types.ObjectId(id.toString());
+      }
+      // Fallback - create a new ObjectId
+      return new mongoose.Types.ObjectId();
+    });
     
     // Then get their playlists using the ids stored in user.sharedPlaylists
     const playlists = await SharedPlaylistModel.find({
