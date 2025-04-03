@@ -9,7 +9,7 @@ export interface IUser extends Document {
   likedContent: ContentItemProps[];
   watchlist: ContentItemProps[];
   playlist: ContentItemProps[];
-  sharedPlaylists: ISharedPlaylist[];
+  sharedPlaylists: mongoose.Types.ObjectId[] | ISharedPlaylist[];
 }
 
 export interface ISharedPlaylist extends Document {
@@ -51,7 +51,7 @@ const SharedPlaylistSchema = new Schema({
 });
 
 const UserSchema = new Schema({
-  username: { type: String, required: true },
+  username: { type: String, required: true, unique: true },
   gender: { type: String, enum: ['male', 'female'], required: true },
   likedContent: [ContentItemSchema],
   watchlist: [ContentItemSchema],
@@ -60,6 +60,7 @@ const UserSchema = new Schema({
 });
 
 // Create models
+// Check if models already exist to prevent model overwrite errors in development
 export const UserModel = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
 export const SharedPlaylistModel = mongoose.models.SharedPlaylist || 
   mongoose.model<ISharedPlaylist>('SharedPlaylist', SharedPlaylistSchema);
