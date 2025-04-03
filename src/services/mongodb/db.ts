@@ -1,6 +1,7 @@
+
 import mongoose, { Model, Types } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
-import { initializeModels, IUser, ISharedPlaylist } from './models';
+import { initializeModels, IUser, ISharedPlaylist, ObjectId } from './models';
 
 // MongoDB connection string - use a fallback for development
 const MONGODB_URI = import.meta.env.VITE_MONGODB_URI || 'mongodb://localhost:27017/moodster-mix';

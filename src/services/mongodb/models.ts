@@ -23,6 +23,9 @@ export interface ISharedPlaylist extends Document {
   createdAt: Date;
 }
 
+// Export ObjectId type for use in other files
+export type ObjectId = Types.ObjectId;
+
 // Define MongoDB schemas
 const ContentItemSchema = new Schema({
   id: Number,
