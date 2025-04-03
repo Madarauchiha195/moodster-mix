@@ -1,10 +1,10 @@
 
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 import { initializeModels, IUser, ISharedPlaylist } from './models';
 
 // MongoDB connection string - use a fallback for development
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/moodster-mix';
+const MONGODB_URI = import.meta.env.VITE_MONGODB_URI || 'mongodb://localhost:27017/moodster-mix';
 
 // Mongoose connection cache
 let cached = global.mongoose as { 

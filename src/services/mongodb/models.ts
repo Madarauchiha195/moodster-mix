@@ -1,5 +1,5 @@
 
-import mongoose, { Document, Schema, Model } from 'mongoose';
+import mongoose, { Document, Schema, Model, Types } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 
 // Define interfaces for MongoDB documents
@@ -9,7 +9,7 @@ export interface IUser extends Document {
   likedContent: ContentItemProps[];
   watchlist: ContentItemProps[];
   playlist: ContentItemProps[];
-  sharedPlaylists: mongoose.Types.ObjectId[];
+  sharedPlaylists: Types.ObjectId[];
 }
 
 export interface ISharedPlaylist extends Document {
