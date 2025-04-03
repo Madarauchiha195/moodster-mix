@@ -14,12 +14,14 @@ interface ContentRecommendationsProps {
   mood: MoodType;
   gender: 'male' | 'female';
   onLikeContent?: (item: ContentItemProps) => void;
+  likedContent: ContentItemProps[];
 }
 
 const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({ 
   mood,
   gender,
-  onLikeContent
+  onLikeContent,
+  likedContent = []
 }) => {
   const [activeTab, setActiveTab] = React.useState<'movies' | 'music'>('movies');
   const [activeItem, setActiveItem] = useState<ContentItemProps | null>(null);
@@ -31,9 +33,11 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
   const music = recommendedContent.filter(item => item.type === 'song');
 
   // Organize movies by genres
-  const movieGenres = [...new Set(movies.map(movie => movie.genre))];
+  const movieGenres = [...new Set(movies.map(movie => movie.genre).filter(Boolean))];
   const moviesByGenre = movieGenres.reduce((acc, genre) => {
-    acc[genre] = movies.filter(movie => movie.genre === genre);
+    if (genre) {
+      acc[genre] = movies.filter(movie => movie.genre === genre);
+    }
     return acc;
   }, {} as Record<string, ContentItemProps[]>);
 
@@ -60,8 +64,13 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
     }
   };
 
+  // Check if an item is liked
+  const isItemLiked = (item: ContentItemProps) => {
+    return likedContent.some(likedItem => likedItem.id === item.id);
+  };
+
   return (
-    <ScrollArea className="w-full h-[calc(100vh-120px)]">
+    <ScrollArea className="w-full h-[calc(100vh-120px)] overflow-y-auto">
       <div className="w-full px-2 pb-12">
         <div className="flex justify-center mb-4 sm:mb-6">
           <div className="flex rounded-full p-1 bg-black/40 backdrop-blur-sm">
@@ -112,7 +121,13 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                     {movies.slice(0, 5).map((item) => (
                       <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                         <div className="px-1">
-                          <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} onLike={handleLike} />
+                          <ContentCard 
+                            item={item} 
+                            gender={gender} 
+                            onOpenDetails={handleOpenDetails} 
+                            onLike={handleLike}
+                            isLiked={isItemLiked(item)} 
+                          />
                         </div>
                       </CarouselItem>
                     ))}
@@ -127,7 +142,7 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
               </div>
 
               {/* Genre-based sections */}
-              {movieGenres.map((genre) => (
+              {movieGenres.map((genre) => genre && (
                 <div key={genre} className="mb-10">
                   <h3 className="text-lg font-bold mb-3 pl-2 text-white tracking-wide">
                     {genre} <span className="text-sm text-gray-300">Movies</span>
@@ -141,10 +156,16 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                     className="w-full mx-auto relative px-4 md:px-8"
                   >
                     <CarouselContent className="-ml-2 md:-ml-4">
-                      {moviesByGenre[genre].map((item) => (
+                      {moviesByGenre[genre]?.map((item) => (
                         <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                           <div className="px-1">
-                            <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} onLike={handleLike} />
+                            <ContentCard 
+                              item={item} 
+                              gender={gender} 
+                              onOpenDetails={handleOpenDetails} 
+                              onLike={handleLike}
+                              isLiked={isItemLiked(item)}
+                            />
                           </div>
                         </CarouselItem>
                       ))}
@@ -178,7 +199,13 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                     {music.slice(0, 5).map((item) => (
                       <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                         <div className="px-1">
-                          <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} onLike={handleLike} />
+                          <ContentCard 
+                            item={item} 
+                            gender={gender} 
+                            onOpenDetails={handleOpenDetails} 
+                            onLike={handleLike}
+                            isLiked={isItemLiked(item)}
+                          />
                         </div>
                       </CarouselItem>
                     ))}
@@ -210,7 +237,13 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                       {songsByArtist[artist]?.map((item) => (
                         <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                           <div className="px-1">
-                            <ContentCard item={item} gender={gender} onOpenDetails={handleOpenDetails} onLike={handleLike} />
+                            <ContentCard 
+                              item={item} 
+                              gender={gender} 
+                              onOpenDetails={handleOpenDetails} 
+                              onLike={handleLike}
+                              isLiked={isItemLiked(item)}
+                            />
                           </div>
                         </CarouselItem>
                       ))}
@@ -230,7 +263,12 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
       </div>
       
       {/* Expandable Card */}
-      <ExpandableCard activeItem={activeItem} onClose={handleCloseDetails} />
+      <ExpandableCard 
+        activeItem={activeItem} 
+        onClose={handleCloseDetails} 
+        onLike={handleLike}
+        isLiked={activeItem ? isItemLiked(activeItem) : false}
+      />
     </ScrollArea>
   );
 };

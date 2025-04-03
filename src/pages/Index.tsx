@@ -112,6 +112,7 @@ const Index = () => {
 
   const handleOpenMovies = () => {
     setIsProfileOpen(true);
+    setActiveTabView('movies');
     sonnerToast.info("Movies Library", {
       description: "Your saved and liked movies are shown here.",
     });
@@ -119,6 +120,7 @@ const Index = () => {
 
   const handleOpenMusic = () => {
     setIsProfileOpen(true);
+    setActiveTabView('music');
     sonnerToast.info("Music Library", {
       description: "Your saved and liked music is shown here.",
     });
@@ -177,6 +179,7 @@ const Index = () => {
             mood={mood}
             gender={gender}
             onLikeContent={handleLikeContent}
+            likedContent={likedContent}
           />
         )}
       </main>
@@ -190,6 +193,7 @@ const Index = () => {
         watchlist={watchlist}
         playlist={playlist}
         likedContent={likedContent}
+        activeTab={activeTabView}
       />
     </div>
   );

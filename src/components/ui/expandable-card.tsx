@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -13,12 +12,18 @@ import { toast } from "sonner";
 interface ExpandableCardProps {
   activeItem: ContentItemProps | null;
   onClose: () => void;
+  onLike?: (item: ContentItemProps) => void;
+  isLiked?: boolean;
 }
 
-export function ExpandableCard({ activeItem, onClose }: ExpandableCardProps) {
+export function ExpandableCard({ activeItem, onClose, onLike, isLiked = false }: ExpandableCardProps) {
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(isLiked);
+
+  useEffect(() => {
+    setIsFavorite(isLiked);
+  }, [isLiked, activeItem]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -84,11 +89,19 @@ export function ExpandableCard({ activeItem, onClose }: ExpandableCardProps) {
   };
 
   const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    if (!isFavorite) {
-      toast.success(`Added ${activeItem?.title} to favorites`);
+    if (!activeItem) return;
+    
+    const newState = !isFavorite;
+    setIsFavorite(newState);
+    
+    if (onLike) {
+      onLike(activeItem);
+    }
+    
+    if (newState) {
+      toast.success(`Added ${activeItem.title} to favorites`);
     } else {
-      toast.info(`Removed ${activeItem?.title} from favorites`);
+      toast.info(`Removed ${activeItem.title} from favorites`);
     }
   };
 
@@ -123,46 +136,45 @@ export function ExpandableCard({ activeItem, onClose }: ExpandableCardProps) {
             </motion.button>
             
             <motion.div
-              layoutId={`card-${activeItem.id}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
               ref={ref}
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 1 }}
               className="w-full max-w-4xl h-auto max-h-[90vh] flex flex-col bg-black/90 border border-purple-500/30 backdrop-blur-md rounded-xl overflow-hidden shadow-[0_0_25px_rgba(168,85,247,0.4)]"
             >
               <div className="relative h-60">
-                <motion.div layoutId={`image-${activeItem.id}`} className="h-full">
+                <div className="h-full">
                   <img
                     src={activeItem.imageUrl || '/placeholder.svg'}
                     alt={activeItem.title}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                </motion.div>
+                </div>
                 
                 <div className="absolute bottom-4 left-6 right-6 flex justify-between items-center">
                   <div>
-                    <motion.h2
-                      layoutId={`title-${activeItem.id}`}
+                    <h2
                       className="text-3xl font-bold text-white mb-1"
                     >
                       {activeItem.title}
-                    </motion.h2>
-                    <motion.p className="text-gray-300 text-sm">
+                    </h2>
+                    <p className="text-gray-300 text-sm">
                       {activeItem.type === 'movie' 
                         ? `${activeItem.year} • ${activeItem.genre}`
                         : `${activeItem.artist} • ${activeItem.album}`
                       }
-                    </motion.p>
+                    </p>
                   </div>
                   
                   {activeItem.rating && (
-                    <motion.div 
-                      layoutId={`rating-${activeItem.id}`}
+                    <div 
                       className="flex items-center bg-black/70 text-yellow-400 px-3 py-2 rounded-full text-sm"
                     >
                       <Star className="w-4 h-4 mr-1 fill-current" />
                       <span>{activeItem.rating}/10</span>
-                    </motion.div>
+                    </div>
                   )}
                 </div>
               </div>

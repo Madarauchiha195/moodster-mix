@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Heart, ExternalLink, Star, Info } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -27,11 +26,22 @@ interface ContentCardProps {
   gender: 'male' | 'female';
   onOpenDetails: (item: ContentItemProps) => void;
   onLike?: (item: ContentItemProps) => void; // Added onLike prop
+  isLiked?: boolean; // New prop to track if the item is already liked
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails, onLike }) => {
+const ContentCard: React.FC<ContentCardProps> = ({ 
+  item, 
+  gender, 
+  onOpenDetails, 
+  onLike, 
+  isLiked = false 
+}) => {
   const [loading, setLoading] = React.useState(true);
-  const [isFavorite, setIsFavorite] = React.useState(false);
+  const [isFavorite, setIsFavorite] = React.useState(isLiked);
+  
+  useEffect(() => {
+    setIsFavorite(isLiked);
+  }, [isLiked]);
 
   const handleImageLoad = () => {
     setLoading(false);
@@ -39,13 +49,14 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails, 
 
   const toggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsFavorite(!isFavorite);
+    const newState = !isFavorite;
+    setIsFavorite(newState);
     
     if (onLike) {
       onLike(item);
     }
     
-    if (!isFavorite) {
+    if (newState) {
       toast.success(`Added ${item.title} to favorites`);
     } else {
       toast.info(`Removed ${item.title} from favorites`);
@@ -96,66 +107,59 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails, 
   };
 
   return (
-    <motion.div 
-      layoutId={`card-${item.id}`}
-      className="content-card h-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer"
+    <div 
+      className="content-card h-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer transition-all duration-300"
       onClick={() => onOpenDetails(item)}
-      whileHover={{ y: -5 }}
-      transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
       <div className="relative">
-        <motion.div layoutId={`image-${item.id}`}>
-          <AspectRatio ratio={16 / 9}>
-            {loading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                <div className="animate-pulse flex flex-col items-center justify-center w-full h-full">
-                  {item.type === 'movie' ? (
-                    <>
-                      <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4v16M17 4v16M3 8h18M3 16h18"></path>
-                      </svg>
-                      <p className="mt-2 text-sm text-gray-400">Loading movie...</p>
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
-                      </svg>
-                      <p className="mt-2 text-sm text-gray-400">Loading song...</p>
-                    </>
-                  )}
-                </div>
+        <AspectRatio ratio={16 / 9}>
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+              <div className="animate-pulse flex flex-col items-center justify-center w-full h-full">
+                {item.type === 'movie' ? (
+                  <>
+                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 4v16M17 4v16M3 8h18M3 16h18"></path>
+                    </svg>
+                    <p className="mt-2 text-sm text-gray-400">Loading movie...</p>
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                    </svg>
+                    <p className="mt-2 text-sm text-gray-400">Loading song...</p>
+                  </>
+                )}
               </div>
-            )}
-            <img
-              src={item.imageUrl || '/placeholder.svg'}
-              alt={item.title}
-              className="object-cover w-full h-full"
-              onLoad={handleImageLoad}
-              onError={() => setLoading(false)}
-            />
-          </AspectRatio>
-        </motion.div>
+            </div>
+          )}
+          <img
+            src={item.imageUrl || '/placeholder.svg'}
+            alt={item.title}
+            className="object-cover w-full h-full"
+            onLoad={handleImageLoad}
+            onError={() => setLoading(false)}
+          />
+        </AspectRatio>
         
         {item.rating && (
-          <motion.div 
-            layoutId={`rating-${item.id}`}
+          <div 
             className="absolute top-2 right-2 flex items-center bg-black/70 text-yellow-400 px-2 py-1 rounded-full text-xs"
           >
             <Star className="w-3 h-3 mr-1" fill="currentColor" />
             {item.rating}
-          </motion.div>
+          </div>
         )}
       </div>
       
       <div className="p-4">
         <div className="flex justify-between items-start">
-          <motion.h3 
-            layoutId={`title-${item.id}`}
+          <h3 
             className="text-lg font-semibold line-clamp-1 text-white"
           >
             {item.title}
-          </motion.h3>
+          </h3>
           <Button
             variant="ghost"
             size="icon"
@@ -242,7 +246,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ item, gender, onOpenDetails, 
           </Button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
