@@ -16,6 +16,7 @@ interface UserProfileProps {
   watchlist?: ContentItemProps[];
   playlist?: ContentItemProps[];
   likedContent?: ContentItemProps[];
+  activeTab?: 'profile' | 'watchlist' | 'playlist' | 'liked' | 'movies' | 'music';
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({
@@ -25,9 +26,14 @@ const UserProfile: React.FC<UserProfileProps> = ({
   gender,
   watchlist = [],
   playlist = [],
-  likedContent = []
+  likedContent = [],
+  activeTab: initialTab
 }) => {
-  const [activeTab, setActiveTab] = useState<'profile' | 'watchlist' | 'playlist' | 'liked'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'watchlist' | 'playlist' | 'liked'>
+    (initialTab === 'movies' ? 'watchlist' : 
+     initialTab === 'music' ? 'playlist' : 
+     initialTab || 'profile');
+  
   const ref = React.useRef<HTMLDivElement>(null);
   
   useOutsideClick(ref, onClose);
@@ -50,6 +56,19 @@ const UserProfile: React.FC<UserProfileProps> = ({
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [isOpen, onClose]);
+  
+  // Handle changes to initialTab prop
+  React.useEffect(() => {
+    if (initialTab) {
+      if (initialTab === 'movies') {
+        setActiveTab('watchlist');
+      } else if (initialTab === 'music') {
+        setActiveTab('playlist');
+      } else if (['profile', 'watchlist', 'playlist', 'liked'].includes(initialTab)) {
+        setActiveTab(initialTab as 'profile' | 'watchlist' | 'playlist' | 'liked');
+      }
+    }
+  }, [initialTab]);
   
   if (!isOpen) return null;
   
