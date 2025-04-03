@@ -60,9 +60,6 @@ const UserSchema = new Schema({
 });
 
 // Create models
-// Use mongoose.models to check if models already exist to prevent model overwrite errors
-export const UserModel = mongoose.models.User as mongoose.Model<IUser> || 
-  mongoose.model<IUser>('User', UserSchema);
-
-export const SharedPlaylistModel = mongoose.models.SharedPlaylist as mongoose.Model<ISharedPlaylist> || 
-  mongoose.model<ISharedPlaylist>('SharedPlaylist', SharedPlaylistSchema);
+// Use a safer approach to check if models exist and create them
+export const UserModel = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+export const SharedPlaylistModel = mongoose.models.SharedPlaylist || mongoose.model<ISharedPlaylist>('SharedPlaylist', SharedPlaylistSchema);

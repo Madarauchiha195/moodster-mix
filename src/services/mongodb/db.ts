@@ -25,8 +25,14 @@ export async function connectToDatabase() {
     cached!.promise = mongoose.connect(MONGODB_URI, opts);
   }
 
-  cached!.conn = await cached!.promise;
-  return cached!.conn;
+  try {
+    cached!.conn = await cached!.promise;
+    console.log('MongoDB connected successfully');
+    return cached!.conn;
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    throw error;
+  }
 }
 
 // User-related functions
@@ -95,7 +101,10 @@ export async function getUserContent(username: string) {
     await connectToDatabase();
     
     // Get user with populated shared playlists
-    const user = await UserModel.findOne({ username }).populate('sharedPlaylists').exec();
+    const user = await UserModel.findOne({ username })
+      .populate('sharedPlaylists')
+      .exec();
+      
     if (!user) throw new Error('User not found');
     
     return {
@@ -141,13 +150,13 @@ export async function createSharedPlaylist(
     });
     
     // Save the playlist
-    await newPlaylist.save();
+    const savedPlaylist = await newPlaylist.save();
     
     // Add reference to user's shared playlists
-    user.sharedPlaylists.push(newPlaylist._id);
+    user.sharedPlaylists.push(savedPlaylist._id);
     await user.save();
     
-    return newPlaylist.toObject();
+    return savedPlaylist.toObject();
   } catch (error) {
     console.error('Failed to create shared playlist', error);
     throw error;
@@ -176,7 +185,10 @@ export async function getUserSharedPlaylists(username: string) {
   try {
     await connectToDatabase();
     
-    const user = await UserModel.findOne({ username }).populate('sharedPlaylists').exec();
+    const user = await UserModel.findOne({ username })
+      .populate('sharedPlaylists')
+      .exec();
+      
     if (!user) throw new Error('User not found');
     
     return user.sharedPlaylists || [];
