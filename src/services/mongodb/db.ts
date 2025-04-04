@@ -1,4 +1,3 @@
-
 import mongoose, { Model } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 import { initializeModels, IUser, ISharedPlaylist, ObjectId } from './models';
@@ -233,16 +232,25 @@ export async function getUserSharedPlaylists(username: string) {
     if (user.sharedPlaylists && Array.isArray(user.sharedPlaylists)) {
       for (const idItem of user.sharedPlaylists) {
         try {
+          // Handle string IDs
           if (typeof idItem === 'string') {
             playlistIds.push(new mongoose.Types.ObjectId(idItem));
-          } else if (idItem instanceof mongoose.Types.ObjectId) {
+          } 
+          // Handle ObjectId instances
+          else if (idItem instanceof mongoose.Types.ObjectId) {
             playlistIds.push(idItem);
-          } else if (idItem && typeof idItem === 'object') {
-            // Check if it has _id property
-            const idObj = idItem as any; // Use type assertion here
+          } 
+          // Handle object references with type assertion
+          else if (idItem && typeof idItem === 'object') {
+            const idObj = idItem as { _id?: string | mongoose.Types.ObjectId, toString?: () => string };
+            
             if (idObj._id) {
-              playlistIds.push(new mongoose.Types.ObjectId(idObj._id.toString()));
-            } else if (typeof idObj.toString === 'function') {
+              const idString = typeof idObj._id === 'string' 
+                ? idObj._id 
+                : idObj._id.toString();
+              playlistIds.push(new mongoose.Types.ObjectId(idString));
+            } 
+            else if (typeof idObj.toString === 'function') {
               playlistIds.push(new mongoose.Types.ObjectId(idObj.toString()));
             }
           }
