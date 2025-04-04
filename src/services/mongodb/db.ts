@@ -1,272 +1,179 @@
 
-import { connectDB, isConnected, closeConnection } from './connection';
-import { IUser, ISharedPlaylist } from './models';
-import { ObjectId } from 'mongodb';
+// Mock database service
+// This simulates a MongoDB connection for development purposes
 
-// Simulated data storage for browser environment
-let users: any[] = [];
-let sharedPlaylists: any[] = [];
+import { ContentItemProps } from '@/components/ContentCard';
+import { MoodType } from '@/components/MoodSelection';
 
-/**
- * Creates a new user
- */
-export const createUser = async (username: string, gender: 'male' | 'female'): Promise<any> => {
-  try {
-    await connectDB();
-    
-    const userId = Date.now().toString();
-    const newUser = {
-      _id: userId,
-      username,
-      gender,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      likedContent: []
-    };
-    
-    users.push(newUser);
-    console.log('User created:', newUser);
-    return newUser;
-  } catch (error) {
-    console.error('Error creating user:', error);
-    throw error;
-  }
+// Simulate database connection
+console.info("Simulating MongoDB connection");
+
+// Mock database collections
+const collections = {
+  users: [],
+  content: [],
+  playlists: []
 };
 
-/**
- * Retrieves a user by username
- */
-export const getUserByUsername = async (username: string): Promise<any> => {
-  try {
-    await connectDB();
-    
-    const user = users.find(u => u.username === username);
-    return user || null;
-  } catch (error) {
-    console.error('Error getting user by username:', error);
-    throw error;
+// Mock user data
+const mockUsers = [
+  {
+    id: 'user1',
+    username: 'johnsmith',
+    gender: 'male',
+    preferences: { genre: ['action', 'comedy'] }
+  },
+  {
+    id: 'user2',
+    username: 'janedoe',
+    gender: 'female',
+    preferences: { genre: ['drama', 'romance'] }
   }
-};
+];
 
-/**
- * Updates a user's information
- */
-export const updateUser = async (userId: string, updateData: any): Promise<any> => {
-  try {
-    await connectDB();
-    
-    const userIndex = users.findIndex(u => u._id === userId);
-    if (userIndex === -1) {
-      throw new Error('User not found');
-    }
-    
-    const updatedUser = {
-      ...users[userIndex],
-      ...updateData,
-      updatedAt: new Date()
-    };
-    
-    users[userIndex] = updatedUser;
-    return updatedUser;
-  } catch (error) {
-    console.error('Error updating user:', error);
-    throw error;
-  }
-};
+// Simulated delay for async operations
+const simulateDelay = () => new Promise(resolve => setTimeout(resolve, 300));
 
-/**
- * Adds content to a user's liked content
- */
-export const addLikedContent = async (userId: string, contentItem: any): Promise<any> => {
-  try {
-    await connectDB();
-    
-    const userIndex = users.findIndex(u => u._id === userId);
-    if (userIndex === -1) {
-      throw new Error('User not found');
-    }
-    
-    // Check if content is already liked
-    const isAlreadyLiked = users[userIndex].likedContent.some((item: any) => item.id === contentItem.id);
-    
-    if (!isAlreadyLiked) {
-      users[userIndex].likedContent.push(contentItem);
-      users[userIndex].updatedAt = new Date();
-    }
-    
-    return users[userIndex];
-  } catch (error) {
-    console.error('Error adding liked content:', error);
-    throw error;
-  }
-};
-
-/**
- * Removes content from a user's liked content
- */
-export const removeLikedContent = async (userId: string, contentId: number): Promise<any> => {
-  try {
-    await connectDB();
-    
-    const userIndex = users.findIndex(u => u._id === userId);
-    if (userIndex === -1) {
-      throw new Error('User not found');
-    }
-    
-    users[userIndex].likedContent = users[userIndex].likedContent.filter(
-      (item: any) => item.id !== contentId
-    );
-    users[userIndex].updatedAt = new Date();
-    
-    return users[userIndex];
-  } catch (error) {
-    console.error('Error removing liked content:', error);
-    throw error;
-  }
-};
-
-/**
- * Creates a shared playlist
- */
-export const createSharedPlaylist = async (
-  name: string, 
-  description: string, 
-  ownerId: string, 
-  ownerName: string, 
-  content: any[],
-  mood: string
-): Promise<string> => {
-  try {
-    await connectDB();
-    
-    const playlistId = `playlist_${Date.now()}`;
-    const newPlaylist = {
-      _id: playlistId,
-      name,
-      description,
-      ownerId,
-      owner: ownerName,
-      content,
-      mood,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      views: 0
-    };
-    
-    sharedPlaylists.push(newPlaylist);
-    console.log('Shared playlist created:', newPlaylist);
-    
-    return playlistId;
-  } catch (error) {
-    console.error('Error creating shared playlist:', error);
-    throw error;
-  }
-};
-
-/**
- * Retrieves a shared playlist by ID
- */
-export const getSharedPlaylist = async (playlistId: string): Promise<any> => {
-  try {
-    await connectDB();
-    
-    const playlist = sharedPlaylists.find(p => p._id === playlistId);
-    
-    if (playlist) {
-      // Increment view count
-      playlist.views = (playlist.views || 0) + 1;
-    }
-    
-    return playlist || null;
-  } catch (error) {
-    console.error('Error getting shared playlist:', error);
-    throw error;
-  }
-};
-
-/**
- * Gets all playlists shared by a user
- */
-export const getUserSharedPlaylists = async (userId: string): Promise<any[]> => {
-  try {
-    await connectDB();
-    
-    // Ensure userId is a string for comparison
-    const stringUserId = typeof userId === 'object' ? 
-      (userId.toString ? userId.toString() : String(userId)) : 
-      String(userId);
-    
-    return sharedPlaylists.filter(p => String(p.ownerId) === stringUserId);
-  } catch (error) {
-    console.error('Error getting user shared playlists:', error);
-    throw error;
-  }
-};
-
-// For development/testing purposes
-export const clearAllData = () => {
-  users = [];
-  sharedPlaylists = [];
-  console.log('All data cleared');
-};
-
-// Initialize with some data for development
-export const initDevelopmentData = () => {
-  // Add a test user if none exists
-  if (users.length === 0) {
-    const testUser = {
-      _id: 'user_1',
-      username: 'testuser',
-      gender: 'male',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      likedContent: []
-    };
-    users.push(testUser);
-  }
+// User-related functions
+export const createUser = async (username: string, gender: 'male' | 'female') => {
+  await simulateDelay();
+  const newUser = {
+    id: `user${Date.now()}`,
+    username,
+    gender,
+    preferences: { genre: [] }
+  };
   
-  // Add a test playlist if none exists
-  if (sharedPlaylists.length === 0) {
-    const testPlaylist = {
-      _id: 'playlist_1',
-      name: 'My Favorite Movies',
-      description: 'A collection of my favorite movies and shows',
-      ownerId: 'user_1',
-      owner: 'testuser',
-      content: [
-        {
-          id: 101,
-          title: 'Inception',
-          description: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.',
-          type: 'movie',
-          imageUrl: 'https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-          rating: 8.8,
-          platform: ['Netflix', 'Amazon Prime'],
-          genre: 'Sci-Fi',
-          year: 2010
-        },
-        {
-          id: 201,
-          title: 'Bohemian Rhapsody',
-          artist: 'Queen',
-          album: 'A Night at the Opera',
-          description: 'A British rock band formed in London in 1970, widely regarded as one of the greatest rock bands of all time.',
-          type: 'song',
-          imageUrl: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-          genre: 'Rock',
-          year: 1975
-        }
-      ],
-      mood: 'happy',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      views: 12
-    };
-    sharedPlaylists.push(testPlaylist);
-  }
-  
-  console.log('Development data initialized');
+  mockUsers.push(newUser);
+  return newUser;
 };
 
-// Initialize development data when imported
-initDevelopmentData();
+export const getUserById = async (userId: string) => {
+  await simulateDelay();
+  return mockUsers.find(user => user.id === userId) || null;
+};
+
+export const updateUserPreferences = async (
+  userId: string, 
+  preferences: { genre?: string[], mood?: MoodType }
+) => {
+  await simulateDelay();
+  
+  const userIndex = mockUsers.findIndex(user => user.id === userId);
+  if (userIndex === -1) return null;
+  
+  const updatedUser = {
+    ...mockUsers[userIndex],
+    preferences: {
+      ...mockUsers[userIndex].preferences,
+      ...preferences
+    }
+  };
+  
+  mockUsers[userIndex] = updatedUser;
+  return updatedUser;
+};
+
+// Playlist-related functions
+export const createPlaylist = async (
+  name: string,
+  description: string,
+  userId: string,
+  mood: MoodType,
+  items: ContentItemProps[]
+) => {
+  await simulateDelay();
+  
+  const playlistId = `playlist_${Date.now()}`;
+  const newPlaylist = {
+    id: playlistId,
+    name,
+    description,
+    userId,
+    mood,
+    items,
+    shareCode: generateShareCode(),
+    createdAt: new Date().toISOString()
+  };
+  
+  collections.playlists.push(newPlaylist);
+  return newPlaylist;
+};
+
+export const getPlaylistByShareCode = async (shareCode: string) => {
+  await simulateDelay();
+  
+  // @ts-ignore - Mock implementation
+  return collections.playlists.find(playlist => playlist.shareCode === shareCode) || null;
+};
+
+export const getUserPlaylists = async (userId: string) => {
+  await simulateDelay();
+  
+  // @ts-ignore - Mock implementation
+  return collections.playlists.filter(playlist => playlist.userId === userId) || [];
+};
+
+// Helper functions
+const generateShareCode = () => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < 8; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};
+
+// Content-related functions
+export const getLikedContent = async (userId: string | null) => {
+  await simulateDelay();
+  
+  // Default to empty array if userId is null
+  if (!userId) return [];
+  
+  const user = await getUserById(userId);
+  if (!user) return [];
+  
+  // Mock logic to get liked content
+  // In a real database, you would query the liked content collection
+  return [];
+};
+
+export const savePlaylist = async (
+  name: string,
+  description: string,
+  userId: string | null,
+  mood: MoodType,
+  items: ContentItemProps[]
+) => {
+  await simulateDelay();
+  
+  // If userId is null, create an anonymous playlist
+  const playlistId = `playlist_${Date.now()}`;
+  const userIdToUse = userId || 'anonymous';
+  
+  const newPlaylist = {
+    id: playlistId,
+    name,
+    description,
+    userId: userIdToUse,
+    mood,
+    items,
+    shareCode: generateShareCode(),
+    createdAt: new Date().toISOString()
+  };
+  
+  // @ts-ignore - Mock implementation
+  collections.playlists.push(newPlaylist);
+  return newPlaylist;
+};
+
+export const getPlaylistById = async (playlistId: string) => {
+  await simulateDelay();
+  
+  // @ts-ignore - Mock implementation
+  return collections.playlists.find(playlist => playlist.id === playlistId) || null;
+};
+
+// Export the mock collections for testing
+export const getMockCollections = () => collections;
