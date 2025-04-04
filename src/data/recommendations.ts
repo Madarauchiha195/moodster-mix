@@ -1,3 +1,4 @@
+
 import { ContentItemProps } from "@/components/ContentCard";
 import { MoodType } from "@/components/MoodSelection";
 
@@ -669,3 +670,33 @@ const confusedMovies: ContentItemProps[] = [
     imageUrl: "https://images.unsplash.com/photo-1551361999-b9c0d0b93f34",
     rating: 7.5,
     platform: ["Prime Video"],
+    genre: "Drama, Thriller",
+    year: 2020
+  }
+];
+
+// Export all movie arrays for use in recommendations
+export const getAllMovies = () => {
+  return [
+    ...happyMovies,
+    ...sadMovies,
+    ...neutralMovies,
+    ...confusedMovies
+  ];
+};
+
+export const getRecommendedContent = (mood: MoodType) => {
+  switch (mood) {
+    case 'happy':
+      return happyMovies;
+    case 'sad':
+      return sadMovies;
+    case 'neutral':
+      return neutralMovies;
+    case 'confused':
+      return confusedMovies;
+    default:
+      return [];
+  }
+};
+
