@@ -1,3 +1,4 @@
+
 import mongoose, { Model } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 import { initializeModels, IUser, ISharedPlaylist, ObjectId } from './models';
@@ -225,7 +226,7 @@ export async function getUserSharedPlaylists(username: string) {
     const user = await UserModel.findOne({ username }).exec();
     if (!user) throw new Error('User not found');
     
-    // Fix: Type-safe conversion of shared playlist IDs to ObjectId type
+    // Create a properly typed array for ObjectId values
     const playlistIds: mongoose.Types.ObjectId[] = [];
     
     // Safely convert each ID to an ObjectId
@@ -240,9 +241,9 @@ export async function getUserSharedPlaylists(username: string) {
           else if (idItem instanceof mongoose.Types.ObjectId) {
             playlistIds.push(idItem);
           } 
-          // Handle object references with explicit type checking and casting
+          // Handle object references with explicit type checking
           else if (idItem && typeof idItem === 'object') {
-            // First, check if it's an object with _id property
+            // Check if it's an object with _id property
             if ('_id' in idItem) {
               const objWithId = idItem as { _id: string | mongoose.Types.ObjectId };
               const idString = typeof objWithId._id === 'string' 

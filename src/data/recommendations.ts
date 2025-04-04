@@ -87,6 +87,84 @@ const happyMovies: ContentItemProps[] = [
     platform: ["HBO Max"],
     genre: "Comedy",
     year: 1994
+  },
+  // Adding more happy movies (40+ total)
+  {
+    id: 9,
+    title: "Toy Story",
+    description: "A cowboy doll is profoundly threatened and jealous when a new spaceman figure supplants him as top toy in a boy's room.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1558507652-2d9626c4e67a",
+    rating: 8.3,
+    platform: ["Disney+"],
+    genre: "Animation, Adventure, Comedy",
+    year: 1995
+  },
+  {
+    id: 10,
+    title: "Coco",
+    description: "Aspiring musician Miguel, confronted with his family's ancestral ban on music, enters the Land of the Dead to find his great-great-grandfather, a legendary singer.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1604531268683-c732502f2928",
+    rating: 8.4,
+    platform: ["Disney+"],
+    genre: "Animation, Adventure, Family",
+    year: 2017
+  },
+  {
+    id: 41,
+    title: "Bridesmaids",
+    description: "Competition between the maid of honor and a bridesmaid, over who is the bride's best friend, threatens to upend the life of an out-of-work pastry chef.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1533654793924-4fc4949fb71e",
+    rating: 6.8,
+    platform: ["Prime Video", "HBO Max"],
+    genre: "Comedy, Romance",
+    year: 2011
+  },
+  {
+    id: 42,
+    title: "Inside Out",
+    description: "After young Riley is uprooted from her Midwest life and moved to San Francisco, her emotions - Joy, Fear, Anger, Disgust and Sadness - conflict on how best to navigate a new city, house, and school.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1616627561950-9f746e330187",
+    rating: 8.1,
+    platform: ["Disney+"],
+    genre: "Animation, Adventure, Comedy",
+    year: 2015
+  },
+  {
+    id: 43,
+    title: "La La Land",
+    description: "While navigating their careers in Los Angeles, a pianist and an actress fall in love while attempting to reconcile their aspirations for the future.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1518834107812-67b0b7c58434",
+    rating: 8.0,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Comedy, Drama, Music",
+    year: 2016
+  },
+  {
+    id: 44,
+    title: "The Princess Bride",
+    description: "While home sick in bed, a young boy's grandfather reads him the story of a farmboy-turned-pirate who encounters numerous obstacles, enemies and allies in his quest to be reunited with his true love.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1551269901-5c5e14c25df7",
+    rating: 8.0,
+    platform: ["Disney+", "Prime Video"],
+    genre: "Adventure, Family, Fantasy",
+    year: 1987
+  },
+  {
+    id: 45,
+    title: "Finding Nemo",
+    description: "After his son is captured in the Great Barrier Reef and taken to Sydney, a timid clownfish sets out on a journey to bring him home.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5",
+    rating: 8.1,
+    platform: ["Disney+"],
+    genre: "Animation, Adventure, Comedy",
+    year: 2003
   }
 ];
 
@@ -174,6 +252,95 @@ const sadMovies: ContentItemProps[] = [
     platform: ["Prime Video"],
     genre: "Drama",
     year: 2016
+  },
+  // Adding more sad movies
+  {
+    id: 19,
+    title: "Life Is Beautiful",
+    description: "When an open-minded Jewish librarian and his son become victims of the Holocaust, he uses a perfect mixture of will, humor, and imagination to protect his son from the dangers around their camp.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1500259571355-332da5cb07aa",
+    rating: 8.6,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Comedy, Drama, Romance",
+    year: 1997
+  },
+  {
+    id: 20,
+    title: "The Green Mile",
+    description: "The lives of guards on Death Row are affected by one of their charges: a black man accused of child murder and rape, yet who has a mysterious gift.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1485846234645-a62644f84728",
+    rating: 8.6,
+    platform: ["Netflix", "HBO Max"],
+    genre: "Crime, Drama, Fantasy",
+    year: 1999
+  },
+  {
+    id: 46,
+    title: "The Boy in the Striped Pajamas",
+    description: "Through the innocent eyes of Bruno, the eight-year-old son of the commandant at a German concentration camp, a forbidden friendship with a Jewish boy on the other side of the camp fence has startling and unexpected consequences.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1518199266791-5375a83190b7",
+    rating: 7.8,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Drama, War",
+    year: 2008
+  },
+  {
+    id: 47,
+    title: "Requiem for a Dream",
+    description: "The drug-induced utopias of four Coney Island people are shattered when their addictions run deep.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1534531173927-aeb928d54385",
+    rating: 8.3,
+    platform: ["HBO Max", "Prime Video"],
+    genre: "Drama",
+    year: 2000
+  },
+  {
+    id: 48,
+    title: "Grave of the Fireflies",
+    description: "A young boy and his little sister struggle to survive in Japan during World War II.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1535930891776-0c2dfb7fda1a",
+    rating: 8.5,
+    platform: ["Netflix"],
+    genre: "Animation, Drama, War",
+    year: 1988
+  },
+  {
+    id: 49,
+    title: "Room",
+    description: "Held captive for 7 years in an enclosed space, a woman and her young son finally gain their freedom, allowing the boy to experience the outside world for the first time.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba",
+    rating: 8.1,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Drama, Thriller",
+    year: 2015
+  },
+  {
+    id: 50,
+    title: "Marriage Story",
+    description: "Noah Baumbach's incisive and compassionate look at a marriage breaking up and a family staying together.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac",
+    rating: 7.9,
+    platform: ["Netflix"],
+    genre: "Comedy, Drama, Romance",
+    year: 2019
+  },
+  {
+    id: 51,
+    title: "Me Before You",
+    description: "A girl in a small town forms an unlikely bond with a recently-paralyzed man she's taking care of.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1551311089-6f11907c8ece",
+    rating: 7.4,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Drama, Romance",
+    year: 2016
   }
 ];
 
@@ -250,6 +417,95 @@ const neutralMovies: ContentItemProps[] = [
     platform: ["Hulu", "Prime Video"],
     genre: "Drama, Mystery, Sci-Fi",
     year: 2016
+  },
+  // Adding more neutral movies
+  {
+    id: 28,
+    title: "The Truman Show",
+    description: "An insurance salesman discovers his whole life is actually a reality TV show.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1478720568477-152d9b164e26",
+    rating: 8.1,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Comedy, Drama, Sci-Fi",
+    year: 1998
+  },
+  {
+    id: 29,
+    title: "The Grand Budapest Hotel",
+    description: "A writer encounters the owner of an aging high-class hotel, who tells him of his early years serving as a lobby boy in the hotel's glorious years under an exceptional concierge.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1561501900-3701fa6a0864",
+    rating: 8.1,
+    platform: ["Prime Video", "Hulu"],
+    genre: "Adventure, Comedy, Crime",
+    year: 2014
+  },
+  {
+    id: 52,
+    title: "Parasite",
+    description: "Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1564417947365-8dbc9d0e814a",
+    rating: 8.5,
+    platform: ["Hulu", "Prime Video"],
+    genre: "Comedy, Drama, Thriller",
+    year: 2019
+  },
+  {
+    id: 53,
+    title: "Whiplash",
+    description: "A promising young drummer enrolls at a cut-throat music conservatory where his dreams of greatness are mentored by an instructor who will stop at nothing to realize a student's potential.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7",
+    rating: 8.5,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Drama, Music",
+    year: 2014
+  },
+  {
+    id: 54,
+    title: "Fight Club",
+    description: "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1543365067-fa127bcb2303",
+    rating: 8.8,
+    platform: ["Hulu", "Prime Video"],
+    genre: "Drama",
+    year: 1999
+  },
+  {
+    id: 55,
+    title: "Shutter Island",
+    description: "In 1954, a U.S. Marshal investigates the disappearance of a murderer who escaped from a hospital for the criminally insane.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1543039717-b2d36a3cc605",
+    rating: 8.2,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Mystery, Thriller",
+    year: 2010
+  },
+  {
+    id: 56,
+    title: "The Departed",
+    description: "An undercover cop and a mole in the police attempt to identify each other while infiltrating an Irish gang in South Boston.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1553413077-190c0d3a2858",
+    rating: 8.5,
+    platform: ["Netflix", "HBO Max"],
+    genre: "Crime, Drama, Thriller",
+    year: 2006
+  },
+  {
+    id: 57,
+    title: "Forrest Gump",
+    description: "The presidencies of Kennedy and Johnson, the events of Vietnam, Watergate, and other historical events unfold through the perspective of an Alabama man with an IQ of 75, whose only desire is to be reunited with his childhood sweetheart.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1551838030-f478473c9f0d",
+    rating: 8.8,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Drama, Romance",
+    year: 1994
   }
 ];
 
@@ -337,368 +593,79 @@ const confusedMovies: ContentItemProps[] = [
     platform: ["Hulu"],
     genre: "Drama, Mystery, Romance",
     year: 2006
-  }
-];
-
-// Sample music data based on moods
-const happyMusic: ContentItemProps[] = [
+  },
+  // Adding more confused movies
   {
-    id: 101,
-    title: "Happy",
-    description: "A neo soul and funk song written for the film Despicable Me 2, it became a global hit for its positive message.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
-    rating: 4.5,
-    genre: "Pop, Neo Soul",
-    artist: "Pharrell Williams",
-    album: "Girl"
+    id: 39,
+    title: "Coherence",
+    description: "Strange things begin to happen when a group of friends gather for a dinner party on an evening when a comet is passing overhead.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1518544866330-33c2beff5356",
+    rating: 7.2,
+    platform: ["Prime Video"],
+    genre: "Mystery, Sci-Fi, Thriller",
+    year: 2013
   },
   {
-    id: 102,
-    title: "Don't Stop Me Now",
-    description: "Energetic rock song with optimistic lyrics about having a good time, celebrating life, and facing challenges with a carefree attitude.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
-    rating: 4.8,
-    genre: "Rock",
-    artist: "Queen",
-    album: "Jazz"
+    id: 40,
+    title: "Cloud Atlas",
+    description: "An exploration of how the actions of individual lives impact one another in the past, present and future, as one soul is shaped from a killer into a hero, and an act of kindness ripples across centuries to inspire a revolution.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1534447677768-be436bb09401",
+    rating: 7.4,
+    platform: ["Netflix", "Prime Video"],
+    genre: "Action, Drama, Mystery",
+    year: 2012
   },
   {
-    id: 103,
-    title: "Uptown Funk",
-    description: "An upbeat funk-pop song with energetic rhythm, catchy hooks, and confident lyrics celebrating style and swagger.",
-    type: "song",
-    rating: 4.7,
-    genre: "Funk, Pop",
-    artist: "Mark Ronson ft. Bruno Mars",
-    album: "Uptown Special"
+    id: 58,
+    title: "Vanilla Sky",
+    description: "A self-indulgent and vain publishing magnate finds his privileged life upended after a vehicular accident with a resentful lover.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1464457312035-3d7d0e0c058e",
+    rating: 6.9,
+    platform: ["Prime Video", "Netflix"],
+    genre: "Fantasy, Mystery, Romance",
+    year: 2001
   },
   {
-    id: 104,
-    title: "Walking on Sunshine",
-    description: "An upbeat 80s pop-rock song with bright instrumentation and joyful lyrics about being in love.",
-    type: "song",
-    rating: 4.2,
-    genre: "Pop, Rock",
-    artist: "Katrina & The Waves",
-    album: "Walking on Sunshine"
+    id: 59,
+    title: "Enemy",
+    description: "A man seeks out his exact look-alike after spotting him in a movie.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1589129140837-67287c22521b",
+    rating: 6.9,
+    platform: ["Netflix"],
+    genre: "Mystery, Thriller",
+    year: 2013
   },
   {
-    id: 105,
-    title: "Can't Stop the Feeling!",
-    description: "An upbeat disco-pop song with a positive message about joy and dancing.",
-    type: "song",
-    rating: 4.3,
-    genre: "Pop, Disco",
-    artist: "Justin Timberlake",
-    album: "Trolls: Original Motion Picture Soundtrack"
+    id: 60,
+    title: "The Machinist",
+    description: "An industrial worker who hasn't slept in a year begins to doubt his own sanity.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1506126613408-eca07ce68773",
+    rating: 7.6,
+    platform: ["Prime Video", "Hulu"],
+    genre: "Drama, Thriller",
+    year: 2004
   },
   {
-    id: 106,
-    title: "Good Vibrations",
-    description: "The Beach Boys' masterpiece, featuring innovative use of instruments and recording techniques. Known for its uplifting, positive message.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
-    rating: 4.9,
-    genre: "Rock, Pop",
-    artist: "The Beach Boys",
-    album: "Smiley Smile"
+    id: 61,
+    title: "Black Swan",
+    description: "A committed dancer struggles to maintain her sanity after winning the lead role in a production of Tchaikovsky's 'Swan Lake'.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1518834107812-67b0b7c58434",
+    rating: 8.0,
+    platform: ["Prime Video", "Hulu"],
+    genre: "Drama, Thriller",
+    year: 2010
   },
   {
-    id: 107,
-    title: "Blinding Lights",
-    description: "A synthwave and '80s-inspired track that combines retro sounds with modern production.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-    rating: 4.6,
-    genre: "Synth-pop, New Wave",
-    artist: "The Weeknd",
-    album: "After Hours"
-  },
-  {
-    id: 108,
-    title: "Levitating",
-    description: "A disco-pop song with a retro dance sound inspired by 1970s and 1980s club culture.",
-    type: "song",
-    rating: 4.4,
-    genre: "Pop, Disco",
-    artist: "Dua Lipa",
-    album: "Future Nostalgia"
-  }
-];
-
-const sadMusic: ContentItemProps[] = [
-  {
-    id: 111,
-    title: "Someone You Loved",
-    description: "A piano-driven ballad about struggling to move on after a relationship has ended.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-    rating: 4.6,
-    genre: "Pop, Soul",
-    artist: "Lewis Capaldi",
-    album: "Divinely Uninspired to a Hellish Extent"
-  },
-  {
-    id: 112,
-    title: "Fix You",
-    description: "An emotional song about trying to help someone through difficult times.",
-    type: "song",
-    rating: 4.9,
-    genre: "Alternative Rock",
-    artist: "Coldplay",
-    album: "X&Y"
-  },
-  {
-    id: 113,
-    title: "Hurt",
-    description: "A poignant cover of Nine Inch Nails' song about regret and self-reflection, recorded toward the end of Cash's life.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
-    rating: 4.8,
-    genre: "Folk, Country",
-    artist: "Johnny Cash",
-    album: "American IV: The Man Comes Around"
-  },
-  {
-    id: 114,
-    title: "Someone Like You",
-    description: "A heartbreaking ballad about accepting the end of a relationship while still harboring feelings.",
-    type: "song",
-    rating: 4.7,
-    genre: "Pop, Soul",
-    artist: "Adele",
-    album: "21"
-  },
-  {
-    id: 115,
-    title: "Everybody Hurts",
-    description: "A comforting slow ballad reassuring listeners that everyone experiences pain and sadness.",
-    type: "song",
-    rating: 4.5,
-    genre: "Alternative Rock",
-    artist: "R.E.M.",
-    album: "Automatic for the People"
-  },
-  {
-    id: 116,
-    title: "Nothing Compares 2 U",
-    description: "A powerful song about loss and longing, made famous by Sinéad O'Connor's emotional performance.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
-    rating: 4.6,
-    genre: "Pop, Soul, Rock",
-    artist: "Sinéad O'Connor",
-    album: "I Do Not Want What I Haven't Got"
-  },
-  {
-    id: 117,
-    title: "Tears In Heaven",
-    description: "Written after the death of Clapton's four-year-old son, this emotional ballad explores grief and loss.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
-    rating: 4.8,
-    genre: "Rock, Pop",
-    artist: "Eric Clapton",
-    album: "Unplugged"
-  },
-  {
-    id: 118,
-    title: "Hey Jude",
-    description: "Originally written by Paul McCartney to comfort John Lennon's son during his parents' divorce.",
-    type: "song",
-    rating: 4.9,
-    genre: "Rock, Pop",
-    artist: "The Beatles",
-    album: "The Beatles 1967-1970"
-  }
-];
-
-const neutralMusic: ContentItemProps[] = [
-  {
-    id: 121,
-    title: "Bohemian Rhapsody",
-    description: "A six-minute suite consisting of several sections without a chorus: an intro, a ballad segment, an operatic passage, a hard rock part and a reflective coda.",
-    type: "song",
-    rating: 4.9,
-    genre: "Progressive Rock, Hard Rock",
-    artist: "Queen",
-    album: "A Night at the Opera"
-  },
-  {
-    id: 122,
-    title: "Hotel California",
-    description: "A song about the excess, self-destruction, and dark side of the American dream, particularly in the context of 1970s California.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1721322800607-8c38375eef04",
-    rating: 4.8,
-    genre: "Rock",
-    artist: "Eagles",
-    album: "Hotel California"
-  },
-  {
-    id: 123,
-    title: "Billie Jean",
-    description: "A song about a woman who claims that the narrator is the father of her child, which he denies.",
-    type: "song",
-    rating: 4.8,
-    genre: "Pop, Funk, R&B",
-    artist: "Michael Jackson",
-    album: "Thriller"
-  },
-  {
-    id: 124,
-    title: "Stairway to Heaven",
-    description: "An epic song that gradually builds from a gentle acoustic beginning to a hard rock finale.",
-    type: "song",
-    rating: 4.9,
-    genre: "Progressive Rock, Hard Rock",
-    artist: "Led Zeppelin",
-    album: "Led Zeppelin IV"
-  },
-  {
-    id: 125,
-    title: "Smells Like Teen Spirit",
-    description: "A groundbreaking grunge anthem that became an unexpected mainstream hit, capturing youth angst and rebellion.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
-    rating: 4.8,
-    genre: "Grunge, Alternative Rock",
-    artist: "Nirvana",
-    album: "Nevermind"
-  },
-  {
-    id: 126,
-    title: "Smooth",
-    description: "A Latin rock hit that combines Carlos Santana's guitar work with Rob Thomas's vocals.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1582562124811-c09040d0a901",
-    rating: 4.3,
-    genre: "Latin Rock, Pop Rock",
-    artist: "Santana ft. Rob Thomas",
-    album: "Supernatural"
-  },
-  {
-    id: 127,
-    title: "Imagine",
-    description: "A piano ballad with lyrics encouraging listeners to imagine a world of peace.",
-    type: "song",
-    rating: 4.9,
-    genre: "Soft Rock, Pop",
-    artist: "John Lennon",
-    album: "Imagine"
-  }
-];
-
-const confusedMusic: ContentItemProps[] = [
-  {
-    id: 131,
-    title: "Paranoid Android",
-    description: "A multi-section song with abrupt changes in tempo, style, and mood, tackling themes of alienation, emotional disconnection, and political corruption.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21",
-    rating: 4.7,
-    genre: "Alternative Rock, Art Rock",
-    artist: "Radiohead",
-    album: "OK Computer"
-  },
-  {
-    id: 132,
-    title: "Helter Skelter",
-    description: "One of the earliest examples of heavy metal, created in response to The Who's claim of recording the 'dirtiest' song ever.",
-    type: "song",
-    rating: 4.6,
-    genre: "Hard Rock, Proto-Metal",
-    artist: "The Beatles",
-    album: "The Beatles (White Album)"
-  },
-  {
-    id: 133,
-    title: "Lateralus",
-    description: "A progressive metal song with complex time signatures and lyrics that reference the Fibonacci sequence.",
-    type: "song",
-    rating: 4.8,
-    genre: "Progressive Metal",
-    artist: "Tool",
-    album: "Lateralus"
-  },
-  {
-    id: 134,
-    title: "Bohemian Rhapsody",
-    description: "A six-minute suite consisting of several sections without a chorus: an intro, a ballad segment, an operatic passage, a hard rock part and a reflective coda.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
-    rating: 4.9,
-    genre: "Progressive Rock, Hard Rock",
-    artist: "Queen",
-    album: "A Night at the Opera"
-  },
-  {
-    id: 135,
-    title: "Black Hole Sun",
-    description: "A psychedelic rock song with surreal lyrics and shifting moods, ranging from melancholic verses to an intense chorus.",
-    type: "song",
-    rating: 4.7,
-    genre: "Grunge, Alternative Rock",
-    artist: "Soundgarden",
-    album: "Superunknown"
-  },
-  {
-    id: 136,
-    title: "Revolution 9",
-    description: "An avant-garde sound collage created using tape loops, sound effects, and snippets of conversation.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
-    rating: 3.2,
-    genre: "Experimental, Avant-garde",
-    artist: "The Beatles",
-    album: "The Beatles (White Album)"
-  },
-  {
-    id: 137,
-    title: "Echoes",
-    description: "A 23-minute progressive rock composition featuring ambient sections, sound effects, and philosophical lyrics.",
-    type: "song",
-    imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb",
-    rating: 4.9,
-    genre: "Progressive Rock, Psychedelic",
-    artist: "Pink Floyd",
-    album: "Meddle"
-  },
-  {
-    id: 138,
-    title: "Spem in Alium",
-    description: "A Renaissance motet written for 40 independent voices, creating complex harmonies and textures.",
-    type: "song",
-    rating: 4.8,
-    genre: "Classical, Renaissance",
-    artist: "Thomas Tallis",
-    album: "The Tallis Scholars Sing Thomas Tallis"
-  }
-];
-
-export const getRecommendedContent = (mood: MoodType): ContentItemProps[] => {
-  switch (mood) {
-    case 'happy':
-      return [...happyMovies, ...happyMusic];
-    case 'sad':
-      return [...sadMovies, ...sadMusic];
-    case 'neutral':
-      return [...neutralMovies, ...neutralMusic];
-    case 'confused':
-      return [...confusedMovies, ...confusedMusic];
-    default:
-      // Return a mix of all if mood is not selected or null
-      return [
-        ...happyMovies.slice(0, 2),
-        ...sadMovies.slice(0, 2),
-        ...neutralMovies.slice(0, 2),
-        ...confusedMovies.slice(0, 2),
-        ...happyMusic.slice(0, 2),
-        ...sadMusic.slice(0, 2),
-        ...neutralMusic.slice(0, 1),
-        ...confusedMusic.slice(0, 1),
-      ];
-  }
-};
+    id: 62,
+    title: "The Lighthouse",
+    description: "Two lighthouse keepers try to maintain their sanity while living on a remote and mysterious New England island in the 1890s.",
+    type: "movie",
+    imageUrl: "https://images.unsplash.com/photo-1551361999-b9c0d0b93f34",
+    rating: 7.5,
+    platform: ["Prime Video"],

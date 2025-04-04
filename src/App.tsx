@@ -11,6 +11,7 @@ import Background from "./components/Background";
 import React, { useEffect, useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { connectToDatabase } from "./services/mongodb/db";
+import { toast } from "sonner";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -22,11 +23,18 @@ const App = () => {
   useEffect(() => {
     const initDb = async () => {
       try {
-        await connectToDatabase();
-        console.log('MongoDB connection established');
+        // MongoDB connection is not working properly in the browser environment
+        // This is expected since we can't connect directly to MongoDB from the browser
+        // For production, we would need a backend API or serverless functions
+        // For now, we'll mock the connection
+        // await connectToDatabase();
+        console.log('Simulating MongoDB connection');
         setDbReady(true);
       } catch (error) {
         console.error('Failed to connect to MongoDB:', error);
+        toast.error("Database connection failed", {
+          description: "Using local storage for persistence instead",
+        });
         // Still set to true to allow app to function even if DB fails
         setDbReady(true);
       }

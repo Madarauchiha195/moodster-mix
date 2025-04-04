@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { X, Heart, Film, Music, Clock, Plus, UserIcon } from 'lucide-react';
+import { X, Heart, Film, Music, Clock, Plus, UserIcon, LogOut } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from 'framer-motion';
 import { useOutsideClick } from '@/hooks/use-outside-click';
@@ -17,6 +17,7 @@ interface UserProfileProps {
   playlist?: ContentItemProps[];
   likedContent?: ContentItemProps[];
   activeTab?: 'profile' | 'watchlist' | 'playlist' | 'liked' | 'movies' | 'music';
+  onLogout?: () => void;
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({
@@ -27,7 +28,8 @@ const UserProfile: React.FC<UserProfileProps> = ({
   watchlist = [],
   playlist = [],
   likedContent = [],
-  activeTab: initialTab
+  activeTab: initialTab,
+  onLogout
 }) => {
   const [activeTab, setActiveTab] = useState<'profile' | 'watchlist' | 'playlist' | 'liked'>
     (initialTab === 'movies' ? 'watchlist' : 
@@ -190,6 +192,16 @@ const UserProfile: React.FC<UserProfileProps> = ({
                           <span className="text-white">On</span>
                         </div>
                       </div>
+                      
+                      {/* Logout button */}
+                      <Button 
+                        variant="destructive" 
+                        className="w-full mt-6 bg-red-900/80 hover:bg-red-900 border border-red-700/50 flex items-center justify-center"
+                        onClick={onLogout}
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Logout
+                      </Button>
                     </div>
                   </div>
                 )}

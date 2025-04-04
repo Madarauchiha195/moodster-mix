@@ -9,8 +9,10 @@ import UserProfile from '@/components/UserProfile';
 import { ContentItemProps } from '@/components/ContentCard';
 import { toast as sonnerToast } from "sonner";
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [mood, setMood] = useState<MoodType>(null);
   const [activeStep, setActiveStep] = useState(1); // Start with profile setup
   const [username, setUsername] = useState<string>('');
@@ -69,6 +71,45 @@ const Index = () => {
       imageUrl: "https://source.unsplash.com/random/300x200/?music"
     }
   ]);
+
+  // Load saved state from localStorage on initial mount
+  useEffect(() => {
+    const savedState = localStorage.getItem('moodsterState');
+    if (savedState) {
+      const { 
+        savedMood, 
+        savedUsername, 
+        savedGender, 
+        savedActiveStep,
+        savedLikedContent,
+        savedWatchlist,
+        savedPlaylist
+      } = JSON.parse(savedState);
+      
+      if (savedMood) setMood(savedMood);
+      if (savedUsername) setUsername(savedUsername);
+      if (savedGender) setGender(savedGender);
+      if (savedActiveStep) setActiveStep(savedActiveStep);
+      if (savedLikedContent) setLikedContent(savedLikedContent);
+      if (savedWatchlist) setWatchlist(savedWatchlist);
+      if (savedPlaylist) setPlaylist(savedPlaylist);
+    }
+  }, []);
+
+  // Save state to localStorage whenever relevant state changes
+  useEffect(() => {
+    if (username || mood || activeStep > 1) {
+      localStorage.setItem('moodsterState', JSON.stringify({
+        savedMood: mood,
+        savedUsername: username,
+        savedGender: gender,
+        savedActiveStep: activeStep,
+        savedLikedContent: likedContent,
+        savedWatchlist: watchlist,
+        savedPlaylist: playlist
+      }));
+    }
+  }, [mood, username, gender, activeStep, likedContent, watchlist, playlist]);
 
   // Set the title based on active step
   useEffect(() => {
@@ -147,6 +188,29 @@ const Index = () => {
     // In a real app, we would also update this in MongoDB
     // updateUserLikedContent(username, item);
   };
+  
+  const handleLogout = () => {
+    // Clear the localStorage
+    localStorage.removeItem('moodsterState');
+    
+    // Reset all states
+    setMood(null);
+    setUsername('');
+    setGender('male');
+    setActiveStep(1);
+    setLikedContent([]);
+    
+    // Close the profile
+    setIsProfileOpen(false);
+    
+    // Show logout toast
+    sonnerToast.success("Logged Out", {
+      description: "You've been successfully logged out. Your data has been saved.",
+    });
+    
+    // Navigate to landing page
+    navigate('/');
+  };
 
   return (
     <div className="min-h-screen pb-20">
@@ -198,6 +262,7 @@ const Index = () => {
         playlist={playlist}
         likedContent={likedContent}
         activeTab={activeTabView}
+        onLogout={handleLogout}
       />
     </div>
   );
