@@ -240,18 +240,27 @@ export async function getUserSharedPlaylists(username: string) {
           else if (idItem instanceof mongoose.Types.ObjectId) {
             playlistIds.push(idItem);
           } 
-          // Handle object references with type assertion
+          // Handle object references with explicit type checking and casting
           else if (idItem && typeof idItem === 'object') {
-            const idObj = idItem as { _id?: string | mongoose.Types.ObjectId, toString?: () => string };
-            
-            if (idObj._id) {
-              const idString = typeof idObj._id === 'string' 
-                ? idObj._id 
-                : idObj._id.toString();
+            // First, check if it's an object with _id property
+            if ('_id' in idItem) {
+              const objWithId = idItem as { _id: string | mongoose.Types.ObjectId };
+              const idString = typeof objWithId._id === 'string' 
+                ? objWithId._id 
+                : objWithId._id.toString();
               playlistIds.push(new mongoose.Types.ObjectId(idString));
-            } 
-            else if (typeof idObj.toString === 'function') {
-              playlistIds.push(new mongoose.Types.ObjectId(idObj.toString()));
+            }
+            // If it has a toString method, use that
+            else if (typeof (idItem as { toString?: () => string }).toString === 'function') {
+              const stringifiable = idItem as { toString: () => string };
+              playlistIds.push(new mongoose.Types.ObjectId(stringifiable.toString()));
+            }
+            // Last resort: try to stringify the object and extract an id
+            else {
+              const idString = String(idItem).replace(/[^0-9a-fA-F]/g, '');
+              if (idString.length === 24) { // Valid ObjectId is 24 hex chars
+                playlistIds.push(new mongoose.Types.ObjectId(idString));
+              }
             }
           }
         } catch (err) {
