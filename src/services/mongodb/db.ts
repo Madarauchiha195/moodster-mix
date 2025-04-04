@@ -1,4 +1,3 @@
-
 import mongoose, { Model } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 import { initializeModels, IUser, ISharedPlaylist, ObjectId } from './models';
@@ -241,26 +240,25 @@ export async function getUserSharedPlaylists(username: string) {
           else if (idItem instanceof mongoose.Types.ObjectId) {
             playlistIds.push(idItem);
           } 
-          // Handle object references with explicit type checking
-          else if (idItem && typeof idItem === 'object') {
-            // Check if it's an object with _id property
+          // Handle MongoDB document IDs
+          else if (typeof idItem === 'object' && idItem !== null) {
+            // Handle MongoDB document reference with _id property
             if ('_id' in idItem) {
-              const objWithId = idItem as { _id: string | mongoose.Types.ObjectId };
-              const idString = typeof objWithId._id === 'string' 
-                ? objWithId._id 
-                : objWithId._id.toString();
-              playlistIds.push(new mongoose.Types.ObjectId(idString));
+              const objId = idItem._id;
+              if (typeof objId === 'string') {
+                playlistIds.push(new mongoose.Types.ObjectId(objId));
+              } else if (objId instanceof mongoose.Types.ObjectId) {
+                playlistIds.push(objId);
+              } else if (objId && typeof objId === 'object' && objId.toString) {
+                playlistIds.push(new mongoose.Types.ObjectId(objId.toString()));
+              }
             }
-            // If it has a toString method, use that
-            else if (typeof (idItem as { toString?: () => string }).toString === 'function') {
-              const stringifiable = idItem as { toString: () => string };
-              playlistIds.push(new mongoose.Types.ObjectId(stringifiable.toString()));
-            }
-            // Last resort: try to stringify the object and extract an id
-            else {
-              const idString = String(idItem).replace(/[^0-9a-fA-F]/g, '');
-              if (idString.length === 24) { // Valid ObjectId is 24 hex chars
-                playlistIds.push(new mongoose.Types.ObjectId(idString));
+            // If it has a toString method and looks like an ObjectId
+            else if (idItem.toString && typeof idItem.toString === 'function') {
+              const idStr = idItem.toString();
+              // Only add if it looks like a valid ObjectId (24 hex chars)
+              if (/^[0-9a-fA-F]{24}$/.test(idStr)) {
+                playlistIds.push(new mongoose.Types.ObjectId(idStr));
               }
             }
           }
@@ -273,7 +271,7 @@ export async function getUserSharedPlaylists(username: string) {
     
     // Then get their playlists using the ids stored in user.sharedPlaylists
     const playlists = await SharedPlaylistModel.find({
-      _id: { $in: playlistIds }
+      _id: { $in: playlistIds.length > 0 ? playlistIds : [] }
     })
     .lean()
     .exec();
