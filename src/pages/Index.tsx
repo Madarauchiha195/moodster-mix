@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import MoodSelection, { MoodType } from '@/components/MoodSelection';
@@ -18,10 +17,14 @@ const Index = () => {
   const [username, setUsername] = useState<string>('');
   const [gender, setGender] = useState<'male' | 'female'>('male');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [activeTabView, setActiveTabView] = useState<'movies' | 'music' | null>(null);
+  
+  const [activeTabView, setActiveTabView] = useState<'movies' | 'music' | null>(() => {
+    const savedTabView = localStorage.getItem('moodsterUserTabView');
+    return (savedTabView as 'movies' | 'music' | null) || null;
+  });
+  
   const [likedContent, setLikedContent] = useState<ContentItemProps[]>([]);
 
-  // Sample data for user's saved content
   const [watchlist, setWatchlist] = useState<ContentItemProps[]>([
     {
       id: 101,
@@ -72,7 +75,6 @@ const Index = () => {
     }
   ]);
 
-  // Load saved state from localStorage on initial mount
   useEffect(() => {
     const savedState = localStorage.getItem('moodsterState');
     if (savedState) {
@@ -83,7 +85,8 @@ const Index = () => {
         savedActiveStep,
         savedLikedContent,
         savedWatchlist,
-        savedPlaylist
+        savedPlaylist,
+        savedActiveTabView
       } = JSON.parse(savedState);
       
       if (savedMood) setMood(savedMood);
@@ -93,10 +96,10 @@ const Index = () => {
       if (savedLikedContent) setLikedContent(savedLikedContent);
       if (savedWatchlist) setWatchlist(savedWatchlist);
       if (savedPlaylist) setPlaylist(savedPlaylist);
+      if (savedActiveTabView) setActiveTabView(savedActiveTabView);
     }
   }, []);
 
-  // Save state to localStorage whenever relevant state changes
   useEffect(() => {
     if (username || mood || activeStep > 1) {
       localStorage.setItem('moodsterState', JSON.stringify({
@@ -106,12 +109,18 @@ const Index = () => {
         savedActiveStep: activeStep,
         savedLikedContent: likedContent,
         savedWatchlist: watchlist,
-        savedPlaylist: playlist
+        savedPlaylist: playlist,
+        savedActiveTabView: activeTabView
       }));
     }
-  }, [mood, username, gender, activeStep, likedContent, watchlist, playlist]);
+  }, [mood, username, gender, activeStep, likedContent, watchlist, playlist, activeTabView]);
 
-  // Set the title based on active step
+  useEffect(() => {
+    if (activeTabView) {
+      localStorage.setItem('moodsterUserTabView', activeTabView);
+    }
+  }, [activeTabView]);
+
   useEffect(() => {
     const titles = [
       'Create Your Profile',
@@ -168,47 +177,32 @@ const Index = () => {
   };
   
   const handleLikeContent = (item: ContentItemProps) => {
-    // Check if the item is already liked
     const isAlreadyLiked = likedContent.some(content => content.id === item.id);
     
     if (isAlreadyLiked) {
-      // If already liked, remove it from the liked content
       setLikedContent(prev => prev.filter(content => content.id !== item.id));
       sonnerToast.info("Removed from likes", {
         description: `${item.title} has been removed from your liked content.`,
       });
     } else {
-      // If not liked, add it to the liked content
       setLikedContent(prev => [...prev, item]);
       sonnerToast.success("Added to likes", {
         description: `${item.title} has been added to your liked content.`,
       });
     }
-    
-    // In a real app, we would also update this in MongoDB
-    // updateUserLikedContent(username, item);
   };
   
   const handleLogout = () => {
-    // Clear the localStorage
     localStorage.removeItem('moodsterState');
-    
-    // Reset all states
     setMood(null);
     setUsername('');
     setGender('male');
     setActiveStep(1);
     setLikedContent([]);
-    
-    // Close the profile
     setIsProfileOpen(false);
-    
-    // Show logout toast
     sonnerToast.success("Logged Out", {
       description: "You've been successfully logged out. Your data has been saved.",
     });
-    
-    // Navigate to landing page
     navigate('/');
   };
 
@@ -252,7 +246,6 @@ const Index = () => {
         )}
       </main>
 
-      {/* User Profile Modal */}
       <UserProfile
         isOpen={isProfileOpen}
         onClose={handleCloseProfile}

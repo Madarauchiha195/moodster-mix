@@ -1,3 +1,4 @@
+
 import mongoose, { Model } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 import { initializeModels, IUser, ISharedPlaylist, ObjectId } from './models';
@@ -240,24 +241,25 @@ export async function getUserSharedPlaylists(username: string) {
           else if (idItem instanceof mongoose.Types.ObjectId) {
             playlistIds.push(idItem);
           } 
-          // Handle MongoDB document IDs
-          else if (typeof idItem === 'object' && idItem !== null) {
+          // Handle MongoDB document IDs as objects that could be various types
+          else if (idItem && typeof idItem === 'object') {
             // Handle MongoDB document reference with _id property
             if ('_id' in idItem) {
-              const objId = idItem._id;
+              const objId = (idItem as { _id: unknown })._id;
               if (typeof objId === 'string') {
                 playlistIds.push(new mongoose.Types.ObjectId(objId));
               } else if (objId instanceof mongoose.Types.ObjectId) {
                 playlistIds.push(objId);
-              } else if (objId && typeof objId === 'object' && objId.toString) {
+              } else if (objId && typeof objId === 'object' && 'toString' in objId && typeof objId.toString === 'function') {
                 playlistIds.push(new mongoose.Types.ObjectId(objId.toString()));
               }
             }
             // If it has a toString method and looks like an ObjectId
-            else if (idItem.toString && typeof idItem.toString === 'function') {
-              const idStr = idItem.toString();
+            else if ('toString' in idItem && typeof (idItem as { toString: unknown }).toString === 'function') {
+              const toString = (idItem as { toString: Function }).toString;
+              const idStr = toString.call(idItem);
               // Only add if it looks like a valid ObjectId (24 hex chars)
-              if (/^[0-9a-fA-F]{24}$/.test(idStr)) {
+              if (typeof idStr === 'string' && /^[0-9a-fA-F]{24}$/.test(idStr)) {
                 playlistIds.push(new mongoose.Types.ObjectId(idStr));
               }
             }

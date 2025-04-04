@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import ContentCard, { ContentItemProps } from './ContentCard';
 import { MoodType } from './MoodSelection';
@@ -7,6 +7,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { ExpandableCard } from './ui/expandable-card';
 import { ScrollArea } from './ui/scroll-area';
 import SharedPlaylistCreator from './SharedPlaylistCreator';
+import { ChevronRight } from 'lucide-react';
+import { Button } from './ui/button';
 
 // Sample data for recommendations
 import { getRecommendedContent } from '@/data/recommendations';
@@ -26,8 +28,17 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
   likedContent = [],
   username
 }) => {
-  const [activeTab, setActiveTab] = React.useState<'movies' | 'music'>('movies');
+  // Retrieve the last active tab from localStorage or default to 'movies'
+  const [activeTab, setActiveTab] = React.useState<'movies' | 'music'>(() => {
+    const savedTab = localStorage.getItem('moodsterActiveTab');
+    return (savedTab as 'movies' | 'music') || 'movies';
+  });
   const [activeItem, setActiveItem] = useState<ContentItemProps | null>(null);
+  
+  // Save active tab to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('moodsterActiveTab', activeTab);
+  }, [activeTab]);
   
   // Get content recommendations based on mood
   const recommendedContent = getRecommendedContent(mood);
@@ -78,6 +89,17 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
     console.log('Playlist created with ID:', playlistId);
   };
 
+  // Function to manually scroll the carousel to the right
+  const scrollCarouselRight = (carouselId: string) => {
+    const carouselContent = document.querySelector(`#${carouselId} .embla__container`);
+    if (carouselContent) {
+      carouselContent.scrollBy({
+        left: 300,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <ScrollArea className="w-full h-[calc(100vh-120px)] overflow-y-auto">
       <div className="w-full px-2 pb-12">
@@ -123,10 +145,11 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
           </h2>
           
           {activeTab === 'movies' ? (
-            <div className="space-y-12">
+            <div className="space-y-8">
               {/* Featured section */}
-              <div className="mb-8">
+              <div className="mb-8 relative">
                 <Carousel
+                  id="featured-carousel"
                   opts={{
                     align: "start",
                     loop: true,
@@ -135,8 +158,8 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                   className="w-full mx-auto relative px-4 md:px-8"
                 >
                   <CarouselContent className="-ml-2 md:-ml-4">
-                    {movies.slice(0, 5).map((item) => (
-                      <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                    {movies.slice(0, 8).map((item) => (
+                      <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6">
                         <div className="px-1">
                           <ContentCard 
                             item={item} 
@@ -156,15 +179,22 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                     <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
                   </div>
                 </Carousel>
+                <Button 
+                  onClick={() => scrollCarouselRight('featured-carousel')}
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-gradient-to-r from-purple-700/80 to-indigo-700/80 hover:from-purple-600 hover:to-indigo-600 border-none shadow-lg"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </Button>
               </div>
 
               {/* Genre-based sections */}
               {movieGenres.map((genre) => genre && (
-                <div key={genre} className="mb-10">
+                <div key={genre} className="mb-10 relative">
                   <h3 className="text-lg font-bold mb-3 pl-2 text-white tracking-wide">
                     {genre} <span className="text-sm text-gray-300">Movies</span>
                   </h3>
                   <Carousel
+                    id={`genre-carousel-${genre.replace(/\s+/g, '-').toLowerCase()}`}
                     opts={{
                       align: "start",
                       loop: true,
@@ -174,7 +204,7 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                   >
                     <CarouselContent className="-ml-2 md:-ml-4">
                       {moviesByGenre[genre]?.map((item) => (
-                        <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                        <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6">
                           <div className="px-1">
                             <ContentCard 
                               item={item} 
@@ -194,17 +224,24 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                       <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
                     </div>
                   </Carousel>
+                  <Button 
+                    onClick={() => scrollCarouselRight(`genre-carousel-${genre.replace(/\s+/g, '-').toLowerCase()}`)}
+                    className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-gradient-to-r from-purple-700/80 to-indigo-700/80 hover:from-purple-600 hover:to-indigo-600 border-none shadow-lg"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </Button>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="space-y-12">
+            <div className="space-y-8">
               {/* Featured music section */}
-              <div className="mb-8">
+              <div className="mb-8 relative">
                 <h3 className="text-lg font-bold mb-3 pl-2 text-white tracking-wide">
                   Top Picks <span className="text-sm text-gray-300">for you</span>
                 </h3>
                 <Carousel
+                  id="music-top-picks"
                   opts={{
                     align: "start",
                     loop: true,
@@ -213,8 +250,8 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                   className="w-full mx-auto relative px-4 md:px-8"
                 >
                   <CarouselContent className="-ml-2 md:-ml-4">
-                    {music.slice(0, 5).map((item) => (
-                      <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                    {music.slice(0, 8).map((item) => (
+                      <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6">
                         <div className="px-1">
                           <ContentCard 
                             item={item} 
@@ -234,15 +271,22 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                     <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
                   </div>
                 </Carousel>
+                <Button 
+                  onClick={() => scrollCarouselRight('music-top-picks')}
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-gradient-to-r from-purple-700/80 to-indigo-700/80 hover:from-purple-600 hover:to-indigo-600 border-none shadow-lg"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </Button>
               </div>
 
               {/* Artist-based sections */}
               {songArtists.map((artist) => artist && (
-                <div key={artist} className="mb-10">
+                <div key={artist} className="mb-10 relative">
                   <h3 className="text-lg font-bold mb-3 pl-2 text-white tracking-wide">
                     {artist}
                   </h3>
                   <Carousel
+                    id={`artist-carousel-${artist.replace(/\s+/g, '-').toLowerCase()}`}
                     opts={{
                       align: "start",
                       loop: true,
@@ -252,7 +296,7 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                   >
                     <CarouselContent className="-ml-2 md:-ml-4">
                       {songsByArtist[artist]?.map((item) => (
-                        <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                        <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/6">
                           <div className="px-1">
                             <ContentCard 
                               item={item} 
@@ -272,6 +316,12 @@ const ContentRecommendations: React.FC<ContentRecommendationsProps> = ({
                       <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
                     </div>
                   </Carousel>
+                  <Button 
+                    onClick={() => scrollCarouselRight(`artist-carousel-${artist.replace(/\s+/g, '-').toLowerCase()}`)}
+                    className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-gradient-to-r from-purple-700/80 to-indigo-700/80 hover:from-purple-600 hover:to-indigo-600 border-none shadow-lg"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </Button>
                 </div>
               ))}
             </div>
