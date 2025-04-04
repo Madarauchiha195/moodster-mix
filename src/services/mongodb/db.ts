@@ -1,61 +1,160 @@
 
-import { connectDB } from './connection';
-import { Movie, Music, Playlist, SharedPlaylist, User } from './models';
-import { Types } from 'mongoose';
-import { ContentItemProps } from '@/components/ContentCard';
+import { connectDB, isConnected, closeConnection } from './connection';
+import { IUser, ISharedPlaylist } from './models';
+import { ObjectId } from 'mongodb';
 
-// Database connection instance
-let connection: any = null;
+// Simulated data storage for browser environment
+let users: any[] = [];
+let sharedPlaylists: any[] = [];
 
 /**
- * Establishes a connection to MongoDB
+ * Creates a new user
  */
-export const connectToDatabase = async () => {
+export const createUser = async (username: string, gender: 'male' | 'female'): Promise<any> => {
   try {
-    // This is a mock implementation for browser environment
-    // In a real app, this would connect to a backend API
-    console.log('Simulating MongoDB connection in browser');
-    connection = true;
-    return connection;
+    await connectDB();
+    
+    const userId = Date.now().toString();
+    const newUser = {
+      _id: userId,
+      username,
+      gender,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      likedContent: []
+    };
+    
+    users.push(newUser);
+    console.log('User created:', newUser);
+    return newUser;
   } catch (error) {
-    console.error('Failed to connect to MongoDB:', error);
+    console.error('Error creating user:', error);
     throw error;
   }
 };
 
 /**
- * Creates a new user or updates an existing one
+ * Retrieves a user by username
  */
-export const createOrUpdateUser = async (username: string, gender: 'male' | 'female') => {
+export const getUserByUsername = async (username: string): Promise<any> => {
   try {
-    // Simulated user creation/update
-    console.log(`User ${username} (${gender}) saved`);
-    return { id: new Types.ObjectId().toString(), username, gender };
+    await connectDB();
+    
+    const user = users.find(u => u.username === username);
+    return user || null;
   } catch (error) {
-    console.error('Error creating/updating user:', error);
+    console.error('Error getting user by username:', error);
     throw error;
   }
 };
 
 /**
- * Creates a new shared playlist
+ * Updates a user's information
+ */
+export const updateUser = async (userId: string, updateData: any): Promise<any> => {
+  try {
+    await connectDB();
+    
+    const userIndex = users.findIndex(u => u._id === userId);
+    if (userIndex === -1) {
+      throw new Error('User not found');
+    }
+    
+    const updatedUser = {
+      ...users[userIndex],
+      ...updateData,
+      updatedAt: new Date()
+    };
+    
+    users[userIndex] = updatedUser;
+    return updatedUser;
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+};
+
+/**
+ * Adds content to a user's liked content
+ */
+export const addLikedContent = async (userId: string, contentItem: any): Promise<any> => {
+  try {
+    await connectDB();
+    
+    const userIndex = users.findIndex(u => u._id === userId);
+    if (userIndex === -1) {
+      throw new Error('User not found');
+    }
+    
+    // Check if content is already liked
+    const isAlreadyLiked = users[userIndex].likedContent.some((item: any) => item.id === contentItem.id);
+    
+    if (!isAlreadyLiked) {
+      users[userIndex].likedContent.push(contentItem);
+      users[userIndex].updatedAt = new Date();
+    }
+    
+    return users[userIndex];
+  } catch (error) {
+    console.error('Error adding liked content:', error);
+    throw error;
+  }
+};
+
+/**
+ * Removes content from a user's liked content
+ */
+export const removeLikedContent = async (userId: string, contentId: number): Promise<any> => {
+  try {
+    await connectDB();
+    
+    const userIndex = users.findIndex(u => u._id === userId);
+    if (userIndex === -1) {
+      throw new Error('User not found');
+    }
+    
+    users[userIndex].likedContent = users[userIndex].likedContent.filter(
+      (item: any) => item.id !== contentId
+    );
+    users[userIndex].updatedAt = new Date();
+    
+    return users[userIndex];
+  } catch (error) {
+    console.error('Error removing liked content:', error);
+    throw error;
+  }
+};
+
+/**
+ * Creates a shared playlist
  */
 export const createSharedPlaylist = async (
-  username: string, 
-  mood: string, 
-  contentItems: ContentItemProps[],
-  playlistName?: string
-) => {
+  name: string, 
+  description: string, 
+  ownerId: string, 
+  ownerName: string, 
+  content: any[],
+  mood: string
+): Promise<string> => {
   try {
-    const playlistId = new Types.ObjectId().toString();
+    await connectDB();
     
-    console.log('Created shared playlist:', {
-      id: playlistId,
-      name: playlistName || `${username}'s ${mood} Mix`,
-      creator: username,
+    const playlistId = `playlist_${Date.now()}`;
+    const newPlaylist = {
+      _id: playlistId,
+      name,
+      description,
+      ownerId,
+      owner: ownerName,
+      content,
       mood,
-      items: contentItems.length
-    });
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      views: 0
+    };
+    
+    sharedPlaylists.push(newPlaylist);
+    console.log('Shared playlist created:', newPlaylist);
     
     return playlistId;
   } catch (error) {
@@ -65,234 +164,109 @@ export const createSharedPlaylist = async (
 };
 
 /**
- * Gets a shared playlist by ID
+ * Retrieves a shared playlist by ID
  */
-export const getSharedPlaylist = async (id: string) => {
+export const getSharedPlaylist = async (playlistId: string): Promise<any> => {
   try {
-    // In a real app, this would fetch from a database
-    // This is mocked for demonstration
-    console.log(`Fetching shared playlist with id: ${id}`);
+    await connectDB();
     
-    // Return mock data
-    return {
-      _id: id,
-      name: "Sample Shared Playlist",
-      creator: "SampleUser",
-      mood: "happy",
-      dateCreated: new Date(),
-      items: [
-        {
-          id: 1,
-          title: "Guardians of the Galaxy",
-          description: "A group of intergalactic criminals must pull together to stop a fanatical warrior from taking control of the universe.",
-          type: "movie",
-          imageUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22",
-          rating: 8.0,
-          platform: ["Netflix", "Disney+"],
-          genre: "Action, Adventure, Comedy",
-          year: 2014
-        },
-        {
-          id: 201,
-          title: "Blinding Lights",
-          description: "A synth-pop, electropop song with new wave elements.",
-          type: "song",
-          artist: "The Weeknd",
-          album: "After Hours",
-          genre: "Synth-pop",
-          year: 2020,
-          imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb"
-        }
-      ]
-    };
+    const playlist = sharedPlaylists.find(p => p._id === playlistId);
+    
+    if (playlist) {
+      // Increment view count
+      playlist.views = (playlist.views || 0) + 1;
+    }
+    
+    return playlist || null;
   } catch (error) {
-    console.error('Error fetching shared playlist:', error);
+    console.error('Error getting shared playlist:', error);
     throw error;
   }
 };
 
 /**
- * Gets all shared playlists created by a user
+ * Gets all playlists shared by a user
  */
-export const getUserSharedPlaylists = async (userId: string) => {
+export const getUserSharedPlaylists = async (userId: string): Promise<any[]> => {
   try {
-    // Validate and convert userId to ObjectId if needed
-    let userObjectId: Types.ObjectId;
+    await connectDB();
     
-    // Handle different types of userId inputs
-    if (typeof userId === 'string') {
-      try {
-        userObjectId = new Types.ObjectId(userId);
-      } catch (error) {
-        console.error('Invalid user ID format:', error);
-        return [];
-      }
-    } else if (userId instanceof Types.ObjectId) {
-      userObjectId = userId;
-    } else {
-      console.error('Invalid user ID type:', typeof userId);
-      return [];
-    }
+    // Ensure userId is a string for comparison
+    const stringUserId = typeof userId === 'object' ? 
+      (userId.toString ? userId.toString() : String(userId)) : 
+      String(userId);
     
-    console.log(`Fetching shared playlists for user: ${userObjectId.toString()}`);
-    
-    // Return mock data
-    return [
-      {
-        _id: new Types.ObjectId().toString(),
-        name: "My Happy Mix",
-        creator: "User",
-        mood: "happy",
-        dateCreated: new Date(),
-        itemCount: 10
-      },
-      {
-        _id: new Types.ObjectId().toString(),
-        name: "Chill Evening Playlist",
-        creator: "User",
-        mood: "neutral",
-        dateCreated: new Date(),
-        itemCount: 8
-      }
-    ];
+    return sharedPlaylists.filter(p => String(p.ownerId) === stringUserId);
   } catch (error) {
-    console.error('Error fetching user shared playlists:', error);
-    return [];
+    console.error('Error getting user shared playlists:', error);
+    throw error;
   }
 };
 
-/**
- * Saves a user's liked content
- */
-export const saveLikedContent = async (userId: string, contentItems: ContentItemProps[]) => {
-  try {
-    console.log(`Saving ${contentItems.length} liked items for user ${userId}`);
-    return true;
-  } catch (error) {
-    console.error('Error saving liked content:', error);
-    return false;
-  }
+// For development/testing purposes
+export const clearAllData = () => {
+  users = [];
+  sharedPlaylists = [];
+  console.log('All data cleared');
 };
 
-/**
- * Gets a user's liked content
- */
-export const getLikedContent = async (userId: string) => {
-  try {
-    console.log(`Fetching liked content for user ${userId}`);
-    
-    // Return empty array as mock data
-    return [];
-  } catch (error) {
-    console.error('Error fetching liked content:', error);
-    return [];
+// Initialize with some data for development
+export const initDevelopmentData = () => {
+  // Add a test user if none exists
+  if (users.length === 0) {
+    const testUser = {
+      _id: 'user_1',
+      username: 'testuser',
+      gender: 'male',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      likedContent: []
+    };
+    users.push(testUser);
   }
+  
+  // Add a test playlist if none exists
+  if (sharedPlaylists.length === 0) {
+    const testPlaylist = {
+      _id: 'playlist_1',
+      name: 'My Favorite Movies',
+      description: 'A collection of my favorite movies and shows',
+      ownerId: 'user_1',
+      owner: 'testuser',
+      content: [
+        {
+          id: 101,
+          title: 'Inception',
+          description: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.',
+          type: 'movie',
+          imageUrl: 'https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+          rating: 8.8,
+          platform: ['Netflix', 'Amazon Prime'],
+          genre: 'Sci-Fi',
+          year: 2010
+        },
+        {
+          id: 201,
+          title: 'Bohemian Rhapsody',
+          artist: 'Queen',
+          album: 'A Night at the Opera',
+          description: 'A British rock band formed in London in 1970, widely regarded as one of the greatest rock bands of all time.',
+          type: 'song',
+          imageUrl: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
+          genre: 'Rock',
+          year: 1975
+        }
+      ],
+      mood: 'happy',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      views: 12
+    };
+    sharedPlaylists.push(testPlaylist);
+  }
+  
+  console.log('Development data initialized');
 };
 
-/**
- * Saves a user's watchlist
- */
-export const saveWatchlist = async (userId: string, watchlist: ContentItemProps[]) => {
-  try {
-    console.log(`Saving watchlist with ${watchlist.length} items for user ${userId}`);
-    return true;
-  } catch (error) {
-    console.error('Error saving watchlist:', error);
-    return false;
-  }
-};
-
-/**
- * Gets a user's watchlist
- */
-export const getWatchlist = async (userId: string) => {
-  try {
-    console.log(`Fetching watchlist for user ${userId}`);
-    
-    // Return empty array as mock data
-    return [];
-  } catch (error) {
-    console.error('Error fetching watchlist:', error);
-    return [];
-  }
-};
-
-/**
- * Adds an item to a user's watchlist
- */
-export const addToWatchlist = async (userId: string, item: ContentItemProps) => {
-  try {
-    console.log(`Adding item ${item.id} to watchlist for user ${userId}`);
-    return true;
-  } catch (error) {
-    console.error('Error adding to watchlist:', error);
-    return false;
-  }
-};
-
-/**
- * Removes an item from a user's watchlist
- */
-export const removeFromWatchlist = async (userId: string, itemId: number) => {
-  try {
-    console.log(`Removing item ${itemId} from watchlist for user ${userId}`);
-    return true;
-  } catch (error) {
-    console.error('Error removing from watchlist:', error);
-    return false;
-  }
-};
-
-/**
- * Saves a user's playlist
- */
-export const savePlaylist = async (userId: string, playlist: ContentItemProps[]) => {
-  try {
-    console.log(`Saving playlist with ${playlist.length} items for user ${userId}`);
-    return true;
-  } catch (error) {
-    console.error('Error saving playlist:', error);
-    return false;
-  }
-};
-
-/**
- * Gets a user's playlist
- */
-export const getPlaylist = async (userId: string) => {
-  try {
-    console.log(`Fetching playlist for user ${userId}`);
-    
-    // Return empty array as mock data
-    return [];
-  } catch (error) {
-    console.error('Error fetching playlist:', error);
-    return [];
-  }
-};
-
-/**
- * Adds an item to a user's playlist
- */
-export const addToPlaylist = async (userId: string, item: ContentItemProps) => {
-  try {
-    console.log(`Adding item ${item.id} to playlist for user ${userId}`);
-    return true;
-  } catch (error) {
-    console.error('Error adding to playlist:', error);
-    return false;
-  }
-};
-
-/**
- * Removes an item from a user's playlist
- */
-export const removeFromPlaylist = async (userId: string, itemId: number) => {
-  try {
-    console.log(`Removing item ${itemId} from playlist for user ${userId}`);
-    return true;
-  } catch (error) {
-    console.error('Error removing from playlist:', error);
-    return false;
-  }
-};
+// Initialize development data when imported
+initDevelopmentData();
