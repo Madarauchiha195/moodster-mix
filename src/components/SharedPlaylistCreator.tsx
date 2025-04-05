@@ -1,15 +1,18 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Share2, Plus } from 'lucide-react';
+import { Share2, Plus, Music, Film, Check, Copy } from 'lucide-react';
 import { toast } from "sonner";
 import { ContentItemProps } from './ContentCard';
 import { createSharedPlaylist } from '@/services/mongodb/db';
 import { MoodType } from './MoodSelection';
 import { Link } from 'react-router-dom';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SharedPlaylistCreatorProps {
   username: string;
@@ -29,6 +32,19 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
   const [description, setDescription] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [createdPlaylistId, setCreatedPlaylistId] = useState<string | null>(null);
+  const [selectedContent, setSelectedContent] = useState<ContentItemProps[]>([]);
+  const [activeTab, setActiveTab] = useState<'movies' | 'music'>('movies');
+  
+  const moviesContent = contentItems.filter(item => item.type === 'movie');
+  const musicContent = contentItems.filter(item => item.type === 'song');
+  
+  const toggleItemSelection = (item: ContentItemProps) => {
+    if (selectedContent.some(selected => selected.id === item.id)) {
+      setSelectedContent(prev => prev.filter(i => i.id !== item.id));
+    } else {
+      setSelectedContent(prev => [...prev, item]);
+    }
+  };
   
   const handleCreatePlaylist = async () => {
     if (!name) {
@@ -36,11 +52,13 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
       return;
     }
     
+    if (selectedContent.length === 0) {
+      toast.error('Please select at least one item for your playlist');
+      return;
+    }
+    
     try {
       setIsCreating(true);
-      
-      // Filter to only include the first 20 items to keep playlists reasonable
-      const selectedContent = contentItems.slice(0, 20);
       
       // Create the shared playlist
       const playlistId = await createSharedPlaylist(
@@ -59,15 +77,18 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
       }
       
       toast.success('Playlist created successfully!');
-      
-      // Reset form after successful creation
-      setName('');
-      setDescription('');
     } catch (error) {
       console.error('Error creating playlist:', error);
       toast.error('Failed to create playlist. Please try again.');
     } finally {
       setIsCreating(false);
+    }
+  };
+  
+  const copyToClipboard = () => {
+    if (createdPlaylistId) {
+      navigator.clipboard.writeText(`${window.location.origin}/shared/${createdPlaylistId}`);
+      toast.success('Link copied to clipboard!');
     }
   };
   
@@ -80,14 +101,14 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
           className="rounded-full bg-black/40 border-purple-500/30 hover:bg-black/60 hover:border-purple-500/50 text-white"
         >
           <Share2 className="h-4 w-4 mr-2" />
-          Share Recommendations
+          Create & Share Playlist
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-gray-900 text-white border-gray-800">
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-hidden bg-gray-900 text-white border-gray-800">
         <DialogHeader>
-          <DialogTitle>Create Shared Playlist</DialogTitle>
+          <DialogTitle>Create Shareable Playlist</DialogTitle>
           <DialogDescription className="text-gray-400">
-            Share your current recommendations with friends or save for later.
+            Select your favorite content and share with friends or save for later.
           </DialogDescription>
         </DialogHeader>
         
@@ -106,11 +127,9 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
                   variant="ghost" 
                   size="sm"
                   className="h-8 px-2 hover:bg-gray-800"
-                  onClick={() => {
-                    navigator.clipboard.writeText(`${window.location.origin}/shared/${createdPlaylistId}`);
-                    toast.success('Link copied to clipboard!');
-                  }}
+                  onClick={copyToClipboard}
                 >
+                  <Copy className="h-4 w-4 mr-1" />
                   Copy
                 </Button>
               </div>
@@ -131,6 +150,7 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
                   onClick={() => {
                     setCreatedPlaylistId(null);
                     setIsOpen(false);
+                    setSelectedContent([]);
                   }}
                 >
                   Done
@@ -141,7 +161,7 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
         ) : (
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="playlist-name">Name</Label>
+              <Label htmlFor="playlist-name">Playlist Name</Label>
               <Input
                 id="playlist-name"
                 placeholder="My awesome playlist"
@@ -161,16 +181,89 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
               />
             </div>
             
-            <div className="bg-black/50 p-3 rounded-md border border-gray-800">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-400">Content to include:</span>
-                <span className="text-xs bg-gray-800 px-2 py-1 rounded-full">
-                  {contentItems.length > 20 ? '20 of ' + contentItems.length + ' items' : contentItems.length + ' items'}
+            <div className="bg-black/30 rounded-md border border-gray-800 p-3">
+              <Label className="mb-2 block">Select Content for Playlist</Label>
+              <Tabs defaultValue="movies" className="w-full" onValueChange={(value) => setActiveTab(value as 'movies' | 'music')}>
+                <TabsList className="w-full bg-gray-800">
+                  <TabsTrigger value="movies" className="flex-1">
+                    <Film className="h-4 w-4 mr-2" />
+                    Movies ({selectedContent.filter(i => i.type === 'movie').length})
+                  </TabsTrigger>
+                  <TabsTrigger value="music" className="flex-1">
+                    <Music className="h-4 w-4 mr-2" />
+                    Music ({selectedContent.filter(i => i.type === 'song').length})
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="movies" className="h-[200px]">
+                  <ScrollArea className="h-[200px]">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2">
+                      {moviesContent.map(movie => (
+                        <div 
+                          key={movie.id} 
+                          className={`p-2 rounded-md cursor-pointer flex items-center text-sm hover:bg-gray-800 transition-colors ${
+                            selectedContent.some(i => i.id === movie.id) ? 'bg-purple-900/30 border border-purple-500/30' : 'bg-gray-900 border border-gray-800'
+                          }`}
+                          onClick={() => toggleItemSelection(movie)}
+                        >
+                          <div className="w-8 h-12 rounded overflow-hidden mr-2 relative flex-shrink-0">
+                            <img src={movie.imageUrl || '/placeholder.svg'} alt={movie.title} className="object-cover w-full h-full" />
+                            {selectedContent.some(i => i.id === movie.id) && (
+                              <div className="absolute inset-0 bg-purple-500/30 flex items-center justify-center">
+                                <Check className="h-4 w-4 text-white" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="truncate">{movie.title}</p>
+                            <p className="text-xs text-gray-400 truncate">{movie.year}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </TabsContent>
+                <TabsContent value="music" className="h-[200px]">
+                  <ScrollArea className="h-[200px]">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2">
+                      {musicContent.map(song => (
+                        <div 
+                          key={song.id} 
+                          className={`p-2 rounded-md cursor-pointer flex items-center text-sm hover:bg-gray-800 transition-colors ${
+                            selectedContent.some(i => i.id === song.id) ? 'bg-purple-900/30 border border-purple-500/30' : 'bg-gray-900 border border-gray-800'
+                          }`}
+                          onClick={() => toggleItemSelection(song)}
+                        >
+                          <div className="w-8 h-8 rounded overflow-hidden mr-2 relative flex-shrink-0">
+                            <img src={song.imageUrl || '/placeholder.svg'} alt={song.title} className="object-cover w-full h-full" />
+                            {selectedContent.some(i => i.id === song.id) && (
+                              <div className="absolute inset-0 bg-purple-500/30 flex items-center justify-center">
+                                <Check className="h-4 w-4 text-white" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="truncate">{song.title}</p>
+                            <p className="text-xs text-gray-400 truncate">{song.artist}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </TabsContent>
+              </Tabs>
+              
+              <div className="mt-2 bg-black/50 p-2 rounded-md flex justify-between items-center">
+                <span className="text-xs text-gray-400">
+                  Selected: <span className="text-white">{selectedContent.length} items</span>
                 </span>
-              </div>
-              <div className="mt-2 text-xs text-gray-500">
-                <p>• First 20 recommendations from your current view</p>
-                <p>• Current mood: <span className="text-purple-400">{currentMood}</span></p>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-7 text-xs hover:bg-gray-800"
+                  onClick={() => setSelectedContent([])}
+                >
+                  Clear All
+                </Button>
               </div>
             </div>
           </div>
@@ -181,7 +274,7 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
             <Button
               type="submit"
               onClick={handleCreatePlaylist}
-              disabled={!name || isCreating}
+              disabled={!name || selectedContent.length === 0 || isCreating}
               className="bg-purple-600 hover:bg-purple-700"
             >
               {isCreating ? (

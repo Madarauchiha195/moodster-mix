@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
@@ -64,7 +65,7 @@ const Carousel = React.forwardRef<
       plugins
     )
     const [canScrollPrev, setCanScrollPrev] = React.useState(false)
-    const [canScrollNext, setCanScrollNext] = React.useState(false)
+    const [canScrollNext, setCanScrollNext] = React.useState(true) // Default to true for better UX
 
     const onSelect = React.useCallback((api: CarouselApi) => {
       if (!api) {
@@ -112,6 +113,9 @@ const Carousel = React.forwardRef<
       onSelect(api)
       api.on("reInit", onSelect)
       api.on("select", onSelect)
+
+      // Force an update on initial load to ensure buttons appear
+      setCanScrollNext(true)
 
       return () => {
         api?.off("select", onSelect)
@@ -204,7 +208,7 @@ const CarouselPrevious = React.forwardRef<
       variant={variant}
       size={size}
       className={cn(
-        "absolute  h-8 w-8 rounded-full",
+        "absolute h-8 w-8 rounded-full",
         orientation === "horizontal"
           ? "-left-12 top-1/2 -translate-y-1/2"
           : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
