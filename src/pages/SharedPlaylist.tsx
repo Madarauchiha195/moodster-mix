@@ -1,16 +1,17 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Eye, Heart, Share2, UserCircle, Music, Film } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import { ContentItemProps } from '@/components/ContentCard';
+import ContentCard from '@/components/ContentCard';
 import Background from '@/components/Background';
 import { getSharedPlaylist } from '@/services/mongodb/db';
-import SharedPlaylistHeader from '@/components/shared-playlist/SharedPlaylistHeader';
-import SharedPlaylistTabs from '@/components/shared-playlist/SharedPlaylistTabs';
-import SharedPlaylistContent from '@/components/shared-playlist/SharedPlaylistContent';
 
 const SharedPlaylist = () => {
   const { id } = useParams<{ id: string }>();
@@ -46,6 +47,12 @@ const SharedPlaylist = () => {
   
   const handleCloseDetails = () => {
     setActiveItem(null);
+  };
+  
+  const handleCopyShareLink = () => {
+    const shareUrl = window.location.href;
+    navigator.clipboard.writeText(shareUrl);
+    toast.success('Share link copied to clipboard');
   };
   
   const filteredContent = () => {
@@ -104,20 +111,95 @@ const SharedPlaylist = () => {
         />
         
         <div className="container mx-auto pt-24 px-4 text-white">
-          <SharedPlaylistHeader playlist={playlist} />
+          <Link to="/" className="inline-flex items-center text-gray-400 hover:text-white mb-6">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Home
+          </Link>
+          
+          <Card className="bg-black/60 backdrop-blur-sm border-gray-800 p-6 mb-8">
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="flex-shrink-0 w-full md:w-48 h-48 bg-gradient-to-br from-purple-600/20 to-indigo-600/20 rounded-lg flex items-center justify-center">
+                {playlist.mood === 'happy' ? (
+                  <span className="text-6xl">😊</span>
+                ) : playlist.mood === 'sad' ? (
+                  <span className="text-6xl">😢</span>
+                ) : playlist.mood === 'confused' ? (
+                  <span className="text-6xl">🤔</span>
+                ) : (
+                  <span className="text-6xl">😐</span>
+                )}
+              </div>
+              
+              <div className="flex-1">
+                <h1 className="text-2xl md:text-3xl font-bold text-white">{playlist.name}</h1>
+                <p className="text-gray-400 mt-2">{playlist.description}</p>
+                
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm inline-flex items-center">
+                    <UserCircle className="h-3.5 w-3.5 mr-1.5" />
+                    Created by {playlist.owner}
+                  </div>
+                  <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm inline-flex items-center">
+                    <Eye className="h-3.5 w-3.5 mr-1.5" />
+                    {playlist.views || 0} views
+                  </div>
+                  <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm capitalize">
+                    {playlist.mood} mood
+                  </div>
+                </div>
+                
+                <div className="mt-6 flex flex-wrap gap-2">
+                  <Button 
+                    variant="outline" 
+                    className="gap-2 border-purple-500/30 text-white"
+                    onClick={handleCopyShareLink}
+                  >
+                    <Share2 className="h-4 w-4" />
+                    Share
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="gap-2 border-pink-500/30 text-white"
+                  >
+                    <Heart className="h-4 w-4" />
+                    Like
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Card>
           
           <div className="mb-6">
-            <SharedPlaylistTabs 
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              playlistContent={playlist.content}
-            />
+            <Tabs defaultValue="all" value={activeTab} onValueChange={(val) => setActiveTab(val as any)}>
+              <TabsList className="bg-black/40 border border-gray-800">
+                <TabsTrigger value="all" className="data-[state=active]:bg-purple-600/20">
+                  All ({playlist.content.length})
+                </TabsTrigger>
+                <TabsTrigger value="movies" className="data-[state=active]:bg-purple-600/20">
+                  <Film className="h-4 w-4 mr-1.5" />
+                  Movies ({playlist.content.filter((item: ContentItemProps) => item.type === 'movie').length})
+                </TabsTrigger>
+                <TabsTrigger value="music" className="data-[state=active]:bg-purple-600/20">
+                  <Music className="h-4 w-4 mr-1.5" />
+                  Music ({playlist.content.filter((item: ContentItemProps) => item.type === 'song').length})
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
           
-          <SharedPlaylistContent 
-            filteredContent={filteredContent()}
-            onOpenDetails={handleOpenDetails}
-          />
+          <ScrollArea className="h-[calc(100vh-400px)]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-8">
+              {filteredContent().map((item: ContentItemProps) => (
+                <ContentCard
+                  key={item.id}
+                  item={item}
+                  gender="male"
+                  onOpenDetails={handleOpenDetails}
+                />
+              ))}
+            </div>
+          </ScrollArea>
         </div>
       </div>
     </Background>
