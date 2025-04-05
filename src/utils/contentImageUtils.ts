@@ -23,7 +23,13 @@ export const getFallbackImage = (item: { id: number; type: string }) => {
 };
 
 // Try to get a better image for the content
-export const getEnhancedImageUrl = (item: { imageUrl?: string; type: string; artist?: string; title?: string }) => {
+export const getEnhancedImageUrl = (item: { 
+  imageUrl?: string; 
+  id: number; 
+  type: string; 
+  artist?: string; 
+  title?: string 
+}) => {
   if (item.imageUrl && !item.imageUrl.includes('unsplash.com/random')) {
     return item.imageUrl;
   }
@@ -41,5 +47,5 @@ export const getEnhancedImageUrl = (item: { imageUrl?: string; type: string; art
   }
   
   // Fallback to a themed image if all else fails
-  return getFallbackImage(item);
+  return getFallbackImage({ id: item.id, type: item.type });
 };
