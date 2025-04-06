@@ -14,6 +14,29 @@ export interface OrganizedContent {
   music: ContentItemProps[];
 }
 
+// Define interfaces for our database tables to help TypeScript
+interface MovieRecord {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string;
+  genre: string;
+  year: number;
+  rating: number;
+  platform: string[];
+}
+
+interface SongRecord {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string;
+  artist: string;
+  album: string;
+  genre: string;
+  year: number;
+}
+
 export function useRecommendations(mood: MoodType): OrganizedContent {
   const [organizedContent, setOrganizedContent] = useState<OrganizedContent>({
     movieGenres: [],
@@ -27,10 +50,10 @@ export function useRecommendations(mood: MoodType): OrganizedContent {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        // Attempt to fetch from Supabase
+        // Attempt to fetch from Supabase with type assertions
         const [moviesResult, songsResult] = await Promise.all([
-          supabase.from('movies').select('*'),
-          supabase.from('songs').select('*')
+          (supabase.from('movies') as any).select('*'),
+          (supabase.from('songs') as any).select('*')
         ]);
 
         // Check if we got data from Supabase
@@ -43,7 +66,7 @@ export function useRecommendations(mood: MoodType): OrganizedContent {
           songsResult.data.length > 0
         ) {
           // Transform DB data to ContentItemProps
-          const movies: ContentItemProps[] = moviesResult.data.map(movie => ({
+          const movies: ContentItemProps[] = (moviesResult.data as MovieRecord[]).map(movie => ({
             id: movie.id,
             title: movie.title,
             description: movie.description,
@@ -55,7 +78,7 @@ export function useRecommendations(mood: MoodType): OrganizedContent {
             platform: movie.platform
           }));
 
-          const music: ContentItemProps[] = songsResult.data.map(song => ({
+          const music: ContentItemProps[] = (songsResult.data as SongRecord[]).map(song => ({
             id: song.id,
             title: song.title,
             description: song.description,

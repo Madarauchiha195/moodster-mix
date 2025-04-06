@@ -26,6 +26,15 @@ const MovieRecommendations: React.FC<MovieRecommendationsProps> = ({
 }) => {
   const { movieGenres, moviesByGenre, movies } = content;
 
+  // Function to scroll carousel horizontally
+  const scrollCarousel = (id: string, direction: 'left' | 'right') => {
+    const carousel = document.getElementById(id);
+    if (carousel) {
+      const scrollAmount = direction === 'left' ? -300 : 300;
+      carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Featured section */}

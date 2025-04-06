@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Eye, Heart, Share2, UserCircle, Music, Film } from 'lucide-react';
@@ -14,6 +13,45 @@ import ContentCard from '@/components/ContentCard';
 import Background from '@/components/Background';
 import { supabase } from '@/integrations/supabase/client';
 
+interface PlaylistItem {
+  content_id: number;
+  content_type: 'movie' | 'song';
+  id: string;
+  playlist_id: string;
+}
+
+interface SharedPlaylist {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string;
+  mood: string;
+  created_at: string;
+  playlist_items: PlaylistItem[];
+}
+
+interface MovieRecord {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string;
+  genre: string;
+  year: number;
+  rating: number;
+  platform: string[];
+}
+
+interface SongRecord {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string;
+  artist: string;
+  album: string;
+  genre: string;
+  year: number;
+}
+
 const SharedPlaylist = () => {
   const { id } = useParams<{ id: string }>();
   const [playlist, setPlaylist] = useState<any>(null);
@@ -25,9 +63,8 @@ const SharedPlaylist = () => {
     const fetchPlaylist = async () => {
       try {
         if (id) {
-          // Try to get playlist from Supabase
-          const { data, error } = await supabase
-            .from('shared_playlists')
+          const { data, error } = await (supabase
+            .from('shared_playlists') as any)
             .select(`
               *,
               playlist_items(*)
@@ -39,32 +76,31 @@ const SharedPlaylist = () => {
             throw new Error(error?.message || 'Playlist not found');
           }
           
-          // Now get the content items referred to in the playlist
-          const contentIds = data.playlist_items.map((item: any) => ({
+          const playlistData = data as SharedPlaylist;
+          
+          const contentIds = playlistData.playlist_items.map((item) => ({
             id: item.content_id,
             type: item.content_type
           }));
           
-          // Fetch movies and songs
           const movieIds = contentIds
-            .filter((item: any) => item.type === 'movie')
-            .map((item: any) => item.id);
+            .filter((item) => item.type === 'movie')
+            .map((item) => item.id);
             
           const songIds = contentIds
-            .filter((item: any) => item.type === 'song')
-            .map((item: any) => item.id);
+            .filter((item) => item.type === 'song')
+            .map((item) => item.id);
           
           const [moviesResult, songsResult] = await Promise.all([
             movieIds.length > 0 
-              ? supabase.from('movies').select('*').in('id', movieIds)
+              ? (supabase.from('movies') as any).select('*').in('id', movieIds)
               : { data: [], error: null },
             songIds.length > 0
-              ? supabase.from('songs').select('*').in('id', songIds)
+              ? (supabase.from('songs') as any).select('*').in('id', songIds)
               : { data: [], error: null }
           ]);
           
-          // Transform to ContentItemProps
-          const movies: ContentItemProps[] = (moviesResult.data || []).map(movie => ({
+          const movies: ContentItemProps[] = ((moviesResult.data || []) as MovieRecord[]).map(movie => ({
             id: movie.id,
             title: movie.title,
             description: movie.description,
@@ -76,7 +112,7 @@ const SharedPlaylist = () => {
             platform: movie.platform
           }));
           
-          const songs: ContentItemProps[] = (songsResult.data || []).map(song => ({
+          const songs: ContentItemProps[] = ((songsResult.data || []) as SongRecord[]).map(song => ({
             id: song.id,
             title: song.title,
             description: song.description,
@@ -89,7 +125,7 @@ const SharedPlaylist = () => {
           }));
           
           setPlaylist({
-            ...data,
+            ...playlistData,
             content: [...movies, ...songs]
           });
         } else {

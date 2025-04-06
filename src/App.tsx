@@ -23,7 +23,8 @@ const App = () => {
   useEffect(() => {
     const checkConnection = async () => {
       try {
-        const { error } = await supabase.from('movies').select('id').limit(1);
+        // Use type assertion to avoid TypeScript errors
+        const { error } = await (supabase.from('movies') as any).select('id').limit(1);
         
         if (error) {
           console.error('Failed to connect to Supabase:', error);
