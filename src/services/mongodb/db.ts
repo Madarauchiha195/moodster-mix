@@ -130,7 +130,7 @@ export const getUserSharedPlaylists = async (userId: string) => {
         console.error('Invalid user ID format:', error);
         return [];
       }
-    } else if (typeof userId === 'object' && userId !== null) {
+    } else if (userId && typeof userId === 'object') {
       // Check if it looks like an ObjectId (has a toString method)
       if ('toString' in userId) {
         try {
