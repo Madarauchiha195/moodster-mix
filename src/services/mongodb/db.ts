@@ -1,6 +1,6 @@
 
 import { connectDB } from './connection';
-import { Movie, Music, Playlist, SharedPlaylist, User } from './models';
+import { IUser, ISharedPlaylist, initializeModels } from './models';
 import { Types } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 
@@ -41,8 +41,8 @@ export const createOrUpdateUser = async (username: string, gender: 'male' | 'fem
  * Creates a new shared playlist
  */
 export const createSharedPlaylist = async (
-  username: string, 
-  mood: string, 
+  username: string,
+  mood: string,
   contentItems: ContentItemProps[],
   playlistName?: string
 ) => {
@@ -57,7 +57,10 @@ export const createSharedPlaylist = async (
       items: contentItems.length
     });
     
-    return playlistId;
+    return {
+      shareId: playlistId,
+      name: playlistName || `${username}'s ${mood} Mix`
+    };
   } catch (error) {
     console.error('Error creating shared playlist:', error);
     throw error;

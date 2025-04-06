@@ -60,7 +60,7 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
       >
         <CarouselContent className="-ml-2 md:-ml-4">
           {items.map((item) => (
-            <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6">
+            <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-1/2 xs:basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-1/7">
               <div className="px-1">
                 <ContentCard 
                   item={item} 

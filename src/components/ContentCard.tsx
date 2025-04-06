@@ -26,8 +26,8 @@ interface ContentCardProps {
   item: ContentItemProps;
   gender: 'male' | 'female';
   onOpenDetails: (item: ContentItemProps) => void;
-  onLike?: (item: ContentItemProps) => void; // Added onLike prop
-  isLiked?: boolean; // New prop to track if the item is already liked
+  onLike?: (item: ContentItemProps) => void;
+  isLiked?: boolean;
 }
 
 const ContentCard: React.FC<ContentCardProps> = ({ 
@@ -109,8 +109,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
 
   return (
     <div 
-      className="content-card h-full w-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer transition-all duration-300 flex flex-col"
-      style={{ minWidth: '240px', maxWidth: '320px' }}
+      className="content-card h-full w-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer transition-all duration-300 flex flex-col transform hover:scale-105"
+      style={{ minWidth: '180px', maxWidth: '280px' }}
       onClick={() => onOpenDetails(item)}
     >
       <div className="relative">
@@ -158,7 +158,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
       <div className="p-4 flex-1 flex flex-col">
         <div className="flex justify-between items-start">
           <h3 
-            className="text-lg font-semibold line-clamp-1 text-white"
+            className="text-md font-semibold line-clamp-1 text-white"
           >
             {item.title}
           </h3>

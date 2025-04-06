@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ContentItemProps } from './ContentCard';
 import { Button } from "@/components/ui/button";
@@ -51,11 +52,8 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
       // Create the shared playlist using the MongoDB service
       const result = await createSharedPlaylist(
         username,
-        name,
-        description,
         currentMood || 'mixed',
-        contentItems,
-        isPublic
+        contentItems
       );
       
       const playlistUrl = `${window.location.origin}/shared/${result.shareId}`;
