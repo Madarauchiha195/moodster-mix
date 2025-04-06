@@ -30,13 +30,13 @@ const MusicRecommendations: React.FC<MusicRecommendationsProps> = ({
   const scrollCarousel = (id: string, direction: 'left' | 'right') => {
     const carousel = document.getElementById(id);
     if (carousel) {
-      const scrollAmount = direction === 'left' ? -500 : 500;
+      const scrollAmount = direction === 'left' ? -300 : 300;
       carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* Featured music section */}
       <div className="relative group">
         <GenreCarousel
@@ -49,24 +49,6 @@ const MusicRecommendations: React.FC<MusicRecommendationsProps> = ({
           onLike={onLike}
           likedContent={likedContent}
         />
-        
-        <Button 
-          variant="secondary" 
-          size="icon" 
-          className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
-          onClick={() => scrollCarousel('music-top-picks', 'left')}
-        >
-          <ChevronLeft className="h-6 w-6" />
-        </Button>
-        
-        <Button 
-          variant="secondary" 
-          size="icon" 
-          className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
-          onClick={() => scrollCarousel('music-top-picks', 'right')}
-        >
-          <ChevronRight className="h-6 w-6" />
-        </Button>
       </div>
 
       {/* Artist-based sections */}
@@ -81,24 +63,6 @@ const MusicRecommendations: React.FC<MusicRecommendationsProps> = ({
             onLike={onLike}
             likedContent={likedContent}
           />
-          
-          <Button 
-            variant="secondary" 
-            size="icon" 
-            className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
-            onClick={() => scrollCarousel(`artist-carousel-${artist.replace(/\s+/g, '-').toLowerCase()}`, 'left')}
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
-          
-          <Button 
-            variant="secondary" 
-            size="icon" 
-            className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
-            onClick={() => scrollCarousel(`artist-carousel-${artist.replace(/\s+/g, '-').toLowerCase()}`, 'right')}
-          >
-            <ChevronRight className="h-6 w-6" />
-          </Button>
         </div>
       ))}
     </div>

@@ -32,20 +32,9 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
     return likedContent.some(likedItem => likedItem.id === item.id);
   };
 
-  // Function to manually scroll the carousel to the right
-  const scrollCarouselRight = () => {
-    const carouselContent = document.querySelector(`#${id} .embla__container`);
-    if (carouselContent) {
-      carouselContent.scrollBy({
-        left: 300,
-        behavior: 'smooth'
-      });
-    }
-  };
-
   return (
-    <div className="mb-10 relative">
-      <h3 className="text-lg font-bold mb-3 pl-2 text-white tracking-wide">
+    <div className="mb-6 relative">
+      <h3 className="text-lg font-bold mb-2 pl-2 text-white tracking-wide">
         {title}
         {subtitle && <span className="text-sm text-gray-300 ml-2">{subtitle}</span>}
       </h3>
@@ -56,12 +45,12 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
           loop: true,
           dragFree: true,
         }}
-        className="w-full mx-auto relative px-4 md:px-8"
+        className="w-full mx-auto relative px-2 md:px-4"
       >
-        <CarouselContent className="-ml-2 md:-ml-4">
+        <CarouselContent className="-ml-1 md:-ml-2">
           {items.map((item) => (
-            <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-1/2 xs:basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-1/7">
-              <div className="px-1">
+            <CarouselItem key={item.id} className="pl-1 md:pl-2 basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-1/7">
+              <div className="px-0.5">
                 <ContentCard 
                   item={item} 
                   gender={gender} 
@@ -73,16 +62,21 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <div className="absolute inset-y-0 left-0 w-12 flex items-center justify-start z-10 pointer-events-none">
-          <CarouselPrevious className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+        <div className="absolute inset-y-0 left-0 w-8 flex items-center justify-start z-10 pointer-events-none">
+          <CarouselPrevious className="static pointer-events-auto h-8 w-8 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
         </div>
-        <div className="absolute inset-y-0 right-0 w-12 flex items-center justify-end z-10 pointer-events-none">
-          <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+        <div className="absolute inset-y-0 right-0 w-8 flex items-center justify-end z-10 pointer-events-none">
+          <CarouselNext className="static pointer-events-auto h-8 w-8 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
         </div>
       </Carousel>
       <Button 
-        onClick={scrollCarouselRight}
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-gradient-to-r from-purple-700/80 to-indigo-700/80 hover:from-purple-600 hover:to-indigo-600 border-none shadow-lg"
+        onClick={() => {
+          const carousel = document.getElementById(id);
+          if (carousel) {
+            carousel.scrollBy({ left: 300, behavior: 'smooth' });
+          }
+        }}
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 h-10 w-10 rounded-full bg-gradient-to-r from-purple-700/80 to-indigo-700/80 hover:from-purple-600 hover:to-indigo-600 border-none shadow-lg"
       >
         <ChevronRight className="h-5 w-5" />
       </Button>

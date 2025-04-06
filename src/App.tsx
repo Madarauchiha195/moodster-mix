@@ -10,8 +10,8 @@ import SharedPlaylist from "./pages/SharedPlaylist";
 import Background from "./components/Background";
 import React, { useEffect, useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { connectToDatabase } from "./services/mongodb/db";
 import { toast } from "sonner";
+import { supabase } from "./integrations/supabase/client";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -19,28 +19,37 @@ const queryClient = new QueryClient();
 const App = () => {
   const [dbReady, setDbReady] = useState(false);
   
-  // Establish MongoDB connection when app starts
+  // Check Supabase connection when app starts
   useEffect(() => {
-    const initDb = async () => {
+    const checkConnection = async () => {
       try {
-        // MongoDB connection is not working properly in the browser environment
-        // This is expected since we can't connect directly to MongoDB from the browser
-        // For production, we would need a backend API or serverless functions
-        // For now, we'll mock the connection
-        // await connectToDatabase();
-        console.log('Simulating MongoDB connection');
+        const { error } = await supabase.from('movies').select('id').limit(1);
+        
+        if (error) {
+          console.error('Failed to connect to Supabase:', error);
+          toast.error("Database connection failed", {
+            description: "Using local storage for persistence instead",
+          });
+        } else {
+          console.log('Connected to Supabase successfully');
+          toast.success("Connected to Supabase", {
+            description: "Your app data will be stored and retrieved from the cloud",
+          });
+        }
+        
+        // Set to true either way so the app continues to function
         setDbReady(true);
       } catch (error) {
-        console.error('Failed to connect to MongoDB:', error);
+        console.error('Failed to connect to database:', error);
         toast.error("Database connection failed", {
           description: "Using local storage for persistence instead",
         });
-        // Still set to true to allow app to function even if DB fails
+        // Still set to true to allow app to function
         setDbReady(true);
       }
     };
     
-    initDb();
+    checkConnection();
   }, []);
 
   if (!dbReady) {

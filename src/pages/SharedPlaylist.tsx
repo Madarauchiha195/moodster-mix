@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Eye, Heart, Share2, UserCircle, Music, Film } from 'lucide-react';
@@ -11,7 +12,7 @@ import Header from '@/components/Header';
 import { ContentItemProps } from '@/components/ContentCard';
 import ContentCard from '@/components/ContentCard';
 import Background from '@/components/Background';
-import { getSharedPlaylist } from '@/services/mongodb/db';
+import { supabase } from '@/integrations/supabase/client';
 
 const SharedPlaylist = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,14 +25,78 @@ const SharedPlaylist = () => {
     const fetchPlaylist = async () => {
       try {
         if (id) {
-          // Try to get the actual playlist from MongoDB
-          const data = await getSharedPlaylist(id);
-          setPlaylist(data);
+          // Try to get playlist from Supabase
+          const { data, error } = await supabase
+            .from('shared_playlists')
+            .select(`
+              *,
+              playlist_items(*)
+            `)
+            .eq('id', id)
+            .single();
+          
+          if (error || !data) {
+            throw new Error(error?.message || 'Playlist not found');
+          }
+          
+          // Now get the content items referred to in the playlist
+          const contentIds = data.playlist_items.map((item: any) => ({
+            id: item.content_id,
+            type: item.content_type
+          }));
+          
+          // Fetch movies and songs
+          const movieIds = contentIds
+            .filter((item: any) => item.type === 'movie')
+            .map((item: any) => item.id);
+            
+          const songIds = contentIds
+            .filter((item: any) => item.type === 'song')
+            .map((item: any) => item.id);
+          
+          const [moviesResult, songsResult] = await Promise.all([
+            movieIds.length > 0 
+              ? supabase.from('movies').select('*').in('id', movieIds)
+              : { data: [], error: null },
+            songIds.length > 0
+              ? supabase.from('songs').select('*').in('id', songIds)
+              : { data: [], error: null }
+          ]);
+          
+          // Transform to ContentItemProps
+          const movies: ContentItemProps[] = (moviesResult.data || []).map(movie => ({
+            id: movie.id,
+            title: movie.title,
+            description: movie.description,
+            imageUrl: movie.image_url,
+            type: 'movie',
+            rating: movie.rating,
+            genre: movie.genre,
+            year: movie.year,
+            platform: movie.platform
+          }));
+          
+          const songs: ContentItemProps[] = (songsResult.data || []).map(song => ({
+            id: song.id,
+            title: song.title,
+            description: song.description,
+            imageUrl: song.image_url,
+            type: 'song',
+            artist: song.artist,
+            album: song.album,
+            genre: song.genre,
+            year: song.year
+          }));
+          
+          setPlaylist({
+            ...data,
+            content: [...movies, ...songs]
+          });
         } else {
           throw new Error('Invalid playlist ID');
         }
         setLoading(false);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to fetch playlist:', error);
         toast.error('Failed to load playlist');
         setLoading(false);
@@ -56,7 +121,7 @@ const SharedPlaylist = () => {
   };
   
   const filteredContent = () => {
-    if (!playlist) return [];
+    if (!playlist?.content) return [];
     
     switch (activeTab) {
       case 'movies':
@@ -131,17 +196,13 @@ const SharedPlaylist = () => {
               </div>
               
               <div className="flex-1">
-                <h1 className="text-2xl md:text-3xl font-bold text-white">{playlist.name}</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-white">{playlist.title}</h1>
                 <p className="text-gray-400 mt-2">{playlist.description}</p>
                 
                 <div className="mt-4 flex flex-wrap gap-2">
                   <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm inline-flex items-center">
                     <UserCircle className="h-3.5 w-3.5 mr-1.5" />
-                    Created by {playlist.owner}
-                  </div>
-                  <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm inline-flex items-center">
-                    <Eye className="h-3.5 w-3.5 mr-1.5" />
-                    {playlist.views || 0} views
+                    Created by {playlist.user_id}
                   </div>
                   <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm capitalize">
                     {playlist.mood} mood
@@ -174,22 +235,22 @@ const SharedPlaylist = () => {
             <Tabs defaultValue="all" value={activeTab} onValueChange={(val) => setActiveTab(val as any)}>
               <TabsList className="bg-black/40 border border-gray-800">
                 <TabsTrigger value="all" className="data-[state=active]:bg-purple-600/20">
-                  All ({playlist.content.length})
+                  All ({playlist.content?.length || 0})
                 </TabsTrigger>
                 <TabsTrigger value="movies" className="data-[state=active]:bg-purple-600/20">
                   <Film className="h-4 w-4 mr-1.5" />
-                  Movies ({playlist.content.filter((item: ContentItemProps) => item.type === 'movie').length})
+                  Movies ({playlist.content?.filter((item: ContentItemProps) => item.type === 'movie').length || 0})
                 </TabsTrigger>
                 <TabsTrigger value="music" className="data-[state=active]:bg-purple-600/20">
                   <Music className="h-4 w-4 mr-1.5" />
-                  Music ({playlist.content.filter((item: ContentItemProps) => item.type === 'song').length})
+                  Music ({playlist.content?.filter((item: ContentItemProps) => item.type === 'song').length || 0})
                 </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
           
           <ScrollArea className="h-[calc(100vh-400px)]">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 pb-8">
               {filteredContent().map((item: ContentItemProps) => (
                 <ContentCard
                   key={item.id}

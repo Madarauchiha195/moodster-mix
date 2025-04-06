@@ -26,17 +26,8 @@ const MovieRecommendations: React.FC<MovieRecommendationsProps> = ({
 }) => {
   const { movieGenres, moviesByGenre, movies } = content;
 
-  // Function to scroll carousel horizontally
-  const scrollCarousel = (id: string, direction: 'left' | 'right') => {
-    const carousel = document.getElementById(id);
-    if (carousel) {
-      const scrollAmount = direction === 'left' ? -500 : 500;
-      carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* Featured section */}
       <div className="relative group">
         <GenreCarousel
@@ -49,24 +40,6 @@ const MovieRecommendations: React.FC<MovieRecommendationsProps> = ({
           onLike={onLike}
           likedContent={likedContent}
         />
-        
-        <Button 
-          variant="secondary" 
-          size="icon" 
-          className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
-          onClick={() => scrollCarousel('featured-carousel', 'left')}
-        >
-          <ChevronLeft className="h-6 w-6" />
-        </Button>
-        
-        <Button 
-          variant="secondary" 
-          size="icon" 
-          className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
-          onClick={() => scrollCarousel('featured-carousel', 'right')}
-        >
-          <ChevronRight className="h-6 w-6" />
-        </Button>
       </div>
 
       {/* Genre-based sections */}
@@ -82,24 +55,6 @@ const MovieRecommendations: React.FC<MovieRecommendationsProps> = ({
             onLike={onLike}
             likedContent={likedContent}
           />
-          
-          <Button 
-            variant="secondary" 
-            size="icon" 
-            className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
-            onClick={() => scrollCarousel(`genre-carousel-${genre.replace(/\s+/g, '-').toLowerCase()}`, 'left')}
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
-          
-          <Button 
-            variant="secondary" 
-            size="icon" 
-            className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
-            onClick={() => scrollCarousel(`genre-carousel-${genre.replace(/\s+/g, '-').toLowerCase()}`, 'right')}
-          >
-            <ChevronRight className="h-6 w-6" />
-          </Button>
         </div>
       ))}
     </div>

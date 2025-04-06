@@ -1,4 +1,3 @@
-
 import { connectDB } from './connection';
 import { IUser, ISharedPlaylist, initializeModels } from './models';
 import { Types } from 'mongoose';
@@ -119,36 +118,13 @@ export const getSharedPlaylist = async (id: string) => {
  */
 export const getUserSharedPlaylists = async (userId: string) => {
   try {
-    // Validate and convert userId to ObjectId if needed
-    let userObjectId: Types.ObjectId;
-    
-    // Handle different types of userId inputs
-    if (typeof userId === 'string') {
-      try {
-        userObjectId = new Types.ObjectId(userId);
-      } catch (error) {
-        console.error('Invalid user ID format:', error);
-        return [];
-      }
-    } else if (userId && typeof userId === 'object') {
-      // Check if it looks like an ObjectId (has a toString method)
-      if ('toString' in userId) {
-        try {
-          userObjectId = new Types.ObjectId(userId.toString());
-        } catch (error) {
-          console.error('Invalid user ID object:', error);
-          return [];
-        }
-      } else {
-        console.error('Invalid user ID object type');
-        return [];
-      }
-    } else {
-      console.error('Invalid user ID type:', typeof userId);
+    // Safe handling for userId
+    if (!userId) {
+      console.error('Invalid user ID: empty or undefined');
       return [];
     }
     
-    console.log(`Fetching shared playlists for user: ${userObjectId.toString()}`);
+    console.log(`Fetching shared playlists for user: ${userId}`);
     
     // Return mock data
     return [
@@ -281,7 +257,7 @@ export const getPlaylist = async (userId: string) => {
     return [];
   } catch (error) {
     console.error('Error fetching playlist:', error);
-    return [];
+    return false;
   }
 };
 
