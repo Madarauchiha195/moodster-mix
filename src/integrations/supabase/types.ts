@@ -9,7 +9,131 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      movies: {
+        Row: {
+          description: string
+          genre: string
+          id: number
+          image_url: string
+          platform: string[] | null
+          rating: number | null
+          title: string
+          year: number
+        }
+        Insert: {
+          description: string
+          genre: string
+          id?: number
+          image_url: string
+          platform?: string[] | null
+          rating?: number | null
+          title: string
+          year: number
+        }
+        Update: {
+          description?: string
+          genre?: string
+          id?: number
+          image_url?: string
+          platform?: string[] | null
+          rating?: number | null
+          title?: string
+          year?: number
+        }
+        Relationships: []
+      }
+      playlist_items: {
+        Row: {
+          created_at: string | null
+          id: string
+          item_id: number
+          item_type: string
+          playlist_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          item_id: number
+          item_type: string
+          playlist_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          item_id?: number
+          item_type?: string
+          playlist_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "playlist_items_playlist_id_fkey"
+            columns: ["playlist_id"]
+            isOneToOne: false
+            referencedRelation: "playlists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      playlists: {
+        Row: {
+          created_at: string | null
+          creator: string
+          description: string | null
+          id: string
+          mood: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          creator: string
+          description?: string | null
+          id?: string
+          mood: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          creator?: string
+          description?: string | null
+          id?: string
+          mood?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      songs: {
+        Row: {
+          album: string
+          artist: string
+          description: string
+          genre: string
+          id: number
+          image_url: string
+          title: string
+          year: number
+        }
+        Insert: {
+          album: string
+          artist: string
+          description: string
+          genre: string
+          id?: number
+          image_url: string
+          title: string
+          year: number
+        }
+        Update: {
+          album?: string
+          artist?: string
+          description?: string
+          genre?: string
+          id?: number
+          image_url?: string
+          title?: string
+          year?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

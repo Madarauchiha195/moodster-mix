@@ -24,7 +24,7 @@ const App = () => {
     const checkConnection = async () => {
       try {
         // Use type assertion to avoid TypeScript errors
-        const { error } = await (supabase.from('movies') as any).select('id').limit(1);
+        const { error } = await supabase.from('movies' as any).select('id').limit(1);
         
         if (error) {
           console.error('Failed to connect to Supabase:', error);

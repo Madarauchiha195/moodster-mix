@@ -4,8 +4,6 @@ import { ContentItemProps } from '@/components/ContentCard';
 import { MoodType } from '@/components/MoodSelection';
 import GenreCarousel from './GenreCarousel';
 import { OrganizedContent } from '@/hooks/useRecommendations';
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface MovieRecommendationsProps {
   content: OrganizedContent;
@@ -26,17 +24,8 @@ const MovieRecommendations: React.FC<MovieRecommendationsProps> = ({
 }) => {
   const { movieGenres, moviesByGenre, movies } = content;
 
-  // Function to scroll carousel horizontally
-  const scrollCarousel = (id: string, direction: 'left' | 'right') => {
-    const carousel = document.getElementById(id);
-    if (carousel) {
-      const scrollAmount = direction === 'left' ? -300 : 300;
-      carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {/* Featured section */}
       <div className="relative group">
         <GenreCarousel

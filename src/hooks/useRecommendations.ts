@@ -51,10 +51,8 @@ export function useRecommendations(mood: MoodType): OrganizedContent {
     const fetchContent = async () => {
       try {
         // Attempt to fetch from Supabase with type assertions
-        const [moviesResult, songsResult] = await Promise.all([
-          (supabase.from('movies') as any).select('*'),
-          (supabase.from('songs') as any).select('*')
-        ]);
+        const moviesResult = await supabase.from('movies' as any).select('*');
+        const songsResult = await supabase.from('songs' as any).select('*');
 
         // Check if we got data from Supabase
         if (

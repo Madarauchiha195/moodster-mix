@@ -63,8 +63,8 @@ const SharedPlaylist = () => {
     const fetchPlaylist = async () => {
       try {
         if (id) {
-          const { data, error } = await (supabase
-            .from('shared_playlists') as any)
+          const { data, error } = await supabase
+            .from('shared_playlists' as any)
             .select(`
               *,
               playlist_items(*)
@@ -93,10 +93,10 @@ const SharedPlaylist = () => {
           
           const [moviesResult, songsResult] = await Promise.all([
             movieIds.length > 0 
-              ? (supabase.from('movies') as any).select('*').in('id', movieIds)
+              ? supabase.from('movies' as any).select('*').in('id', movieIds)
               : { data: [], error: null },
             songIds.length > 0
-              ? (supabase.from('songs') as any).select('*').in('id', songIds)
+              ? supabase.from('songs' as any).select('*').in('id', songIds)
               : { data: [], error: null }
           ]);
           
