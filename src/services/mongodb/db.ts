@@ -130,8 +130,19 @@ export const getUserSharedPlaylists = async (userId: string) => {
         console.error('Invalid user ID format:', error);
         return [];
       }
-    } else if (userId instanceof Types.ObjectId) {
-      userObjectId = userId;
+    } else if (typeof userId === 'object' && userId !== null) {
+      // Check if it looks like an ObjectId (has a toString method)
+      if ('toString' in userId) {
+        try {
+          userObjectId = new Types.ObjectId(userId.toString());
+        } catch (error) {
+          console.error('Invalid user ID object:', error);
+          return [];
+        }
+      } else {
+        console.error('Invalid user ID object type');
+        return [];
+      }
     } else {
       console.error('Invalid user ID type:', typeof userId);
       return [];
