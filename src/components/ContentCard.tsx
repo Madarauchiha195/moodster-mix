@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Heart, ExternalLink, Star, Info } from 'lucide-react';
@@ -108,7 +109,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
 
   return (
     <div 
-      className="content-card h-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer transition-all duration-300"
+      className="content-card h-full w-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer transition-all duration-300 flex flex-col"
+      style={{ minWidth: '240px', maxWidth: '320px' }}
       onClick={() => onOpenDetails(item)}
     >
       <div className="relative">
@@ -153,7 +155,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
         )}
       </div>
       
-      <div className="p-4">
+      <div className="p-4 flex-1 flex flex-col">
         <div className="flex justify-between items-start">
           <h3 
             className="text-lg font-semibold line-clamp-1 text-white"
@@ -173,7 +175,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
           </Button>
         </div>
         
-        <p className="text-xs sm:text-sm line-clamp-2 mt-1 text-gray-300">{item.description}</p>
+        <p className="text-xs sm:text-sm line-clamp-2 mt-1 text-gray-300 flex-grow">{item.description}</p>
         
         <div className="mt-3 space-y-2">
           {item.type === 'movie' ? (
@@ -221,7 +223,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
           )}
         </div>
         
-        <div className="mt-4 flex justify-between items-center">
+        <div className="mt-4 flex justify-between gap-2 items-center">
           <Button
             variant="ghost"
             size="sm"
@@ -238,7 +240,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
           <Button
             variant="outline"
             size="sm"
-            className="h-8 rounded-full bg-gradient-to-r from-indigo-900/80 to-purple-900/80 hover:from-indigo-800 hover:to-purple-800 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(79,70,229,0.4)]"
+            className="h-8 rounded-full bg-gradient-to-r from-indigo-900/80 to-purple-900/80 hover:from-indigo-600 hover:to-purple-600 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(79,70,229,0.5)]"
             onClick={handleExternalLink}
           >
             <ExternalLink className="h-4 w-4 mr-1" />
