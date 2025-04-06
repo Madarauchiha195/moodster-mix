@@ -24,6 +24,18 @@ const MusicRecommendations: React.FC<MusicRecommendationsProps> = ({
 }) => {
   const { songArtists, songsByArtist, music } = content;
 
+  // Check if we have music content
+  const hasMusicContent = music && music.length > 0;
+  const hasArtists = songArtists && songArtists.length > 0;
+
+  if (!hasMusicContent) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-gray-400 text-lg">No music recommendations available for your current mood.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-2">
       {/* Featured music section */}
@@ -40,8 +52,21 @@ const MusicRecommendations: React.FC<MusicRecommendationsProps> = ({
         />
       </div>
 
+      {/* Show music by genre if available */}
+      <div className="relative group">
+        <GenreCarousel
+          id="music-genre-all"
+          title="All Music"
+          items={music}
+          gender={gender}
+          onOpenDetails={onOpenDetails}
+          onLike={onLike}
+          likedContent={likedContent}
+        />
+      </div>
+
       {/* Artist-based sections */}
-      {songArtists.map((artist) => artist && (
+      {hasArtists && songArtists.map((artist) => artist && (
         <div key={artist} className="relative group">
           <GenreCarousel
             id={`artist-carousel-${artist.replace(/\s+/g, '-').toLowerCase()}`}

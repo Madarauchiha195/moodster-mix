@@ -51,8 +51,8 @@ export function useRecommendations(mood: MoodType): OrganizedContent {
     const fetchContent = async () => {
       try {
         // Attempt to fetch from Supabase with type assertions
-        const moviesResult = await supabase.from('movies' as any).select('*');
-        const songsResult = await supabase.from('songs' as any).select('*');
+        const moviesResult = await supabase.from('movies' as unknown as never).select('*');
+        const songsResult = await supabase.from('songs' as unknown as never).select('*');
 
         // Check if we got data from Supabase
         if (
@@ -64,7 +64,7 @@ export function useRecommendations(mood: MoodType): OrganizedContent {
           songsResult.data.length > 0
         ) {
           // Transform DB data to ContentItemProps
-          const movies: ContentItemProps[] = (moviesResult.data as MovieRecord[]).map(movie => ({
+          const movies: ContentItemProps[] = (moviesResult.data as unknown as MovieRecord[]).map(movie => ({
             id: movie.id,
             title: movie.title,
             description: movie.description,
@@ -76,7 +76,7 @@ export function useRecommendations(mood: MoodType): OrganizedContent {
             platform: movie.platform
           }));
 
-          const music: ContentItemProps[] = (songsResult.data as SongRecord[]).map(song => ({
+          const music: ContentItemProps[] = (songsResult.data as unknown as SongRecord[]).map(song => ({
             id: song.id,
             title: song.title,
             description: song.description,

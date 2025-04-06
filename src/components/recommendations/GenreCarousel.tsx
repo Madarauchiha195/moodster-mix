@@ -31,15 +31,6 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
     return likedContent.some(likedItem => likedItem.id === item.id);
   };
 
-  // Function to scroll carousel manually
-  const handleScroll = (direction: 'left' | 'right') => {
-    const carousel = document.getElementById(id);
-    if (carousel) {
-      const scrollAmount = direction === 'left' ? -300 : 300;
-      carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-
   return (
     <div className="mb-4 relative">
       <h3 className="text-lg font-bold mb-2 pl-2 text-white tracking-wide flex items-center justify-between">
@@ -57,9 +48,9 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
         }}
         className="w-full mx-auto relative"
       >
-        <CarouselContent className="-ml-1 md:-ml-1 gap-1">
+        <CarouselContent className="-ml-0.5 md:-ml-0.5 gap-0.5">
           {items.map((item) => (
-            <CarouselItem key={item.id} className="pl-1 md:pl-1 basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-1/7">
+            <CarouselItem key={item.id} className="pl-0.5 md:pl-0.5 basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-1/7">
               <ContentCard 
                 item={item} 
                 gender={gender} 
