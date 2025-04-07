@@ -31,7 +31,7 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
   };
 
   return (
-    <div className="mb-2 relative">
+    <div className="mb-1 relative">
       <h3 className="text-lg font-bold mb-1 pl-2 text-white tracking-wide flex items-center justify-between">
         <span>
           {title}
@@ -50,13 +50,15 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
         <CarouselContent className="-ml-0 md:-ml-0 gap-0">
           {items.map((item) => (
             <CarouselItem key={item.id} className="pl-0 md:pl-0.5 basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-1/7">
-              <ContentCard 
-                item={item} 
-                gender={gender} 
-                onOpenDetails={onOpenDetails} 
-                onLike={onLike}
-                isLiked={isItemLiked(item)}
-              />
+              <div className="pr-0.5">
+                <ContentCard 
+                  item={item} 
+                  gender={gender} 
+                  onOpenDetails={onOpenDetails} 
+                  onLike={onLike}
+                  isLiked={isItemLiked(item)}
+                />
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>

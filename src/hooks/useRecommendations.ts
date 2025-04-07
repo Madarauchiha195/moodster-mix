@@ -22,8 +22,8 @@ interface MovieRecord {
   image_url: string;
   genre: string;
   year: number;
-  rating: number;
-  platform: string[];
+  rating: number | null;
+  platform: string[] | null;
 }
 
 interface SongRecord {
@@ -50,33 +50,44 @@ export function useRecommendations(mood: MoodType): OrganizedContent {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        // Attempt to fetch from Supabase with type assertions
-        const moviesResult = await supabase.from('movies' as unknown as never).select('*');
-        const songsResult = await supabase.from('songs' as unknown as never).select('*');
+        console.log("Fetching content from Supabase for mood:", mood);
+        // Attempt to fetch from Supabase with proper typing
+        const { data: moviesData, error: moviesError } = await supabase
+          .from('movies')
+          .select('*');
+        
+        const { data: songsData, error: songsError } = await supabase
+          .from('songs')
+          .select('*');
 
         // Check if we got data from Supabase
         if (
-          !moviesResult.error && 
-          !songsResult.error && 
-          moviesResult.data && 
-          songsResult.data &&
-          moviesResult.data.length > 0 &&
-          songsResult.data.length > 0
+          !moviesError && 
+          !songsError && 
+          moviesData && 
+          songsData &&
+          moviesData.length > 0 &&
+          songsData.length > 0
         ) {
+          console.log("Successfully fetched Supabase data:", { 
+            movies: moviesData.length, 
+            songs: songsData.length 
+          });
+          
           // Transform DB data to ContentItemProps
-          const movies: ContentItemProps[] = (moviesResult.data as unknown as MovieRecord[]).map(movie => ({
+          const movies: ContentItemProps[] = moviesData.map((movie: MovieRecord) => ({
             id: movie.id,
             title: movie.title,
             description: movie.description,
             imageUrl: movie.image_url,
             type: 'movie',
-            rating: movie.rating,
+            rating: movie.rating || undefined,
             genre: movie.genre,
             year: movie.year,
-            platform: movie.platform
+            platform: movie.platform || []
           }));
 
-          const music: ContentItemProps[] = (songsResult.data as unknown as SongRecord[]).map(song => ({
+          const music: ContentItemProps[] = songsData.map((song: SongRecord) => ({
             id: song.id,
             title: song.title,
             description: song.description,
@@ -119,10 +130,13 @@ export function useRecommendations(mood: MoodType): OrganizedContent {
           
           console.log("Using Supabase data:", { movies: movies.length, music: music.length });
         } else {
+          // Log errors if any
+          if (moviesError) console.error("Error fetching movies:", moviesError);
+          if (songsError) console.error("Error fetching songs:", songsError);
+          
           // Fallback to local data if Supabase fetch fails
           fallbackToLocalData();
-          console.log("Using local data due to Supabase fetch error:", 
-            moviesResult.error || songsResult.error || "No data available");
+          console.log("Using local data due to Supabase fetch issues");
         }
       } catch (error) {
         console.error("Error fetching from Supabase:", error);

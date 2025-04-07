@@ -33,7 +33,7 @@ const MusicRecommendations: React.FC<MusicRecommendationsProps> = ({
         return ['Melancholy Melodies', 'Reflective Tunes', 'Soulful Ballads'];
       case 'confused':
         return ['Mind-Opening Tracks', 'Thought Provokers', 'Clarity Seekers'];
-      case 'relaxed':
+      case 'neutral':
         return ['Chill Vibes', 'Smooth Sounds', 'Easy Listening'];
       default:
         return ['Top Picks', 'Recent Hits', 'Editor\'s Choice'];
