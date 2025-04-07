@@ -34,13 +34,6 @@ const mockUsers = [
 // Simulated delay for async operations
 const simulateDelay = () => new Promise(resolve => setTimeout(resolve, 300));
 
-// Export connectToDatabase for App.tsx
-export const connectToDatabase = async () => {
-  await simulateDelay();
-  console.log("Database connection established");
-  return true;
-};
-
 // User-related functions
 export const createUser = async (username: string, gender: 'male' | 'female') => {
   await simulateDelay();
@@ -104,20 +97,7 @@ export const createPlaylist = async (
   };
   
   collections.playlists.push(newPlaylist);
-  return playlistId; // Return just the ID for consistency with component usage
-};
-
-// Alias createPlaylist as createSharedPlaylist for backward compatibility
-export const createSharedPlaylist = async (
-  name: string,
-  description: string,
-  userId: string,
-  username: string,
-  items: ContentItemProps[],
-  mood: MoodType
-) => {
-  // Adapt parameters to match the original createPlaylist function
-  return createPlaylist(name, description, userId, mood, items);
+  return newPlaylist;
 };
 
 export const getPlaylistByShareCode = async (shareCode: string) => {
@@ -125,11 +105,6 @@ export const getPlaylistByShareCode = async (shareCode: string) => {
   
   // @ts-ignore - Mock implementation
   return collections.playlists.find(playlist => playlist.shareCode === shareCode) || null;
-};
-
-// Alias for getPlaylistById to support getSharedPlaylist
-export const getSharedPlaylist = async (playlistId: string) => {
-  return getPlaylistById(playlistId);
 };
 
 export const getUserPlaylists = async (userId: string) => {
@@ -197,44 +172,7 @@ export const getPlaylistById = async (playlistId: string) => {
   await simulateDelay();
   
   // @ts-ignore - Mock implementation
-  const playlist = collections.playlists.find(playlist => playlist.id === playlistId);
-  
-  if (!playlist) {
-    // For demo purposes, return a mock playlist with some content
-    return {
-      id: playlistId,
-      name: "Demo Playlist",
-      description: "This is a demo playlist with sample content",
-      owner: "Demo User",
-      mood: "happy" as MoodType,
-      views: 123,
-      content: [
-        {
-          id: "movie1",
-          title: "The Matrix",
-          description: "A computer hacker learns about the true nature of reality",
-          imageUrl: "https://via.placeholder.com/300x450",
-          type: "movie",
-          year: 1999,
-          rating: 8.7,
-          genre: "Sci-Fi"
-        },
-        {
-          id: "song1",
-          title: "Bohemian Rhapsody",
-          description: "A classic rock song by Queen",
-          imageUrl: "https://via.placeholder.com/300x300",
-          type: "song",
-          artist: "Queen",
-          album: "A Night at the Opera",
-          year: 1975,
-          genre: "Rock"
-        }
-      ]
-    };
-  }
-  
-  return playlist;
+  return collections.playlists.find(playlist => playlist.id === playlistId) || null;
 };
 
 // Export the mock collections for testing
