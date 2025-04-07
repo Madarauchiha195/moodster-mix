@@ -11,46 +11,7 @@ import Header from '@/components/Header';
 import { ContentItemProps } from '@/components/ContentCard';
 import ContentCard from '@/components/ContentCard';
 import Background from '@/components/Background';
-import { supabase } from '@/integrations/supabase/client';
-
-interface PlaylistItem {
-  content_id: number;
-  content_type: 'movie' | 'song';
-  id: string;
-  playlist_id: string;
-}
-
-interface SharedPlaylist {
-  id: string;
-  user_id: string;
-  title: string;
-  description: string;
-  mood: string;
-  created_at: string;
-  playlist_items: PlaylistItem[];
-}
-
-interface MovieRecord {
-  id: number;
-  title: string;
-  description: string;
-  image_url: string;
-  genre: string;
-  year: number;
-  rating: number;
-  platform: string[];
-}
-
-interface SongRecord {
-  id: number;
-  title: string;
-  description: string;
-  image_url: string;
-  artist: string;
-  album: string;
-  genre: string;
-  year: number;
-}
+import { getSharedPlaylist } from '@/services/mongodb/db';
 
 const SharedPlaylist = () => {
   const { id } = useParams<{ id: string }>();
@@ -63,76 +24,14 @@ const SharedPlaylist = () => {
     const fetchPlaylist = async () => {
       try {
         if (id) {
-          const { data, error } = await supabase
-            .from('shared_playlists' as unknown as never)
-            .select(`
-              *,
-              playlist_items(*)
-            `)
-            .eq('id', id)
-            .single();
-          
-          if (error || !data) {
-            throw new Error(error?.message || 'Playlist not found');
-          }
-          
-          const playlistData = data as unknown as SharedPlaylist;
-          
-          const contentIds = playlistData.playlist_items.map((item) => ({
-            id: item.content_id,
-            type: item.content_type
-          }));
-          
-          const movieIds = contentIds
-            .filter((item) => item.type === 'movie')
-            .map((item) => item.id);
-            
-          const songIds = contentIds
-            .filter((item) => item.type === 'song')
-            .map((item) => item.id);
-          
-          const [moviesResult, songsResult] = await Promise.all([
-            movieIds.length > 0 
-              ? supabase.from('movies' as unknown as never).select('*').in('id', movieIds)
-              : { data: [], error: null },
-            songIds.length > 0
-              ? supabase.from('songs' as unknown as never).select('*').in('id', songIds)
-              : { data: [], error: null }
-          ]);
-          
-          const movies: ContentItemProps[] = ((moviesResult.data || []) as MovieRecord[]).map(movie => ({
-            id: movie.id,
-            title: movie.title,
-            description: movie.description,
-            imageUrl: movie.image_url,
-            type: 'movie',
-            rating: movie.rating,
-            genre: movie.genre,
-            year: movie.year,
-            platform: movie.platform
-          }));
-          
-          const songs: ContentItemProps[] = ((songsResult.data || []) as SongRecord[]).map(song => ({
-            id: song.id,
-            title: song.title,
-            description: song.description,
-            imageUrl: song.image_url,
-            type: 'song',
-            artist: song.artist,
-            album: song.album,
-            genre: song.genre,
-            year: song.year
-          }));
-          
-          setPlaylist({
-            ...playlistData,
-            content: [...movies, ...songs]
-          });
+          // Try to get the actual playlist from MongoDB
+          const data = await getSharedPlaylist(id);
+          setPlaylist(data);
         } else {
           throw new Error('Invalid playlist ID');
         }
         setLoading(false);
-      } catch (error: any) {
+      } catch (error) {
         console.error('Failed to fetch playlist:', error);
         toast.error('Failed to load playlist');
         setLoading(false);
@@ -157,7 +56,7 @@ const SharedPlaylist = () => {
   };
   
   const filteredContent = () => {
-    if (!playlist?.content) return [];
+    if (!playlist) return [];
     
     switch (activeTab) {
       case 'movies':
@@ -232,13 +131,17 @@ const SharedPlaylist = () => {
               </div>
               
               <div className="flex-1">
-                <h1 className="text-2xl md:text-3xl font-bold text-white">{playlist.title}</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-white">{playlist.name}</h1>
                 <p className="text-gray-400 mt-2">{playlist.description}</p>
                 
                 <div className="mt-4 flex flex-wrap gap-2">
                   <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm inline-flex items-center">
                     <UserCircle className="h-3.5 w-3.5 mr-1.5" />
-                    Created by {playlist.user_id}
+                    Created by {playlist.owner}
+                  </div>
+                  <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm inline-flex items-center">
+                    <Eye className="h-3.5 w-3.5 mr-1.5" />
+                    {playlist.views || 0} views
                   </div>
                   <div className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm capitalize">
                     {playlist.mood} mood
@@ -271,22 +174,22 @@ const SharedPlaylist = () => {
             <Tabs defaultValue="all" value={activeTab} onValueChange={(val) => setActiveTab(val as any)}>
               <TabsList className="bg-black/40 border border-gray-800">
                 <TabsTrigger value="all" className="data-[state=active]:bg-purple-600/20">
-                  All ({playlist.content?.length || 0})
+                  All ({playlist.content.length})
                 </TabsTrigger>
                 <TabsTrigger value="movies" className="data-[state=active]:bg-purple-600/20">
                   <Film className="h-4 w-4 mr-1.5" />
-                  Movies ({playlist.content?.filter((item: ContentItemProps) => item.type === 'movie').length || 0})
+                  Movies ({playlist.content.filter((item: ContentItemProps) => item.type === 'movie').length})
                 </TabsTrigger>
                 <TabsTrigger value="music" className="data-[state=active]:bg-purple-600/20">
                   <Music className="h-4 w-4 mr-1.5" />
-                  Music ({playlist.content?.filter((item: ContentItemProps) => item.type === 'song').length || 0})
+                  Music ({playlist.content.filter((item: ContentItemProps) => item.type === 'song').length})
                 </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
           
           <ScrollArea className="h-[calc(100vh-400px)]">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 pb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-8">
               {filteredContent().map((item: ContentItemProps) => (
                 <ContentCard
                   key={item.id}

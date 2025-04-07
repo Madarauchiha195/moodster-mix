@@ -4,6 +4,8 @@ import { ContentItemProps } from '@/components/ContentCard';
 import { MoodType } from '@/components/MoodSelection';
 import GenreCarousel from './GenreCarousel';
 import { OrganizedContent } from '@/hooks/useRecommendations';
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface MusicRecommendationsProps {
   content: OrganizedContent;
@@ -24,109 +26,51 @@ const MusicRecommendations: React.FC<MusicRecommendationsProps> = ({
 }) => {
   const { songArtists, songsByArtist, music } = content;
 
-  // Generate mood-specific group names based on the current mood
-  const getMoodGroupNames = (currentMood: MoodType) => {
-    switch(currentMood) {
-      case 'happy':
-        return ['Upbeat Hits', 'Feel Good Classics', 'Party Favorites'];
-      case 'sad':
-        return ['Melancholy Melodies', 'Reflective Tunes', 'Soulful Ballads'];
-      case 'confused':
-        return ['Mind-Opening Tracks', 'Thought Provokers', 'Clarity Seekers'];
-      case 'neutral':
-        return ['Chill Vibes', 'Smooth Sounds', 'Easy Listening'];
-      default:
-        return ['Top Picks', 'Recent Hits', 'Editor\'s Choice'];
+  // Function to scroll carousel horizontally
+  const scrollCarousel = (id: string, direction: 'left' | 'right') => {
+    const carousel = document.getElementById(id);
+    if (carousel) {
+      const scrollAmount = direction === 'left' ? -500 : 500;
+      carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
-  const moodGroups = getMoodGroupNames(mood);
-
-  // Check if we have music content
-  const hasMusicContent = music && music.length > 0;
-  const hasArtists = songArtists && songArtists.length > 0;
-
-  if (!hasMusicContent) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-gray-400 text-lg">No music recommendations available for your current mood.</p>
-      </div>
-    );
-  }
-
-  // Split music into different groups to create more variety
-  const splitIntoGroups = () => {
-    if (!music.length) return {};
-    
-    // Make copies so we can shuffle and distribute differently
-    const shuffled = [...music].sort(() => Math.random() - 0.5);
-    const third = Math.ceil(shuffled.length / 3);
-    
-    return {
-      group1: shuffled.slice(0, third),
-      group2: shuffled.slice(third, third * 2),
-      group3: shuffled.slice(third * 2)
-    };
-  };
-
-  const musicGroups = splitIntoGroups();
-
   return (
-    <div className="space-y-1">
+    <div className="space-y-8">
       {/* Featured music section */}
       <div className="relative group">
         <GenreCarousel
           id="music-top-picks"
-          title={moodGroups[0]}
-          subtitle={`for your ${mood} mood`}
-          items={music.slice(0, 20)}
+          title="Top Picks"
+          subtitle="for you"
+          items={music.slice(0, 12)}
           gender={gender}
           onOpenDetails={onOpenDetails}
           onLike={onLike}
           likedContent={likedContent}
         />
-      </div>
-
-      {/* Additional mood-specific groups */}
-      <div className="relative group">
-        <GenreCarousel
-          id="music-group-1"
-          title={moodGroups[1]}
-          items={musicGroups.group1 || music.slice(15, 35)}
-          gender={gender}
-          onOpenDetails={onOpenDetails}
-          onLike={onLike}
-          likedContent={likedContent}
-        />
-      </div>
-
-      <div className="relative group">
-        <GenreCarousel
-          id="music-group-2"
-          title={moodGroups[2]}
-          items={musicGroups.group2 || music.slice(30, 50)}
-          gender={gender}
-          onOpenDetails={onOpenDetails}
-          onLike={onLike}
-          likedContent={likedContent}
-        />
-      </div>
-
-      {/* Show all music */}
-      <div className="relative group">
-        <GenreCarousel
-          id="music-genre-all"
-          title="All Music"
-          items={music}
-          gender={gender}
-          onOpenDetails={onOpenDetails}
-          onLike={onLike}
-          likedContent={likedContent}
-        />
+        
+        <Button 
+          variant="secondary" 
+          size="icon" 
+          className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
+          onClick={() => scrollCarousel('music-top-picks', 'left')}
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </Button>
+        
+        <Button 
+          variant="secondary" 
+          size="icon" 
+          className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
+          onClick={() => scrollCarousel('music-top-picks', 'right')}
+        >
+          <ChevronRight className="h-6 w-6" />
+        </Button>
       </div>
 
       {/* Artist-based sections */}
-      {hasArtists && songArtists.map((artist) => artist && (
+      {songArtists.map((artist) => artist && (
         <div key={artist} className="relative group">
           <GenreCarousel
             id={`artist-carousel-${artist.replace(/\s+/g, '-').toLowerCase()}`}
@@ -137,6 +81,24 @@ const MusicRecommendations: React.FC<MusicRecommendationsProps> = ({
             onLike={onLike}
             likedContent={likedContent}
           />
+          
+          <Button 
+            variant="secondary" 
+            size="icon" 
+            className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
+            onClick={() => scrollCarousel(`artist-carousel-${artist.replace(/\s+/g, '-').toLowerCase()}`, 'left')}
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </Button>
+          
+          <Button 
+            variant="secondary" 
+            size="icon" 
+            className="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-black/70 hover:bg-purple-900/80 text-white"
+            onClick={() => scrollCarousel(`artist-carousel-${artist.replace(/\s+/g, '-').toLowerCase()}`, 'right')}
+          >
+            <ChevronRight className="h-6 w-6" />
+          </Button>
         </div>
       ))}
     </div>

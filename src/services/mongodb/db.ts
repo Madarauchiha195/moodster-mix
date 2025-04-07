@@ -1,5 +1,6 @@
+
 import { connectDB } from './connection';
-import { IUser, ISharedPlaylist, initializeModels } from './models';
+import { Movie, Music, Playlist, SharedPlaylist, User } from './models';
 import { Types } from 'mongoose';
 import { ContentItemProps } from '@/components/ContentCard';
 
@@ -40,8 +41,8 @@ export const createOrUpdateUser = async (username: string, gender: 'male' | 'fem
  * Creates a new shared playlist
  */
 export const createSharedPlaylist = async (
-  username: string,
-  mood: string,
+  username: string, 
+  mood: string, 
   contentItems: ContentItemProps[],
   playlistName?: string
 ) => {
@@ -56,10 +57,7 @@ export const createSharedPlaylist = async (
       items: contentItems.length
     });
     
-    return {
-      shareId: playlistId,
-      name: playlistName || `${username}'s ${mood} Mix`
-    };
+    return playlistId;
   } catch (error) {
     console.error('Error creating shared playlist:', error);
     throw error;
@@ -118,13 +116,25 @@ export const getSharedPlaylist = async (id: string) => {
  */
 export const getUserSharedPlaylists = async (userId: string) => {
   try {
-    // Safe handling for userId
-    if (!userId) {
-      console.error('Invalid user ID: empty or undefined');
+    // Validate and convert userId to ObjectId if needed
+    let userObjectId: Types.ObjectId;
+    
+    // Handle different types of userId inputs
+    if (typeof userId === 'string') {
+      try {
+        userObjectId = new Types.ObjectId(userId);
+      } catch (error) {
+        console.error('Invalid user ID format:', error);
+        return [];
+      }
+    } else if (userId instanceof Types.ObjectId) {
+      userObjectId = userId;
+    } else {
+      console.error('Invalid user ID type:', typeof userId);
       return [];
     }
     
-    console.log(`Fetching shared playlists for user: ${userId}`);
+    console.log(`Fetching shared playlists for user: ${userObjectId.toString()}`);
     
     // Return mock data
     return [
@@ -257,7 +267,7 @@ export const getPlaylist = async (userId: string) => {
     return [];
   } catch (error) {
     console.error('Error fetching playlist:', error);
-    return false;
+    return [];
   }
 };
 

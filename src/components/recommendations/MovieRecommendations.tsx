@@ -25,35 +25,32 @@ const MovieRecommendations: React.FC<MovieRecommendationsProps> = ({
   const { movieGenres, moviesByGenre, movies } = content;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-8">
       {/* Featured section */}
-      <div className="relative group">
+      <GenreCarousel
+        id="featured-carousel"
+        title="Featured" 
+        subtitle="Top picks for you"
+        items={movies.slice(0, 12)}
+        gender={gender}
+        onOpenDetails={onOpenDetails}
+        onLike={onLike}
+        likedContent={likedContent}
+      />
+
+      {/* Genre-based sections */}
+      {movieGenres.map((genre) => genre && (
         <GenreCarousel
-          id="featured-carousel"
-          title="Featured" 
-          subtitle="Top picks for you"
-          items={movies.slice(0, 12)}
+          key={genre}
+          id={`genre-carousel-${genre.replace(/\s+/g, '-').toLowerCase()}`}
+          title={genre}
+          subtitle="Movies"
+          items={moviesByGenre[genre] || []}
           gender={gender}
           onOpenDetails={onOpenDetails}
           onLike={onLike}
           likedContent={likedContent}
         />
-      </div>
-
-      {/* Genre-based sections */}
-      {movieGenres.map((genre) => genre && (
-        <div key={genre} className="relative group">
-          <GenreCarousel
-            id={`genre-carousel-${genre.replace(/\s+/g, '-').toLowerCase()}`}
-            title={genre}
-            subtitle="Movies"
-            items={moviesByGenre[genre] || []}
-            gender={gender}
-            onOpenDetails={onOpenDetails}
-            onLike={onLike}
-            likedContent={likedContent}
-          />
-        </div>
       ))}
     </div>
   );
