@@ -25,7 +25,7 @@ const MovieRecommendations: React.FC<MovieRecommendationsProps> = ({
   const { movieGenres, moviesByGenre, movies } = content;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Featured section */}
       <GenreCarousel
         id="featured-carousel"

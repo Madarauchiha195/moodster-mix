@@ -3,8 +3,6 @@ import React from 'react';
 import { ContentItemProps } from '@/components/ContentCard';
 import ContentCard from '@/components/ContentCard';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Button } from '@/components/ui/button';
-import { ChevronRight } from 'lucide-react';
 
 interface GenreCarouselProps {
   id: string;
@@ -32,19 +30,8 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
     return likedContent.some(likedItem => likedItem.id === item.id);
   };
 
-  // Function to manually scroll the carousel to the right
-  const scrollCarouselRight = () => {
-    const carouselContent = document.querySelector(`#${id} .embla__container`);
-    if (carouselContent) {
-      carouselContent.scrollBy({
-        left: 300,
-        behavior: 'smooth'
-      });
-    }
-  };
-
   return (
-    <div className="mb-10 relative">
+    <div className="mb-8 relative">
       <h3 className="text-lg font-bold mb-3 pl-2 text-white tracking-wide">
         {title}
         {subtitle && <span className="text-sm text-gray-300 ml-2">{subtitle}</span>}
@@ -60,7 +47,7 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
       >
         <CarouselContent className="-ml-2 md:-ml-4">
           {items.map((item) => (
-            <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6">
+            <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-1/3 sm:basis-1/4 md:basis-1/6 lg:basis-1/7 xl:basis-1/8 2xl:basis-1/10">
               <div className="px-1">
                 <ContentCard 
                   item={item} 
@@ -80,12 +67,6 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
           <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
         </div>
       </Carousel>
-      <Button 
-        onClick={scrollCarouselRight}
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-gradient-to-r from-purple-700/80 to-indigo-700/80 hover:from-purple-600 hover:to-indigo-600 border-none shadow-lg"
-      >
-        <ChevronRight className="h-5 w-5" />
-      </Button>
     </div>
   );
 };
