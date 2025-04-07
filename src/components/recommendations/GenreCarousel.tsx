@@ -3,7 +3,6 @@ import React from 'react';
 import { ContentItemProps } from '@/components/ContentCard';
 import ContentCard from '@/components/ContentCard';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ChevronRight, ChevronLeft } from 'lucide-react';
 
 interface GenreCarouselProps {
   id: string;
@@ -32,8 +31,8 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
   };
 
   return (
-    <div className="mb-4 relative">
-      <h3 className="text-lg font-bold mb-2 pl-2 text-white tracking-wide flex items-center justify-between">
+    <div className="mb-2 relative">
+      <h3 className="text-lg font-bold mb-1 pl-2 text-white tracking-wide flex items-center justify-between">
         <span>
           {title}
           {subtitle && <span className="text-sm text-gray-300 ml-2">{subtitle}</span>}
@@ -48,9 +47,9 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
         }}
         className="w-full mx-auto relative"
       >
-        <CarouselContent className="-ml-0.5 md:-ml-0.5 gap-0.5">
+        <CarouselContent className="-ml-0 md:-ml-0 gap-0">
           {items.map((item) => (
-            <CarouselItem key={item.id} className="pl-0.5 md:pl-0.5 basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-1/7">
+            <CarouselItem key={item.id} className="pl-0 md:pl-0.5 basis-1/3 sm:basis-1/4 md:basis-1/5 lg:basis-1/6 xl:basis-1/7">
               <ContentCard 
                 item={item} 
                 gender={gender} 

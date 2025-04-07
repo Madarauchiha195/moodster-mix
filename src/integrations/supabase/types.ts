@@ -9,6 +9,27 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      moods: {
+        Row: {
+          created_at: string
+          id: string
+          mood: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mood?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mood?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       movies: {
         Row: {
           description: string
@@ -101,6 +122,54 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          gender: string | null
+          id: string
+          username: string | null
+        }
+        Insert: {
+          created_at?: string
+          gender?: string | null
+          id: string
+          username?: string | null
+        }
+        Update: {
+          created_at?: string
+          gender?: string | null
+          id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      shared_playlists: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          mood: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          mood?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          mood?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       songs: {
         Row: {
           album: string
@@ -131,6 +200,30 @@ export type Database = {
           image_url?: string
           title?: string
           year?: number
+        }
+        Relationships: []
+      }
+      user_liked_content: {
+        Row: {
+          content_id: number
+          content_type: string | null
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          content_id: number
+          content_type?: string | null
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          content_id?: number
+          content_type?: string | null
+          created_at?: string
+          id?: string
+          user_id?: string
         }
         Relationships: []
       }
