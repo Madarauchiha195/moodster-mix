@@ -77,7 +77,7 @@ const SharedPlaylistCreator: React.FC<SharedPlaylistCreatorProps> = ({
         <Button 
           variant="outline" 
           size="sm"
-          className="rounded-full bg-black/40 border-purple-500/30 hover:bg-black/60 hover:border-purple-500/50 text-white"
+          className="rounded-full bg-gradient-to-r from-purple-900/80 to-indigo-900/80 border-purple-500/30 hover:from-purple-800 hover:to-indigo-800 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(79,70,229,0.4)] mr-4"
         >
           <Share2 className="h-4 w-4 mr-2" />
           Share Recommendations

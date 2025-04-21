@@ -1,4 +1,3 @@
-
 // Mock database service
 // This simulates a MongoDB connection for development purposes
 
@@ -169,6 +168,41 @@ export const savePlaylist = async (
 };
 
 export const getPlaylistById = async (playlistId: string) => {
+  await simulateDelay();
+  
+  // @ts-ignore - Mock implementation
+  return collections.playlists.find(playlist => playlist.id === playlistId) || null;
+};
+
+// Shared playlist functions
+export const createSharedPlaylist = async (
+  name: string,
+  description: string,
+  userId: string,
+  username: string,
+  items: ContentItemProps[],
+  mood: MoodType
+) => {
+  await simulateDelay();
+  
+  const playlistId = `shared_playlist_${Date.now()}`;
+  const newPlaylist = {
+    id: playlistId,
+    name,
+    description,
+    userId,
+    username,
+    items,
+    mood,
+    shareCode: generateShareCode(),
+    createdAt: new Date().toISOString()
+  };
+  
+  collections.playlists.push(newPlaylist);
+  return playlistId;
+};
+
+export const getSharedPlaylist = async (playlistId: string) => {
   await simulateDelay();
   
   // @ts-ignore - Mock implementation

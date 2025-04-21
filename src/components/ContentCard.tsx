@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Heart, ExternalLink, Star, Info } from 'lucide-react';
+import { Heart, ExternalLink, Star, Info, Plus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { motion } from 'framer-motion';
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export interface ContentItemProps {
   id: number;
@@ -38,6 +39,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
 }) => {
   const [loading, setLoading] = React.useState(true);
   const [isFavorite, setIsFavorite] = React.useState(isLiked);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   
   useEffect(() => {
     setIsFavorite(isLiked);
@@ -108,7 +110,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
 
   return (
     <div 
-      className="content-card h-full bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer transition-all duration-300"
+      className="content-card h-full w-[260px] bg-black/60 backdrop-blur-md border border-white/10 rounded-lg overflow-hidden hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:border-purple-500/50 cursor-pointer transition-all duration-300 mx-auto"
       onClick={() => onOpenDetails(item)}
     >
       <div className="relative">
@@ -160,17 +162,61 @@ const ContentCard: React.FC<ContentCardProps> = ({
           >
             {item.title}
           </h3>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "h-8 w-8 rounded-full transition-transform hover:scale-110",
-              isFavorite ? "text-pink-500" : "text-gray-400 hover:text-pink-300"
-            )}
-            onClick={toggleFavorite}
-          >
-            <Heart className={cn("h-4 w-4", isFavorite ? "fill-current" : "")} />
-          </Button>
+          <div className="flex items-center space-x-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "h-8 w-8 rounded-full transition-transform hover:scale-110",
+                isFavorite ? "text-pink-500" : "text-gray-400 hover:text-pink-300"
+              )}
+              onClick={toggleFavorite}
+            >
+              <Heart className={cn("h-4 w-4", isFavorite ? "fill-current" : "")} />
+            </Button>
+            
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-full transition-transform hover:scale-110 text-gray-400 hover:text-purple-300"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] bg-gray-900 text-white border-gray-800">
+                <DialogHeader>
+                  <DialogTitle>Add to Playlist</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium text-gray-300">Create New Playlist</h4>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-gradient-to-r from-purple-900/80 to-indigo-900/80 border-purple-500/30 hover:from-purple-800 hover:to-indigo-800 text-white hover:text-white"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create New Playlist
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium text-gray-300">Existing Playlists</h4>
+                    <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                      {/* Playlist items will be added here */}
+                      <div className="p-2 rounded-md hover:bg-gray-800/50 cursor-pointer transition-colors">
+                        <p className="text-sm text-gray-200">My Favorites</p>
+                        <p className="text-xs text-gray-400">5 items</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
         
         <p className="text-xs sm:text-sm line-clamp-2 mt-1 text-gray-300">{item.description}</p>
@@ -238,7 +284,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
           <Button
             variant="outline"
             size="sm"
-            className="h-8 rounded-full bg-gradient-to-r from-indigo-900/80 to-purple-900/80 hover:from-indigo-800 hover:to-purple-800 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(79,70,229,0.4)]"
+            className="h-8 rounded-full bg-gradient-to-r from-indigo-900/80 to-purple-900/80 hover:from-indigo-800 hover:to-purple-800 border-purple-500/30 text-white hover:text-white transition-all duration-300 hover:shadow-[0_0_10px_rgba(79,70,229,0.4)] min-w-[90px]"
             onClick={handleExternalLink}
           >
             <ExternalLink className="h-4 w-4 mr-1" />

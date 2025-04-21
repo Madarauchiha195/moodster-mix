@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ContentItemProps } from '@/components/ContentCard';
 import ContentCard from '@/components/ContentCard';
@@ -58,10 +57,10 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
         }}
         className="w-full mx-auto relative px-4 md:px-8"
       >
-        <CarouselContent className="-ml-2 md:-ml-4">
+        <CarouselContent className="gap-3">
           {items.map((item) => (
-            <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 2xl:basis-1/7">
-              <div className="px-1">
+            <CarouselItem key={item.id} className="basis-auto">
+              <div className="p-2">
                 <ContentCard 
                   item={item} 
                   gender={gender} 
@@ -74,18 +73,12 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({
           ))}
         </CarouselContent>
         <div className="absolute inset-y-0 left-0 w-12 flex items-center justify-start z-10 pointer-events-none">
-          <CarouselPrevious className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+          <CarouselPrevious className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-gradient-to-r from-purple-700/80 to-indigo-700/80 hover:from-purple-600 hover:to-indigo-600 border-none shadow-lg rounded-full text-white hover:text-white" />
         </div>
         <div className="absolute inset-y-0 right-0 w-12 flex items-center justify-end z-10 pointer-events-none">
-          <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-black/60 hover:bg-black/80 border-purple-500/30 rounded-full" />
+          <CarouselNext className="static pointer-events-auto h-9 w-9 lg:h-10 lg:w-10 bg-gradient-to-r from-purple-700/80 to-indigo-700/80 hover:from-purple-600 hover:to-indigo-600 border-none shadow-lg rounded-full text-white hover:text-white" />
         </div>
       </Carousel>
-      <Button 
-        onClick={scrollCarouselRight}
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-gradient-to-r from-purple-700/80 to-indigo-700/80 hover:from-purple-600 hover:to-indigo-600 border-none shadow-lg"
-      >
-        <ChevronRight className="h-5 w-5" />
-      </Button>
     </div>
   );
 };
