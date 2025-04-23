@@ -8,14 +8,27 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-// Create anon client for client-side operations
+// Create Supabase client with proper configuration
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true
+  },
+  db: {
+    schema: 'public'
   }
 });
+
+// Test the connection
+supabase.from('profiles').select('*').limit(1)
+  .then(({ data, error }) => {
+    if (error) {
+      console.error('Supabase connection error:', error);
+    } else {
+      console.log('Supabase connected successfully');
+    }
+  });
 
 // Create service role client for server-side operations
 export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);

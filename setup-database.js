@@ -3,66 +3,58 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import pkg from 'pg';
-const { Pool } = pkg;
 
 // Load environment variables
-dotenv.config({ path: '.env.local' });
+dotenv.config();
 
+// Get the directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Read SQL file
+const sqlFilePath = path.join(__dirname, 'setup-database.sql');
+const sql = fs.readFileSync(sqlFilePath, 'utf8');
+
+// Get environment variables
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const databaseUrl = process.env.DATABASE_URL;
 
-if (!supabaseUrl || !supabaseServiceKey || !databaseUrl) {
+if (!supabaseUrl || !supabaseKey || !databaseUrl) {
   console.error('Missing required environment variables');
   process.exit(1);
 }
 
 // Create Supabase client
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-// Create PostgreSQL pool
-const pool = new Pool({
-  connectionString: databaseUrl,
-  ssl: {
-    rejectUnauthorized: false
+const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  },
+  db: {
+    schema: 'public'
   }
 });
 
 async function setupDatabase() {
-  const client = await pool.connect();
   try {
-    console.log('Connected to database successfully');
+    // Test connection first
+    const { data, error } = await supabase.from('profiles').select('*').limit(1);
+    if (error) {
+      throw error;
+    }
+    console.log('Successfully connected to Supabase');
 
-    // Read the SQL file
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const sqlPath = path.join(__dirname, 'setup-database.sql');
-    const sql = fs.readFileSync(sqlPath, 'utf8');
-
-    // Execute the SQL
-    console.log('Executing SQL setup...');
-    await client.query(sql);
-    console.log('Database setup completed successfully!');
-
-    // Verify tables were created
-    const result = await client.query(`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public'
-    `);
-    console.log('Created tables:', result.rows.map(row => row.table_name).join(', '));
-
+    // Execute SQL
+    const { error: sqlError } = await supabase.rpc('exec_sql', { sql });
+    if (sqlError) {
+      throw sqlError;
+    }
+    console.log('Database setup completed successfully');
   } catch (error) {
     console.error('Error setting up database:', error);
     process.exit(1);
-  } finally {
-    client.release();
-    await pool.end();
   }
 }
 
-setupDatabase().catch(error => {
-  console.error('Fatal error:', error);
-  process.exit(1);
-}); 
+setupDatabase(); 
