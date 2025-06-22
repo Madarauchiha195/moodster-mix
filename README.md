@@ -1,7 +1,5 @@
 # Welcome to your MOODSTER-MIX project
 
-# Monster Mix
-
 Monster Mix is an intelligent recommendation system that curates personalized movie and song suggestions based on the user's current mood and viewing/listening habits. By leveraging a robust algorithm and analyzing user preferences, Monster Mix ensures that every recommendation resonates with the user's emotional state.
 
 ## Features
@@ -29,12 +27,15 @@ Monster Mix is an intelligent recommendation system that curates personalized mo
 
 ## Tech Stack
 
+- **Frontend**:
+  - Vite
+  - TypeScript
+  - React
+  - shadcn-ui
+  - Tailwind CSS
 - **Backend**:
   - Python (for algorithms and data processing)
   - Flask/Django (for API development)
-- **Frontend**:
-  - React.js (for an interactive UI)
-  - Tailwind CSS (for styling)
 - **Database**:
   - PostgreSQL (for storing user data and preferences)
 - **Additional Tools**:
@@ -53,16 +54,14 @@ Monster Mix is an intelligent recommendation system that curates personalized mo
    ```
 3. Install dependencies:
    ```bash
-   pip install -r requirements.txt
    npm install
    ```
 4. Set up environment variables for API keys (Spotify, TMDB, etc.).
 5. Run the application:
    ```bash
-   npm start
-   python app.py
+   npm run dev
    ```
-6. Access the application at `http://localhost:3000`.
+6. Access the application at `http://localhost:5173`.
 
 ## Usage
 
@@ -88,13 +87,5 @@ Feel free to star the repository if you find Monster Mix useful and share your f
 
 ## Contact
 
-For any queries or suggestions, please contact [your-email@example.com].
+For any queries or suggestions, please contact.
 
-
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
